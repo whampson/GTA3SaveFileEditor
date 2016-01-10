@@ -23,6 +23,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.blockdefs.Block16;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.blockdefs.Block19;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAShort;
 import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * This class represents a save file originating from the PC version of GTA III.
@@ -106,7 +107,7 @@ public class PCSaveFile extends SaveFile
                 if (definedBlockIndex < definedBlocks.length) {
                     Block block = definedBlocks[definedBlockIndex];
                     if (block.getIdentifier().getIndex() == blockInFileIndex) {
-                        IO.debugf("0x%08x: Reading block %d (\"%s\")...\n", in.getPointer(), blockInFileIndex, block.getIdentifier().getFriendlyName());
+                        Logger.info("0x%08x: Reading block %d (\"%s\")...\n", in.getPointer(), blockInFileIndex, block.getIdentifier().getFriendlyName());
                         block.setExpectedSize(in.readInt());
                         bytesRead += 4;
                         bytesRead += block.load(in);
@@ -118,7 +119,7 @@ public class PCSaveFile extends SaveFile
                 int expectedSize = in.readInt();
                 bytesRead += 4;
                 Align skippedBlock = new Align(platform, expectedSize, expectedSize, expectedSize, expectedSize, expectedSize);
-                IO.debugf("0x%08x: Reading block %d...\n", in.getPointer(), blockInFileIndex);
+                Logger.info("0x%08x: Reading block %d...\n", in.getPointer(), blockInFileIndex);
                 int skippedBytes = skippedBlock.load(in);
                 bytesRead += skippedBytes;
                 skippedData.put(blockInFileIndex, skippedBlock);
@@ -126,7 +127,7 @@ public class PCSaveFile extends SaveFile
                 // Padding block
                 int expectedSize = in.readInt();
                 bytesRead += 4;
-                IO.debugf("0x%08x: Reading block %d (padding)...\n", in.getPointer(), blockInFileIndex);
+                Logger.debug("0x%08x: Reading block %d (padding)...\n", in.getPointer(), blockInFileIndex);
                 int skippedBytes = in.skip(expectedSize);
                 bytesRead += skippedBytes;
             }
@@ -183,7 +184,7 @@ public class PCSaveFile extends SaveFile
         
         paddingSize -= (4 * (int)Math.ceil((double)paddingSize / MAX_PADDING_BLOCK_SIZE));      // make room for size of pad block
 
-        IO.debugf("Writing data to file: %s...\n", saveFile);
+        Logger.debug("Writing data to file: %s...\n", saveFile);
         SaveFileOutputStream out = new SaveFileOutputStream(fileSize);
         
         // Write data blocks
@@ -193,7 +194,7 @@ public class PCSaveFile extends SaveFile
                 if (block.getIdentifier().getIndex() == blockInFileIndex) {
                     block.setAlignData(unknownData.get(blockInFileIndex));
                     bytesWritten += out.writeInt(block.getSize());
-                    IO.debugf("0x%08x: Writing block %d (\"%s\")...\n", out.getPointer(), blockInFileIndex, block.getIdentifier().getFriendlyName());
+                    Logger.debug("0x%08x: Writing block %d (\"%s\")...\n", out.getPointer(), blockInFileIndex, block.getIdentifier().getFriendlyName());
                     bytesWritten += block.save(out);
                     definedBlockIndex++;
                     continue;
@@ -201,7 +202,7 @@ public class PCSaveFile extends SaveFile
             }
             Align skippedBlock = skippedData.get(blockInFileIndex);
             bytesWritten += out.writeInt(skippedBlock.getSize());
-            IO.debugf("0x%08x: Writing block %d...\n", out.getPointer(), blockInFileIndex);
+            Logger.debug("0x%08x: Writing block %d...\n", out.getPointer(), blockInFileIndex);
             bytesWritten += skippedBlock.save(out);
         }
         if (bytesWritten != dataSize) {
@@ -215,7 +216,7 @@ public class PCSaveFile extends SaveFile
             int padBytesWritten = 0;
             byte[] padBlock = new byte[padBytesRemaining > MAX_PADDING_BLOCK_SIZE ? MAX_PADDING_BLOCK_SIZE : padBytesRemaining];
             bytesWritten += out.writeInt(padBlock.length);
-            IO.debugf("0x%08x: Writing block %d (padding)...\n", out.getPointer(), blockInFileIndex++);
+            Logger.debug("0x%08x: Writing block %d (padding)...\n", out.getPointer(), blockInFileIndex++);
             padBytesWritten += out.write(padBlock);
             bytesWritten += padBytesWritten;
             padBytesRemaining -= padBytesWritten;
@@ -223,11 +224,11 @@ public class PCSaveFile extends SaveFile
         
         // Write checksum
         checksum = Checksum.calculateChecksum(out.toByteArray());
-        IO.debugf("0x%08x: Writing checksum...\n", out.getPointer());
+        Logger.debug("0x%08x: Writing checksum...\n", out.getPointer());
         bytesWritten += out.writeInt(checksum);
         
         out.writeToFile(saveFile);
-        IO.debugf("Finished writing file. Bytes written: 0x%04x\n", bytesWritten);
+        Logger.debug("Finished writing file. Bytes written: 0x%04x\n", bytesWritten);
         
         currentFile = saveFile;
         

@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.Main;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * The "About" window.
@@ -63,7 +64,8 @@ public class AboutDialog extends JDialog
         try {
             iconLabel.setIcon(IO.loadImageResource(ICON_PATH));
         } catch (IOException ex) {
-            IO.error("Failed to load image resource.", ex);
+            Logger.error("Failed to load image resource.");
+            Logger.stackTrace(ex);
         }
         topPanel.add(iconLabel, BorderLayout.CENTER);
 
@@ -81,12 +83,12 @@ public class AboutDialog extends JDialog
         JLabel versionLabel1 = new JLabel("Version:");
         versionLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
         versionLabel1.setBorder(new EmptyBorder(1, 0, 1, 2));
-        JLabel versionLabel2 = new JLabel(Main.PROGRAM_VERSION + " build " + Main.getProgramBuildNumber());
+        JLabel versionLabel2 = new JLabel(Main.PROGRAM_VERSION + " build " + Main.getBuildNumber());
         versionLabel2.setBorder(new EmptyBorder(1, 2, 1, 0));
         JLabel buildDate1 = new JLabel("Build date:");
         buildDate1.setHorizontalAlignment(SwingConstants.RIGHT);
         buildDate1.setBorder(new EmptyBorder(1, 0, 1, 2));
-        JLabel buildDate2 = new JLabel(new SimpleDateFormat("MMMM dd, yyyy").format(Main.getProgramBuildDate()));
+        JLabel buildDate2 = new JLabel(new SimpleDateFormat("MMMM dd, yyyy").format(Main.getBuildDate()));
         buildDate2.setBorder(new EmptyBorder(1, 2, 1, 1));
         JLabel aboutTextLabel = new JLabel(GUIUtils.formatHTMLString(ABOUT_STRING, 170, true));
         aboutTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -176,7 +178,8 @@ public class AboutDialog extends JDialog
                 try {
                     Desktop.getDesktop().browse(new URI(url));
                 } catch (IOException | URISyntaxException ex) {
-                    IO.error("Failed to open URI.", ex);
+                    Logger.error("Failed to open URI.");
+                    Logger.stackTrace(ex);
                 }
             }
         };

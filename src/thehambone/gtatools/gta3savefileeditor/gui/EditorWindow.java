@@ -15,8 +15,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -46,6 +44,7 @@ import thehambone.gtatools.gta3savefileeditor.gui.page.OptionsPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.gui.page.PlayerPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.WelcomePage;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * The program's main window frame.
@@ -233,7 +232,8 @@ public class EditorWindow extends JFrame implements Observer
                 try {
                     Desktop.getDesktop().browse(new URI(Main.PROGRAM_UPDATE_URL));
                 } catch (URISyntaxException | IOException ex) {
-                    IO.error("Failed to open URI.", ex);
+                    Logger.error("Failed to open URI.");
+                    Logger.stackTrace(ex);
                 }
             }
         });
@@ -442,7 +442,7 @@ public class EditorWindow extends JFrame implements Observer
     private void closeFrame()
     {   
         if ((SaveFile.isFileLoaded() && promptSaveChanges()) || !SaveFile.isFileLoaded()) {
-            IO.info("Closing GUI...");
+            Logger.info("Closing user interface...");
             dispose();
         } else {
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);   // Prevents window from closing
@@ -486,10 +486,10 @@ public class EditorWindow extends JFrame implements Observer
     
     private void closeFile()
     {
-        IO.info("Closing file...");
+        Logger.info("Closing file...");
         File f = SaveFile.getCurrentlyLoadedFile().getCurrentFile();
         SaveFile.closeFile();
-        IO.infof("Successfully closed file: %s\n", f);
+        Logger.info("Successfully closed file: %s\n", f);
         setStatus(String.format("Closed file: %s", f));
         refreshMenus();
         refreshPages();
@@ -500,9 +500,9 @@ public class EditorWindow extends JFrame implements Observer
     private void loadFile(File f)
     {
         try {
-            IO.info("Loading file...");
+            Logger.info("Loading file...");
             SaveFile.loadFile(f);
-            IO.infof("Successfully loaded file: %s\n", f);
+            Logger.info("Successfully loaded file: %s\n", f);
             setStatus(String.format("Loaded file: %s", f));
             JOptionPane.showMessageDialog(this, "File loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             refreshMenus();
@@ -511,11 +511,13 @@ public class EditorWindow extends JFrame implements Observer
             updateFrameTitle();
         } catch (IOException ex) {
             String errMsg = "An error occured while loading the file.";
-            IO.error(errMsg, ex);
+            Logger.error(errMsg);
+            Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Error Loading File", ex);
         } catch (UnsupportedPlatformException ex) {
             String errMsg = "This save file originates from a platform which is not currently supported by this editor.";
-            IO.error(errMsg, ex);
+            Logger.error(errMsg);
+            Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Unsupported Platform", ex);
         }
     }
@@ -523,17 +525,18 @@ public class EditorWindow extends JFrame implements Observer
     private void saveFile(File f)
     {
         try {
-            IO.info("Saving file...");
+            Logger.info("Saving file...");
             SaveFile.getCurrentlyLoadedFile().save(f);
             clearChangesMadeFlag();
-            IO.infof("Successfully saved file: %s\n", f);
+            Logger.info("Successfully saved file: %s\n", f);
             setStatus(String.format("Saved file: %s", f));
             updateFrameTitle();
             refreshSlotMenus();
             pages[1].loadPage();
         } catch (IOException ex) {
             String errMsg = "An error occured while attempting to save the file.";
-            IO.error(errMsg, ex);
+            Logger.error(errMsg);
+            Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Error Saving File", ex);
         }
     }
@@ -552,7 +555,7 @@ public class EditorWindow extends JFrame implements Observer
             return;
         }
         f.delete();
-        IO.infof("Deleted file: %s\n", f);
+        Logger.info("Deleted file: %s\n", f);
         setStatus(String.format("Deleted file: %s", f));
         refreshSlotMenus();
     }

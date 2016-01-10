@@ -9,6 +9,7 @@ import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.Align;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.Block;
 import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * A generic save file created by the GTA III executable.
@@ -47,7 +48,7 @@ public abstract class SaveFile
         String makeBackupsProperty = Settings.get("make.backups");
         if (makeBackupsProperty != null && Boolean.parseBoolean(makeBackupsProperty)) {
             File backupFile = new File(saveFile.getAbsolutePath() + ".bak");
-            IO.infof("Backing up %s to %s...\n", saveFile, backupFile);
+            Logger.debug("Backing up %s to %s...\n", saveFile, backupFile);
             IO.copyFile(saveFile, backupFile);
         }
         
@@ -55,9 +56,9 @@ public abstract class SaveFile
         
         // For now, loadFile a PC gamesave by default
         PCSaveFile pcSaveFile = new PCSaveFile(new VariableDefinitions());
-        IO.debugf("Reading data from file: %s...\n", saveFile.getAbsolutePath());
+        Logger.debug("Reading data from file: %s...\n", saveFile.getAbsolutePath());
         int bytesRead = pcSaveFile.load(saveFile);
-        IO.debugf("Finished reading file. Bytes read: 0x%04x\n", bytesRead);
+        Logger.debug("Finished reading file. Bytes read: 0x%04x\n", bytesRead);
         currentlyLoadedFile = pcSaveFile;
         return pcSaveFile;
     }

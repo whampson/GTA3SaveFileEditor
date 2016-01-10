@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * Catches unexpected exceptions during runtime. Unexpected exceptions are
@@ -33,7 +34,8 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
             // a RuntimeException would be redundant. Instead, we won't say that
             // a crash report was generated and just output the IOException to
             // stderr.
-            IO.error("Failed to write file.", ex);
+            Logger.error("Failed to write file.");
+            Logger.stackTrace(ex);
         }
         String errorMessage;
         if (fileWritten) {
@@ -44,6 +46,8 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
             errorMessage = String.format("A critical error has occured and the program needs to close.\n\n"
                     + "The error occured in the following thread:\n%s", t.getName());
         }
+        Logger.fatal(errorMessage);
+        Logger.stackTrace(e);
         GUIUtils.showErrorMessage(null, errorMessage, "Critical Error", 300, e);
         System.exit(1);     // Exit codes don't have any meaning yet, so a
                             // simple nonzero exit code will do.

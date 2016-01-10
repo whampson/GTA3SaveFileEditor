@@ -56,4 +56,19 @@ public class GUIUtils
                     title,
                     JOptionPane.ERROR_MESSAGE);
     }
+    
+    public static void showInformationMessage(Component parent, String message,
+            String title)
+    {
+        showInformationMessage(parent, message, title, DEFAULT_WIDTH);
+    }
+    
+    public static void showInformationMessage(Component parent, String message,
+            String title, int width)
+    {
+        JOptionPane.showMessageDialog(parent,
+                formatHTMLString(message, width, false),
+                title,
+                JOptionPane.INFORMATION_MESSAGE);
+    }
 }

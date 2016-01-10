@@ -46,45 +46,45 @@ public class IO
         return stdout;
     }
     
-    public static void debug(String message)
-    {
-        debugf("%s\n", message);
-    }
+//    public static void debug(String message)
+//    {
+//        debugf("%s\n", message);
+//    }
     
-    public static void debugf(String format, Object... args)
-    {
-        if (Main.isDebugModeEnabled()) {
-            String s = String.format(format, args);
-            stdout.printf("[DEBUG]: %s", s);
-        }
-    }
-    
-    public static void error(String message)
-    {
-        errorf("%s\n", message);
-    }
-    
-    public static void error(String message, Throwable cause)
-    {
-        errorf("%s [%s]\n", message, cause);
-    }
-    
-    public static void errorf(String format, Object... args)
-    {
-        String s = String.format(format, args);
-        stderr.printf("[ERROR]: %s", s);
-    }
-    
-    public static void info(String message)
-    {
-        infof("%s\n", message);
-    }
-    
-    public static void infof(String format, Object... args)
-    {
-        String s = String.format(format, args);
-        stdout.printf("[ INFO]: %s",s);
-    }
+//    public static void debugf(String format, Object... args)
+//    {
+//        if (Main.isDebugModeEnabled()) {
+//            String s = String.format(format, args);
+//            stdout.printf("[DEBUG]: %s", s);
+//        }
+//    }
+//    
+//    public static void error(String message)
+//    {
+//        errorf("%s\n", message);
+//    }
+//    
+//    public static void error(String message, Throwable cause)
+//    {
+//        errorf("%s [%s]\n", message, cause);
+//    }
+//    
+//    public static void errorf(String format, Object... args)
+//    {
+//        String s = String.format(format, args);
+//        stderr.printf("[ERROR]: %s", s);
+//    }
+//    
+//    public static void info(String message)
+//    {
+//        infof("%s\n", message);
+//    }
+//    
+//    public static void infof(String format, Object... args)
+//    {
+//        String s = String.format(format, args);
+//        stdout.printf("[ INFO]: %s",s);
+//    }
     
     
 //    public static void repeatChar(char ch, int n, PrintWriter out)

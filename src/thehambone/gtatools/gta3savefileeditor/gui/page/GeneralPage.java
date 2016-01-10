@@ -9,6 +9,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdef
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.PedType;
 import thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * 
@@ -42,7 +43,7 @@ public class GeneralPage extends Page
     @Override
     public void loadPage()
     {
-        IO.debugf("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getTitle());
         
         isPageInitializing = true;
         vars = SaveFile.getCurrentlyLoadedFile().getVariables();

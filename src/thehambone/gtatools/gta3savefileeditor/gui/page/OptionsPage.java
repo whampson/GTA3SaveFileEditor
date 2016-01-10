@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * 
@@ -67,7 +68,7 @@ public class OptionsPage extends Page
     @Override
     public void loadPage()
     {
-        IO.debugf("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getTitle());
         
         saveFileFolderTextField.setText(Settings.get("gta3.save.dir"));
         backupCheckBox.setSelected(Boolean.parseBoolean(Settings.get("make.backups")));

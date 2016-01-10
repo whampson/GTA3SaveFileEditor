@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionListener;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.SaveSlotCellRenderer;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * @author thehambone
@@ -129,12 +130,13 @@ public class WelcomePage extends Page
     @Override
     public void loadPage()
     {
-        IO.debugf("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getTitle());
         
         try {
             imageLabel.setIcon(IO.loadImageResource(ICON_PATH));
         } catch (IOException ex) {
-            IO.error("Failed to load image resource.", ex);
+            Logger.error("Failed to load image resource.");
+            Logger.stackTrace(ex);
         }
         imageLabel.setText("");
         populateSlotList();

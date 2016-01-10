@@ -1,6 +1,8 @@
 
 package thehambone.gtatools.gta3savefileeditor.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,60 +24,140 @@ public final class Logger
     /**
      * Creates a new {@code Logger} instance.
      * 
-     * @param levels the logging levels to be enabled
+     * @param level the logging level
      * @return the new instance
      */
-    public static Logger newInstance(Level... levels)
+    public static Logger newInstance(Level level)
     {
-        instance = new Logger(levels);
+        instance = new Logger(level);
         return instance;
     }
     
+    /**
+     * Gets the current {@code Logger} instance.
+     * 
+     * @return the current logger instance
+     */
+    public static Logger getLogger()
+    {
+        return instance;
+    }
+    
+    /**
+     * Writes the stack trace of a {@code Throwable} object to the log using the
+     * {@code DEBUG} level.
+     * 
+     * @param t the {@code Throwable} whose stack trace will be written
+     */
+    public static void stackTrace(Throwable t)
+    {
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        t.printStackTrace(pw);
+        
+        instance.log(Level.DEBUG, writer.getBuffer().toString());
+    }
+    
+    /**
+     * Writes a message to the log using the {@code DEBUG} level.
+     * 
+     * @param message the message to be written to the log
+     */
     public static void debug(String message)
     {
         debug("%s\n", message);
     }
     
+    /**
+     * Writes a formatted message to the log using the {@code DEBUG} level.
+     * 
+     * @param format the message format
+     * @param args format arguments
+     */
     public static void debug(String format, Object... args)
     {
         instance.log(Level.DEBUG, String.format(format, args));
     }
     
+    /**
+     * Writes a message to the log using the {@code INFO} level.
+     * 
+     * @param message the message to be written to the log
+     */
     public static void info(String message)
     {
         info("%s\n", message);
     }
     
+    /**
+     * Writes a formatted message to the log using the {@code INFO} level.
+     * 
+     * @param format the message format
+     * @param args format arguments
+     */
     public static void info(String format, Object... args)
     {
         instance.log(Level.INFO, String.format(format, args));
     }
     
+    /**
+     * Writes a message to the log using the {@code WARN} level.
+     * 
+     * @param message the message to be written to the log
+     */
     public static void warn(String message)
     {
         warn("%s\n", message);
     }
     
+    /**
+     * Writes a formatted message to the log using the {@code WARN} level.
+     * 
+     * @param format the message format
+     * @param args format arguments
+     */
     public static void warn(String format, Object... args)
     {
         instance.log(Level.WARN, String.format(format, args));
     }
     
+    /**
+     * Writes a message to the log using the {@code ERROR} level.
+     * 
+     * @param message the message to be written to the log
+     */
     public static void error(String message)
     {
         error("%s\n", message);
     }
     
+    /**
+     * Writes a formatted message to the log using the {@code ERROR} level.
+     * 
+     * @param format the message format
+     * @param args format arguments
+     */
     public static void error(String format, Object... args)
     {
         instance.log(Level.ERROR, String.format(format, args));
     }
     
+    /**
+     * Writes a message to the log using the {@code FATAL} level.
+     * 
+     * @param message the message to be written to the log
+     */
     public static void fatal(String message)
     {
         fatal("%s\n", message);
     }
     
+    /**
+     * Writes a formatted message to the log using the {@code FATAL} level.
+     * 
+     * @param format the message format
+     * @param args format arguments
+     */
     public static void fatal(String format, Object... args)
     {
         instance.log(Level.FATAL, String.format(format, args));
@@ -83,53 +165,47 @@ public final class Logger
     
     private final StringBuilder LOG_BUFFER;
     
-    private int levels;     // bitstring
+    private Level currentLevel;
     
     /*
-     * Creates a new Logger with the specified levels enabled.
+     * Creates a new Logger with the specified logging level.
      */
     // Logger is a singleton class; keep this constructor private
-    private Logger(Level... levels)
+    private Logger(Level level)
     {
         LOG_BUFFER = new StringBuilder();
-        setLevels(levels);
+        currentLevel = level;
     }
     
     /**
-     * Checks whether a specific logging level is enabled.
+     * Gets the current logging level.
      * 
-     * @param level the level to check for
-     * @return {@code true} if the specified logging level is enabled,
-     *         {@code false} otherwise
+     * @return the current logging level
      */
-    public boolean isLevelEnabled(Level level)
+    public Level getLevel()
     {
-        return (levels & level.getMask()) == level.getMask();
+        return currentLevel;
     }
     
     /**
-     * Sets the logging levels to be shown in the log.
+     * Sets the current logging level.
      * 
-     * @param levels the levels to be shown
+     * @param level the logging level to be set as current
      */
-    public void setLevels(Level... levels)
+    public void setLevel(Level level)
     {
-        this.levels = 0;
-        
-        for (Level l : levels) {
-            this.levels |= l.getMask();
-        }
+        currentLevel = level;
     }
     
     /**
      * Adds an entry to the log.
      * 
-     * @param level the logging level
+     * @param level the logging Level
      * @param message the message to be logged
      */
     public void log(Level level, String message)
     {
-        if (!isLevelEnabled(level)) {
+        if (level.getMask() < currentLevel.getMask()) {
             return;
         }
         
@@ -168,26 +244,22 @@ public final class Logger
     @Override
     public String toString()
     {
-        StringBuilder buf = new StringBuilder("Logger: { levels = ");
-        for (Level l : Level.values()) {
-            if (isLevelEnabled(l)) {
-                buf.append(l.name()).append(" | ");
-            }
-        }
-        buf.delete(buf.length() - 2, buf.length() - 1);
-        buf.append("}");
-        
-        return buf.toString();
+        return "Logger: { level = " + currentLevel.name() + " }";
     }
     
     /**
      * Defines the various logging levels. Logging levels are used to categorize
-     * messages sent to the log.
+     * messages sent to the log. Each logging level has precedence over the
+     * other. The precedence order is as follows:
+     *     {@code FATAL > ERROR > WARN > INFO > DEBUG}.
+     * When a logging level is enabled, all levels of higher precedence are also
+     * enabled. For instance, when {@code INFO} is enabled, {@code WARN, ERROR}
+     * and {@code FATAL} are enabled as well.
      */
     public enum Level
     {
         /**
-         * Designates information useful for debugging.
+         * Indicates a message useful for debugging.
          */
         DEBUG(1),
         
@@ -199,18 +271,18 @@ public final class Logger
         /**
          * Denotes that a potentially harmful event has occurred.
          */
-        WARN(4),
+        WARN(3),
         
         /**
          * Indicates that an error has occurred, but the program may continue to
          * run.
          */
-        ERROR(8),
+        ERROR(4),
         
         /**
          * Denotes a severe error that could stop the program from running.
          */
-        FATAL(16);
+        FATAL(5);
         
         private final int mask;
         

@@ -8,7 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
-import static thehambone.gtatools.gta3savefileeditor.io.IO.infof;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class DebugPage extends Page
     @Override
     public void loadPage()
     {
-        IO.debugf("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getTitle());
         consoleOutputTextArea.setDocument(IO.getOutputDocument());
     }
 
@@ -149,9 +149,10 @@ public class DebugPage extends Page
         }
         try {
             IO.saveOutput(f);
-            infof("Saved console output to file: %s\n", f.getAbsolutePath());
+            Logger.info("Saved console output to file: %s\n", f.getAbsolutePath());
         } catch (IOException ex) {
-            IO.error("Failed to write file.", ex);
+            Logger.error("Failed to write file.");
+            Logger.stackTrace(ex);
             GUIUtils.showErrorMessage(this, "Failed to write file.", "IO Error", ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed

@@ -8,6 +8,7 @@ import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.savefile.io.SaveFileInputStream;
 import thehambone.gtatools.gta3savefileeditor.savefile.io.SaveFileOutputStream;
 import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * A Block represents a structured chunk of data in a GTA III gamesave. The data
@@ -162,19 +163,19 @@ public abstract class Block implements DataStructure
                 alignDataList.add((Align)struct);
             } else if (struct instanceof GTADataType
                     && ((GTADataType)struct).isMappedToVariable()) {
-                IO.debugf("0x%08x: Loaded variable \"%s\"\n", offset, ((GTADataType)struct).getVariableMappedToName());
+                Logger.debug("0x%08x: Loaded variable \"%s\"\n", offset, ((GTADataType)struct).getVariableMappedToName());
             } else if (struct instanceof Array
                     && ((Array)struct).isMappedToVariable()) {
-                IO.debugf("0x%08x: Loaded variable \"%s\"\n", offset, ((Array)struct).getVariableMappedToName());
+                Logger.debug("0x%08x: Loaded variable \"%s\"\n", offset, ((Array)struct).getVariableMappedToName());
             }
         }
         alignData = alignDataList.toArray(new Align[0]);
         if (bytesRead != expectedSize) {
-            IO.infof("0x%08x: %s: [WARNING]: The number of bytes read does not match the expected size of the block.\n"
+            Logger.warn("0x%08x: %s: The number of bytes read does not match the expected size of the block.\n"
                     + "    Expected: 0x%04x\n"
                     + "    Actual  : 0x%04x\n", in.getPointer(), getBlockPath(), expectedSize, bytesRead);
             int bytesToSkip = expectedSize - bytesRead;
-            IO.infof("Skipping %s 0x%04x bytes...\n", (bytesToSkip > -1) ? "forward" : "back", Math.abs(bytesToSkip));
+            Logger.info("Skipping %s 0x%04x bytes...\n", (bytesToSkip > -1) ? "forward" : "back", Math.abs(bytesToSkip));
             bytesRead += in.skip(bytesToSkip);
         }
         return bytesRead;
@@ -198,10 +199,10 @@ public abstract class Block implements DataStructure
                 struct = (Align)alignData[alignDataOffset++];
             } else if (struct instanceof GTADataType 
                     && ((GTADataType)struct).isMappedToVariable()) {
-                IO.debugf("0x%08x: Saved variable \"%s\"\n", offset, ((GTADataType)struct).getVariableMappedToName());
+                Logger.debug("0x%08x: Saved variable \"%s\"\n", offset, ((GTADataType)struct).getVariableMappedToName());
             } else if (struct instanceof Array
                     && ((Array)struct).isMappedToVariable()) {
-                IO.debugf("0x%08x: Saved variable \"%s\"\n", offset, ((Array)struct).getVariableMappedToName());
+                Logger.debug("0x%08x: Saved variable \"%s\"\n", offset, ((Array)struct).getVariableMappedToName());
             }
             bytesWritten += struct.save(out);
         }

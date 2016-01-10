@@ -16,6 +16,7 @@ import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.CarColo
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.StoredCarListCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.VehicleListCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * 
@@ -107,7 +108,7 @@ public class GaragesPage extends Page
     @SuppressWarnings("unchecked")
     public void loadPage()
     {
-        IO.debugf("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getTitle());
         
         isPageInitializing = true;
         vars = SaveFile.getCurrentlyLoadedFile().getVariables();
