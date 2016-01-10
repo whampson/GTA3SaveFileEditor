@@ -15,6 +15,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import thehambone.gtatools.gta3savefileeditor.gui.EditorWindow;
 import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
+import thehambone.gtatools.gta3savefileeditor.util.StringUtilities;
 
 /**
  * Program initialization and constants.
@@ -26,7 +28,7 @@ import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
 public class Main
 {
     public static final String PROGRAM_TITLE        = "GTA III Save File Editor";
-    public static final String PROGRAM_VERSION      = "0.1";
+    public static final String PROGRAM_VERSION      = "0.2";
     public static final String PROGRAM_AUTHOR       = "thehambone";
     public static final String PROGRAM_AUTHOR_URL   = "http://gtaforums.com/user/907241-thehambone/";
     public static final String PROGRAM_AUTHOR_EMAIL = "thehambone93@gmail.com";
@@ -40,16 +42,21 @@ public class Main
     private static OperatingSystem os           = OperatingSystem.UNKNOWN;
     private static boolean isDebugModeEnabled   = false;
     
+    /*
+     * Sets the default uncaught exception handler for all threads.
+     */
     private static void initUncaughtExceptionHandler()
     {
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
+        Thread.setDefaultUncaughtExceptionHandler(
+                new UncaughtExceptionHandler());
     }
     
     private static void initLookAndFeel()
     {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException
+                | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             IO.error("Failed to initialize UI look and feel.", ex);
         }
     }
@@ -62,7 +69,7 @@ public class Main
         } else if (osName.contains("mac")) {
             os = OperatingSystem.MAC_OS_X;
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
-            os = OperatingSystem.LINUX;
+            os = OperatingSystem.LINUX_FAMILY;
         } else {
             os = OperatingSystem.UNKNOWN;
         }
@@ -159,19 +166,20 @@ public class Main
         });
     }
     
-     public static void main(String[] args)
+    public static void main(String[] args)
     {
+        // TODO: cmd options --log-level=<levels[level2[,...]]>, --log-to-file, --debug=<TRUE|FALSE>
         initUncaughtExceptionHandler();
         initLookAndFeel();
         determineOS();
         readBuildProperties();
         
         IO.infof("%s\n", PROGRAM_TITLE);
-        IO.info(IO.repeatChar('=', PROGRAM_TITLE.length()));
+        IO.info(StringUtilities.repeatChar('=', PROGRAM_TITLE.length()));
         IO.infof("Version %s build %d\n", PROGRAM_VERSION, programBuildNumber);
         IO.infof("Compiled by %s on %s.\n", PROGRAM_AUTHOR, new SimpleDateFormat("MMM. dd, yyyy").format(programBuildDate));
         
-        initShutdownHooks();
+//        initShutdownHooks();
         parseArgs(args);
         
         IO.infof("Operating system: %s (%s)\n", System.getProperty("os.name"), System.getProperty("os.version"));
@@ -186,8 +194,14 @@ public class Main
             IO.error("Failed to load icon image resource.", ex);
         }
         
-        loadSettings();
-        createAndShowGUI(icon);
+//        loadSettings();
+//        createAndShowGUI(icon);
+        
+        Logger l = Logger.newInstance(Logger.Level.INFO, Logger.Level.WARN,
+                Logger.Level.ERROR, Logger.Level.FATAL);
+        System.out.println(l.isLevelEnabled(Logger.Level.INFO));
+        System.out.println(l);
+        Logger.warn("abc");
     }
     
     public static boolean isDebugModeEnabled()
@@ -212,7 +226,9 @@ public class Main
     
     public static enum OperatingSystem
     {
-        LINUX, MAC_OS_X, WINDOWS,
+        LINUX_FAMILY,
+        MAC_OS_X,
+        WINDOWS,
         UNKNOWN;
     }
 }

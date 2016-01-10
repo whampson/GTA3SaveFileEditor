@@ -86,19 +86,11 @@ public class IO
         stdout.printf("[ INFO]: %s",s);
     }
     
-    public static String repeatChar(char ch, int n)
-    {
-        String s = "";
-        for (int i = 0; i < n; i++) {
-            s += ch;
-        }
-        return s;
-    }
     
-    public static void repeatChar(char ch, int n, PrintWriter out)
-    {
-        out.printf("%s", repeatChar(ch, n));
-    }
+//    public static void repeatChar(char ch, int n, PrintWriter out)
+//    {
+//        out.printf("%s", repeatChar(ch, n));
+//    }
     
     public static String intToBinaryString(int num)
     {
