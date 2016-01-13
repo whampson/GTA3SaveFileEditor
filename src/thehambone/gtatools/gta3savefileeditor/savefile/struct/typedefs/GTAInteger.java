@@ -10,6 +10,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.GTADataType;
  * @author thehambone
  * @version 0.1
  * @since 0.1, February 21, 2015
+ * @deprecated 
  */
 public class GTAInteger extends GTADataType
 {

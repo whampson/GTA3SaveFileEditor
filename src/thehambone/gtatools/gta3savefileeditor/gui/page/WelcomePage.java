@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -133,7 +135,7 @@ public class WelcomePage extends Page
         Logger.debug("Loading page: %s...\n", getTitle());
         
         try {
-            imageLabel.setIcon(IO.loadImageResource(ICON_PATH));
+            imageLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));
         } catch (IOException ex) {
             Logger.error("Failed to load image resource.");
             Logger.stackTrace(ex);

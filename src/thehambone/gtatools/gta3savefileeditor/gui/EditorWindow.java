@@ -31,9 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.Main;
-import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
-import thehambone.gtatools.gta3savefileeditor.savefile.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observable;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
 import thehambone.gtatools.gta3savefileeditor.gui.page.DebugPage;
@@ -44,6 +42,8 @@ import thehambone.gtatools.gta3savefileeditor.gui.page.OptionsPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.gui.page.PlayerPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.WelcomePage;
+import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -157,7 +157,7 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (SaveFile.isFileLoaded()) {
+                if (SaveFileNew.isFileLoaded()) {
                     if (!promptSaveChanges()) {
                         return;
                     }
@@ -173,10 +173,12 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (!SaveFile.isFileLoaded()) {
+                if (!SaveFileNew.isFileLoaded()) {
                     return;
                 }
-                File f = SaveFile.getCurrentlyLoadedFile().getCurrentFile();
+                
+                // TODO: change this
+                File f = SaveFileNew.getCurrentSaveFile().getSourceFile();
                 saveFile(f);
             }
         });
@@ -185,7 +187,7 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (!SaveFile.isFileLoaded()) {
+                if (!SaveFileNew.isFileLoaded()) {
                     return;
                 }
                 File f = promptForFile("Save");
@@ -199,7 +201,7 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (SaveFile.isFileLoaded()) {
+                if (SaveFileNew.isFileLoaded()) {
                     if (!promptSaveChanges()) {
                         return;
                     }
@@ -302,10 +304,10 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void run()
             {
-                saveMenuItem.setEnabled(SaveFile.isFileLoaded());
-                saveAsMenuItem.setEnabled(SaveFile.isFileLoaded());
-                slotSaveMenu.setEnabled(SaveFile.isFileLoaded());
-                closeFileMenuItem.setEnabled(SaveFile.isFileLoaded());
+                saveMenuItem.setEnabled(SaveFileNew.isFileLoaded());
+                saveAsMenuItem.setEnabled(SaveFileNew.isFileLoaded());
+                slotSaveMenu.setEnabled(SaveFileNew.isFileLoaded());
+                closeFileMenuItem.setEnabled(SaveFileNew.isFileLoaded());
             }
         });
         refreshSlotMenus();
@@ -366,7 +368,7 @@ public class EditorWindow extends JFrame implements Observer
                     File f = slot.getSaveFile();
                     switch (itemAction) {
                         case LOAD:
-                            if (SaveFile.isFileLoaded()) {
+                            if (SaveFileNew.isFileLoaded()) {
                                 if (!promptSaveChanges()) {
                                     return;
                                 }
@@ -374,10 +376,10 @@ public class EditorWindow extends JFrame implements Observer
                             loadFile(f);
                             break;
                         case SAVE:
-                            if (!SaveFile.isFileLoaded()) {
+                            if (!SaveFileNew.isFileLoaded()) {
                                 break;
                             }
-                            File currentlyLoadedFile = SaveFile.getCurrentlyLoadedFile().getCurrentFile();
+                            File currentlyLoadedFile = SaveFileNew.getCurrentSaveFile().getSourceFile();
                             if (!currentlyLoadedFile.getAbsolutePath().equals(f.getAbsolutePath())
                                     && f.exists()) {
                                 int option = JOptionPane.showOptionDialog(dialogParent,
@@ -420,12 +422,12 @@ public class EditorWindow extends JFrame implements Observer
                             addPage = true;
                             break;
                         case VISIBLE_WHEN_GAMESAVE_LOADED_ONLY:
-                            if (SaveFile.isFileLoaded()) {
+                            if (SaveFileNew.isFileLoaded()) {
                                 addPage = true;
                             }
                             break;
                         case VISIBLE_WHEN_GAMESAVE_NOT_LOADED_ONLY:
-                            if (!SaveFile.isFileLoaded()) {
+                            if (!SaveFileNew.isFileLoaded()) {
                                 addPage = true;
                             }
                             break;
@@ -437,11 +439,12 @@ public class EditorWindow extends JFrame implements Observer
                 }
             }
         });
+        pack();
     }
     
     private void closeFrame()
     {   
-        if ((SaveFile.isFileLoaded() && promptSaveChanges()) || !SaveFile.isFileLoaded()) {
+        if ((SaveFileNew.isFileLoaded() && promptSaveChanges()) || !SaveFileNew.isFileLoaded()) {
             Logger.info("Closing user interface...");
             dispose();
         } else {
@@ -455,8 +458,8 @@ public class EditorWindow extends JFrame implements Observer
         if (changesMade) {
             titleBuilder.append("*");
         }
-        if (SaveFile.isFileLoaded()) {
-            titleBuilder.append(SaveFile.getCurrentlyLoadedFile().getCurrentFile()).append(" - ");
+        if (SaveFileNew.isFileLoaded()) {
+            titleBuilder.append(SaveFileNew.getCurrentSaveFile().getSourceFile()).append(" - ");
         }
         titleBuilder.append(String.format("%s %s", Main.PROGRAM_TITLE, Main.PROGRAM_VERSION));
         setTitle(titleBuilder.toString());
@@ -487,8 +490,8 @@ public class EditorWindow extends JFrame implements Observer
     private void closeFile()
     {
         Logger.info("Closing file...");
-        File f = SaveFile.getCurrentlyLoadedFile().getCurrentFile();
-        SaveFile.closeFile();
+        File f = SaveFileNew.getCurrentSaveFile().getSourceFile();
+        SaveFileNew.close();
         Logger.info("Successfully closed file: %s\n", f);
         setStatus(String.format("Closed file: %s", f));
         refreshMenus();
@@ -501,7 +504,7 @@ public class EditorWindow extends JFrame implements Observer
     {
         try {
             Logger.info("Loading file...");
-            SaveFile.loadFile(f);
+            SaveFileNew.load(f);
             Logger.info("Successfully loaded file: %s\n", f);
             setStatus(String.format("Loaded file: %s", f));
             JOptionPane.showMessageDialog(this, "File loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -526,7 +529,7 @@ public class EditorWindow extends JFrame implements Observer
     {
         try {
             Logger.info("Saving file...");
-            SaveFile.getCurrentlyLoadedFile().save(f);
+            SaveFileNew.getCurrentSaveFile().save(f);
             clearChangesMadeFlag();
             Logger.info("Successfully saved file: %s\n", f);
             setStatus(String.format("Saved file: %s", f));
@@ -596,7 +599,7 @@ public class EditorWindow extends JFrame implements Observer
                 null,
                 null);
         if (option == JOptionPane.YES_OPTION) {
-            File f = SaveFile.getCurrentlyLoadedFile().getCurrentFile();
+            File f = SaveFileNew.getCurrentSaveFile().getSourceFile();
             saveFile(f);
         }
         return option == JOptionPane.YES_OPTION || option == JOptionPane.NO_OPTION;

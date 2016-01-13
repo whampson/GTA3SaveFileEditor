@@ -10,6 +10,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.GTADataType;
  * @author thehambone
  * @version 0.1
  * @since 0.1, February 10, 2015
+ * @deprecated 
  */
 public abstract class GTAObject extends GTADataType implements DataStructure
 {

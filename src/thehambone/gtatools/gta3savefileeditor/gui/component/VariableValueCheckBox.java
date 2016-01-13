@@ -3,7 +3,7 @@ package thehambone.gtatools.gta3savefileeditor.gui.component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
-import thehambone.gtatools.gta3savefileeditor.savefile.variable.Variable;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 /**
  * An extension of a {@link javax.swing.JCheckBox} that is used to modify the
@@ -14,7 +14,8 @@ import thehambone.gtatools.gta3savefileeditor.savefile.variable.Variable;
  * @version 0.1
  * @since 0.1, March 31, 2015
  */
-public class VariableValueCheckBox extends JCheckBox implements VariableValueComponent
+public class VariableValueCheckBox
+        extends JCheckBox implements VariableValueComponent
 {
     private Variable var;
     private int arrayIndex = 0;
@@ -33,7 +34,7 @@ public class VariableValueCheckBox extends JCheckBox implements VariableValueCom
             public void actionPerformed(ActionEvent e)
             {
                 if (var != null) {
-                    var.setValueAt(arrayIndex, Boolean.toString(isSelected()));
+                    var.parseValue(Boolean.toString(isSelected()));
                 }
             }
         });
@@ -42,14 +43,8 @@ public class VariableValueCheckBox extends JCheckBox implements VariableValueCom
     @Override
     public void setVariable(Variable var)
     {
-        setVariable(var, 0);
-    }
-    
-    @Override
-    public void setVariable(Variable var, int arrayIndex)
-    {
         this.var = var;
-        this.arrayIndex = arrayIndex;
+//        this.arrayIndex = arrayIndex;
         update();
     }
     
@@ -57,7 +52,7 @@ public class VariableValueCheckBox extends JCheckBox implements VariableValueCom
     public void update()
     {
         if (var != null) {
-            setSelected(Boolean.parseBoolean(var.getValueAt(arrayIndex).toString()));
+            setSelected(Boolean.parseBoolean(var.getValue().toString()));
         }
     }
 }

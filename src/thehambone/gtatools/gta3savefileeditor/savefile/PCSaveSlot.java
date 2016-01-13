@@ -18,6 +18,7 @@ import thehambone.gtatools.gta3savefileeditor.Settings;
  * @author thehambone
  * @version 0.1
  * @since 0.1, March 05, 2015
+ * @deprecated 
  */
 public class PCSaveSlot
 {

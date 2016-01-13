@@ -14,6 +14,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefiniti
  * @author thehambone
  * @version 0.1
  * @since 0.1, March 31, 2015
+ * @deprecated 
  */
 public class Block16 extends Block
 {

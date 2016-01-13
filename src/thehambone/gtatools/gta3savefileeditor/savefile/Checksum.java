@@ -8,6 +8,7 @@ package thehambone.gtatools.gta3savefileeditor.savefile;
  * @author thehambone
  * @version 0.1
  * @since 0.1, March 16, 2015
+ * @deprecated 
  */
 public class Checksum
 {

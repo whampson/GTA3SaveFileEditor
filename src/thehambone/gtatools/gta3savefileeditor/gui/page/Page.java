@@ -43,6 +43,7 @@ public abstract class Page extends JPanel implements Observable
         {
             notifyObservers("change.made");
         }
+        
         @Override
         public void insertUpdate(DocumentEvent e)
         {

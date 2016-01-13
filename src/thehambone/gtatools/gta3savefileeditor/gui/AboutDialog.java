@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -38,7 +39,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
 public class AboutDialog extends JDialog
 {
     private static final String ICON_PATH        = "META-INF/res/logo1.png";
-    private static final String COPYRIGHT_STRING = "Copyright " + '\u00A9' + " 2015. All Rights Reserved.";
+    private static final String COPYRIGHT_STRING = "Copyright " + '\u00A9' + " 2015-2016.";
     private static final String ABOUT_STRING     = "Thanks to OrionSR, Seemann, Silent, and spaceeinstein "
             + "for helping me research and document GTA III saves. You guys rock!";
     
@@ -62,7 +63,7 @@ public class AboutDialog extends JDialog
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         iconLabel.setVerticalAlignment(SwingConstants.CENTER);
         try {
-            iconLabel.setIcon(IO.loadImageResource(ICON_PATH));
+            iconLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));
         } catch (IOException ex) {
             Logger.error("Failed to load image resource.");
             Logger.stackTrace(ex);

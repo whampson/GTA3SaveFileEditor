@@ -10,6 +10,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAObject
  * @author thehambone
  * @version 0.1
  * @since 0.1, April 04, 2015
+ * @deprecated 
  */
 public class SaveGarageSlot extends GTAObject
 {

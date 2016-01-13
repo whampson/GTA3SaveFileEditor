@@ -10,6 +10,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAObject
  * @author thehambone
  * @version 0.1
  * @since 0.1, March 30, 2015
+ * @deprecated 
  */
 public class PedType extends GTAObject
 {

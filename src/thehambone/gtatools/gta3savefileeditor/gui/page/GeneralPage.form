@@ -59,14 +59,14 @@
                           <Group type="102" attributes="0">
                               <Component id="timestampPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="weatherPanel" max="32767" attributes="0"/>
+                              <Component id="weatherPanel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="saveTitlePanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="gameTimePanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="glitchAndBugFixesPanel" min="-2" max="-2" attributes="0"/>
+                              <Component id="glitchAndBugFixesPanel" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -96,16 +96,16 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="saveTitleTextField" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
+                          <Component id="saveTitleTextField" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="saveTitleTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.StringVariableTextField" name="saveTitleTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="a"/>
                   </Properties>
@@ -143,16 +143,16 @@
                                       <Component id="globalTimerLabel" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="globalTimerTextField" min="-2" pref="75" max="-2" attributes="0"/>
-                                      <Component id="weatherTimerTextField" min="-2" pref="75" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="globalTimerTextField" max="32767" attributes="0"/>
+                                      <Component id="weatherTimerTextField" pref="75" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="minuteLengthLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="minuteLengthTextField" min="-2" pref="50" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                                  <Component id="minuteLengthTextField" min="-2" pref="47" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="msLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -184,7 +184,7 @@
                               <Component id="msLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="minuteLengthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="14" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -195,7 +195,7 @@
                     <Property name="text" type="java.lang.String" value="Hour:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="gameTimeHourTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="gameTimeHourTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -205,7 +205,7 @@
                     <Property name="text" type="java.lang.String" value="Global timer:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="globalTimerTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="globalTimerTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -216,9 +216,10 @@
                     <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="gameTimeMinuteTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="gameTimeMinuteTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="weatherTimerLabel">
@@ -226,7 +227,7 @@
                     <Property name="text" type="java.lang.String" value="Weather timer:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="weatherTimerTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="weatherTimerTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -236,7 +237,7 @@
                     <Property name="text" type="java.lang.String" value="Minute length:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="minuteLengthTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="minuteLengthTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -262,7 +263,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                                   <Component id="monthLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -277,9 +278,9 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="dayOfWeekComboBox" max="32767" attributes="0"/>
-                                      <Component id="hourTextField" max="32767" attributes="0"/>
+                                      <Component id="hourTextField" alignment="0" max="32767" attributes="0"/>
                                       <Component id="secondTextField" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="dayOfWeekComboBox" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -292,10 +293,10 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="dayTextField" max="32767" attributes="0"/>
+                              <Component id="dayTextField" pref="50" max="32767" attributes="0"/>
                               <Component id="yearTextField" max="32767" attributes="0"/>
                               <Component id="minuteTextField" max="32767" attributes="0"/>
-                              <Component id="millisTextField" min="-2" pref="50" max="-2" attributes="0"/>
+                              <Component id="millisTextField" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -308,28 +309,28 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="monthLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="dayLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="dayTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="monthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="dayTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="yearLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="dayOfWeekLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="dayOfWeekComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="yearTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="dayOfWeekComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="hourLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="hourTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="minuteLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="hourTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="minuteTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="secondLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="secondTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="millisLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="secondTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="millisTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
@@ -343,7 +344,7 @@
                     <Property name="text" type="java.lang.String" value="Month:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="monthTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="monthTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -353,7 +354,7 @@
                     <Property name="text" type="java.lang.String" value="Day:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="dayTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="dayTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -363,7 +364,7 @@
                     <Property name="text" type="java.lang.String" value="Day of week:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="dayOfWeekComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableComboBox" name="dayOfWeekComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="7">
@@ -383,7 +384,7 @@
                     <Property name="text" type="java.lang.String" value="Year:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="yearTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="yearTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -394,7 +395,7 @@
                     <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="hourTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="hourTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -405,7 +406,7 @@
                     <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="minuteTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="minuteTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -415,7 +416,7 @@
                     <Property name="text" type="java.lang.String" value="Second:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="secondTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="secondTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -425,7 +426,7 @@
                     <Property name="text" type="java.lang.String" value="Millis.:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="millisTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="millisTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -534,31 +535,36 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="weatherInterpolationSlider" pref="227" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="previousWeatherLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="previousWeatherComboBox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="previousWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="currentWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                                  <Component id="weatherNeverChangesCheckBox" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="currentWeatherLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="currentWeatherComboBox" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                                  <Component id="weatherInterpolationValueLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="weatherInterpolationValueTextField" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="currentWeatherSelectionLabel" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="currentWeatherComboBox" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="previousWeatherSelectionLabel" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="previousWeatherComboBox" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                          <Component id="weatherNeverChangesCheckBox" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -567,45 +573,37 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="currentWeatherLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="currentWeatherSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="currentWeatherComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="weatherNeverChangesCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="previousWeatherLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="previousWeatherSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="previousWeatherComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="weatherInterpolationValueTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="weatherInterpolationValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="previousWeatherSliderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="currentWeatherSliderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="weatherInterpolationSlider" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="weatherInterpolationValueLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Interpolation value:"/>
-                  </Properties>
-                </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="weatherInterpolationValueTextField">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="0.0"/>
-                  </Properties>
-                </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="currentWeatherComboBox">
-                </Component>
-                <Component class="javax.swing.JLabel" name="currentWeatherLabel">
+                <Component class="javax.swing.JLabel" name="currentWeatherSelectionLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Current weather:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="previousWeatherLabel">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="currentWeatherComboBox">
+                </Component>
+                <Component class="javax.swing.JLabel" name="previousWeatherSelectionLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Previous weather:"/>
                   </Properties>
@@ -619,6 +617,18 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weatherNeverChangesCheckBoxActionPerformed"/>
                   </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="previousWeatherSliderLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="WeatherA"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="currentWeatherSliderLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="WeatherB"/>
+                  </Properties>
+                </Component>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableSlider" name="weatherInterpolationSlider">
                 </Component>
               </SubComponents>
             </Container>

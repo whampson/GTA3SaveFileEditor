@@ -2,7 +2,6 @@ package thehambone.gtatools.gta3savefileeditor.gui.page;
 
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAFloat;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.CPed;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.WeaponSlot;
@@ -36,58 +35,58 @@ public class PlayerPage extends Page
         Logger.debug("Loading page: %s...\n", getTitle());
         
         isPageInitializing = true;
-        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
-        
-        CPed cPed = vars.aPlayerPed.getValue().getCPed();
-        Variable<GTAFloat> playerHealth = cPed.getHealthAsVariable();
-        Variable<GTAFloat> playerArmor = cPed.getArmorAsVariable();
-        Variable[] playerCoords = { cPed.getPlayerXAsVariable(), cPed.getPlayerYAsVariable(), cPed.getPlayerZAsVariable() };
-        weaponSlots = cPed.getWeaponSlotsAsVariable();
-        
-        DefaultComboBoxModel<GameConstants.Weapon> weaponComboBoxModel = new DefaultComboBoxModel<>();
-        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
-            if (w == GameConstants.Weapon.FIST) {
-                continue;
-            }
-            weaponComboBoxModel.addElement(w);
-        }
-        weaponSlotComboBox.setModel(weaponComboBoxModel);
-        weaponSlotComboBox.setRenderer(new WeaponListCellRenderer());
-        
-        healthTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-        healthTextField.setVariable(playerHealth);
-        armorTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-        armorTextField.setVariable(playerArmor);
-        moneyTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-        moneyTextField.setVariable(vars.iMoney2);
-        moneyTextField.addVariableToUpdate(vars.iMoney);
-        
-        freeHealthcareCheckBox.setVariable(vars.bFreeHealthcare);
-        getOutOfJailFreeCheckBox.setVariable(vars.bGetOutOfJailFree);
-        infiniteSprintCheckBox.setVariable(vars.bInfiniteSprint);
-        freeBombsCheckBox.setVariable(vars.bFreeBombs);
-        freeRespraysCheckBox.setVariable(vars.bFreeResprays);
-        
-        weaponAmmoTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-        
-        xTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-        yTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-        zTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-        xTextField.setVariable(playerCoords[0]);
-        yTextField.setVariable(playerCoords[1]);
-        zTextField.setVariable(playerCoords[2]);
-        
-        // Until I can figure out how to prevent the game from loading player at safehouse coords
-        xTextField.setEnabled(false);
-        yTextField.setEnabled(false);
-        zTextField.setEnabled(false);
-        
-        maxChaosLevelTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-        maxWantedLevelTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-        maxChaosLevelTextField.setVariable(vars.aPlayerPed.getValue().getMaxChaosLevelAsVariable());
-        maxWantedLevelTextField.setVariable(vars.aPlayerPed.getValue().getMaxWantedLevelAsVariable());
-        
-        weaponSlotComboBoxActionPerformed(null);
+//        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
+//        
+//        CPed cPed = vars.aPlayerPed.getValue().getCPed();
+//        Variable<GTAFloat> playerHealth = cPed.getHealthAsVariable();
+//        Variable<GTAFloat> playerArmor = cPed.getArmorAsVariable();
+//        Variable[] playerCoords = { cPed.getPlayerXAsVariable(), cPed.getPlayerYAsVariable(), cPed.getPlayerZAsVariable() };
+//        weaponSlots = cPed.getWeaponSlotsAsVariable();
+//        
+//        DefaultComboBoxModel<GameConstants.Weapon> weaponComboBoxModel = new DefaultComboBoxModel<>();
+//        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
+//            if (w == GameConstants.Weapon.FIST) {
+//                continue;
+//            }
+//            weaponComboBoxModel.addElement(w);
+//        }
+//        weaponSlotComboBox.setModel(weaponComboBoxModel);
+//        weaponSlotComboBox.setRenderer(new WeaponListCellRenderer());
+//        
+//        healthTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
+//        healthTextField.setVariable(playerHealth);
+//        armorTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
+//        armorTextField.setVariable(playerArmor);
+//        moneyTextField.setInputType(VariableValueTextField.InputType.INTEGER);
+//        moneyTextField.setVariable(vars.iMoney2);
+//        moneyTextField.addVariableToUpdate(vars.iMoney);
+//        
+//        freeHealthcareCheckBox.setVariable(vars.bFreeHealthcare);
+//        getOutOfJailFreeCheckBox.setVariable(vars.bGetOutOfJailFree);
+//        infiniteSprintCheckBox.setVariable(vars.bInfiniteSprint);
+//        freeBombsCheckBox.setVariable(vars.bFreeBombs);
+//        freeRespraysCheckBox.setVariable(vars.bFreeResprays);
+//        
+//        weaponAmmoTextField.setInputType(VariableValueTextField.InputType.INTEGER);
+//        
+//        xTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
+//        yTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
+//        zTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
+//        xTextField.setVariable(playerCoords[0]);
+//        yTextField.setVariable(playerCoords[1]);
+//        zTextField.setVariable(playerCoords[2]);
+//        
+//        // Until I can figure out how to prevent the game from loading player at safehouse coords
+//        xTextField.setEnabled(false);
+//        yTextField.setEnabled(false);
+//        zTextField.setEnabled(false);
+//        
+//        maxChaosLevelTextField.setInputType(VariableValueTextField.InputType.INTEGER);
+//        maxWantedLevelTextField.setInputType(VariableValueTextField.InputType.INTEGER);
+//        maxChaosLevelTextField.setVariable(vars.aPlayerPed.getValue().getMaxChaosLevelAsVariable());
+//        maxWantedLevelTextField.setVariable(vars.aPlayerPed.getValue().getMaxWantedLevelAsVariable());
+//        
+//        weaponSlotComboBoxActionPerformed(null);
         
         isPageInitializing = false;
     }
@@ -100,22 +99,22 @@ public class PlayerPage extends Page
     
     private void updateWeaponAmmoTextField(int weaponSlotID, WeaponSlot ws)
     {
-        boolean isBat = weaponSlotID == GameConstants.Weapon.BAT.getID();
-        boolean isEmpty = ws.getWeaponID() == 0;
-        weaponAmmoTextField.updateVariable();
-        weaponAmmoTextField.setEnabled(!isBat);
-        if (isBat) {
-            weaponAmmoTextField.setVariable(null);
-            weaponAmmoTextField.setText("0");
-            return;
-        }
-        if (!isEmpty) {
-            weaponAmmoTextField.setVariable(ws.getBulletsTotalAsVariable());
-        } else {
-            weaponAmmoTextField.setVariable(null);
-            weaponAmmoTextField.setText("0");
-        }
-        weaponAmmoTextField.setEnabled(!isEmpty);
+//        boolean isBat = weaponSlotID == GameConstants.Weapon.BAT.getID();
+//        boolean isEmpty = ws.getWeaponID() == 0;
+//        weaponAmmoTextField.updateVariable();
+//        weaponAmmoTextField.setEnabled(!isBat);
+//        if (isBat) {
+//            weaponAmmoTextField.setVariable(null);
+//            weaponAmmoTextField.setText("0");
+//            return;
+//        }
+//        if (!isEmpty) {
+//            weaponAmmoTextField.setVariable(ws.getBulletsTotalAsVariable());
+//        } else {
+//            weaponAmmoTextField.setVariable(null);
+//            weaponAmmoTextField.setText("0");
+//        }
+//        weaponAmmoTextField.setEnabled(!isEmpty);
     }
 
     /**

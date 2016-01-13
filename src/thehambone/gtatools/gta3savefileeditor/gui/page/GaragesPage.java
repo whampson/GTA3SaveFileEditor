@@ -7,7 +7,6 @@ import javax.swing.JComboBox;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAByte;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAInteger;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.StoredCar;
@@ -111,46 +110,46 @@ public class GaragesPage extends Page
         Logger.debug("Loading page: %s...\n", getTitle());
         
         isPageInitializing = true;
-        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
-        
-        DefaultComboBoxModel safehouseComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.Island i : GameConstants.Island.values()) {
-            safehouseComboBoxModel.addElement(i.getFriendlyName());
-        }
-        safehouseComboBox.setModel(safehouseComboBoxModel);
-        
-        DefaultComboBoxModel<GameConstants.Vehicle> vehicleComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            vehicleComboBoxModel.addElement(v);
-        }
-        vehicleComboBox.setRenderer(new VehicleListCellRenderer());
-        vehicleComboBox.setModel(vehicleComboBoxModel);
-        
-        DefaultComboBoxModel radioStationComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.RadioStation r : GameConstants.RadioStation.values()) {
-            radioStationComboBoxModel.addElement(r.getFriendlyName());
-        }
-        radioStationComboBox.setModel(radioStationComboBoxModel);
-        
-        DefaultComboBoxModel bombTypeComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.BombType b : GameConstants.BombType.values()) {
-            bombTypeComboBoxModel.addElement(b.getFriendlyName());
-        }
-        bombTypeComboBox.setModel(bombTypeComboBoxModel);
-        
-        primaryColorComboBox.setRenderer(new CarColorListCellRenderer());
-        secondaryColorComboBox.setRenderer(new CarColorListCellRenderer());
-        DefaultComboBoxModel primaryColorComboBoxModel = new DefaultComboBoxModel();
-        DefaultComboBoxModel secondaryColorComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.CarColor c : GameConstants.CarColor.values()) {
-            primaryColorComboBoxModel.addElement(c);
-            secondaryColorComboBoxModel.addElement(c);
-        }
-        primaryColorComboBox.setModel(primaryColorComboBoxModel);
-        secondaryColorComboBox.setModel(secondaryColorComboBoxModel);
-        
-        setSlotEditComponentsEnabled(false);
-        updateGarageSlots(GameConstants.Island.PORTLAND);
+//        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
+//        
+//        DefaultComboBoxModel safehouseComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.Island i : GameConstants.Island.values()) {
+//            safehouseComboBoxModel.addElement(i.getFriendlyName());
+//        }
+//        safehouseComboBox.setModel(safehouseComboBoxModel);
+//        
+//        DefaultComboBoxModel<GameConstants.Vehicle> vehicleComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
+//            vehicleComboBoxModel.addElement(v);
+//        }
+//        vehicleComboBox.setRenderer(new VehicleListCellRenderer());
+//        vehicleComboBox.setModel(vehicleComboBoxModel);
+//        
+//        DefaultComboBoxModel radioStationComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.RadioStation r : GameConstants.RadioStation.values()) {
+//            radioStationComboBoxModel.addElement(r.getFriendlyName());
+//        }
+//        radioStationComboBox.setModel(radioStationComboBoxModel);
+//        
+//        DefaultComboBoxModel bombTypeComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.BombType b : GameConstants.BombType.values()) {
+//            bombTypeComboBoxModel.addElement(b.getFriendlyName());
+//        }
+//        bombTypeComboBox.setModel(bombTypeComboBoxModel);
+//        
+//        primaryColorComboBox.setRenderer(new CarColorListCellRenderer());
+//        secondaryColorComboBox.setRenderer(new CarColorListCellRenderer());
+//        DefaultComboBoxModel primaryColorComboBoxModel = new DefaultComboBoxModel();
+//        DefaultComboBoxModel secondaryColorComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.CarColor c : GameConstants.CarColor.values()) {
+//            primaryColorComboBoxModel.addElement(c);
+//            secondaryColorComboBoxModel.addElement(c);
+//        }
+//        primaryColorComboBox.setModel(primaryColorComboBoxModel);
+//        secondaryColorComboBox.setModel(secondaryColorComboBoxModel);
+//        
+//        setSlotEditComponentsEnabled(false);
+//        updateGarageSlots(GameConstants.Island.PORTLAND);
         
         isPageInitializing = false;
     }

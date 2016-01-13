@@ -2,7 +2,6 @@ package thehambone.gtatools.gta3savefileeditor.gui.page;
 
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAInteger;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.Gang;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.GangListCellRenderer;
@@ -35,34 +34,34 @@ public class GangsPage extends Page
         Logger.debug("Loading page: %s...\n", getTitle());
         
         isPageInitializing = true;
-        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
+//        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
+//        
+//        DefaultComboBoxModel<GameConstants.Gang> gangComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.Gang g : GameConstants.Gang.values()) {
+//            gangComboBoxModel.addElement(g);
+//        }
+//        gangComboBox.setModel(gangComboBoxModel);
+//        gangComboBox.setRenderer(new GangListCellRenderer());
+//        
+//        DefaultComboBoxModel<GameConstants.Vehicle> vehicleComboBoxModel = new DefaultComboBoxModel();
+//        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
+//            vehicleComboBoxModel.addElement(v);
+//        }
+//        vehicleComboBox.setRenderer(new VehicleListCellRenderer());
+//        vehicleComboBox.setModel(vehicleComboBoxModel);
+//        
+//        DefaultComboBoxModel<GameConstants.Weapon> primaryWeaponComboBoxModel = new DefaultComboBoxModel<>();
+//        DefaultComboBoxModel<GameConstants.Weapon> secondaryWeaponComboBoxModel = new DefaultComboBoxModel<>();
+//        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
+//            primaryWeaponComboBoxModel.addElement(w);
+//            secondaryWeaponComboBoxModel.addElement(w);
+//        }
+//        primaryWeaponComboBox.setModel(primaryWeaponComboBoxModel);
+//        primaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
+//        secondaryWeaponComboBox.setModel(secondaryWeaponComboBoxModel);
+//        secondaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
         
-        DefaultComboBoxModel<GameConstants.Gang> gangComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.Gang g : GameConstants.Gang.values()) {
-            gangComboBoxModel.addElement(g);
-        }
-        gangComboBox.setModel(gangComboBoxModel);
-        gangComboBox.setRenderer(new GangListCellRenderer());
-        
-        DefaultComboBoxModel<GameConstants.Vehicle> vehicleComboBoxModel = new DefaultComboBoxModel();
-        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            vehicleComboBoxModel.addElement(v);
-        }
-        vehicleComboBox.setRenderer(new VehicleListCellRenderer());
-        vehicleComboBox.setModel(vehicleComboBoxModel);
-        
-        DefaultComboBoxModel<GameConstants.Weapon> primaryWeaponComboBoxModel = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<GameConstants.Weapon> secondaryWeaponComboBoxModel = new DefaultComboBoxModel<>();
-        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
-            primaryWeaponComboBoxModel.addElement(w);
-            secondaryWeaponComboBoxModel.addElement(w);
-        }
-        primaryWeaponComboBox.setModel(primaryWeaponComboBoxModel);
-        primaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
-        secondaryWeaponComboBox.setModel(secondaryWeaponComboBoxModel);
-        secondaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
-        
-        updatePanels(GameConstants.Gang.GANG01);
+//        updatePanels(GameConstants.Gang.GANG01);
         
         isPageInitializing = false;
     }

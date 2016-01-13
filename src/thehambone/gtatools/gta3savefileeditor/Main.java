@@ -1,12 +1,12 @@
 package thehambone.gtatools.gta3savefileeditor;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -17,6 +17,7 @@ import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
+import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
 
 /**
  * This class handles program initialization and contains general program
@@ -45,7 +46,7 @@ public final class Main
             = "META-INF/res/icon.png";
     
     private static final Logger.Level DEFAULT_LOGGING_LEVEL
-            = Logger.Level.DEBUG;   // CHANGE THIS FOR RELEASE
+            = Logger.Level.DEBUG;   // TODO: CHANGE THIS FOR RELEASE
     
     private static Date buildDate = new Date(0);
     private static int buildNumber = 0; 
@@ -100,6 +101,18 @@ public final class Main
         /* TODO:
          * -cmd options: --log-to-file
          * -merge new data handling code
+         * -BUG: "File deleted successfully!" message shows when user says No to
+         *       file deletion from Welcome page
+         * -BUG: "Exception while removing reference" at shutdown; shutdown hook
+         *       related?
+         * -BUG: Mac OS X crash when using "Save Slot" feature
+         * -BUG: "Never Changes" checkbox doesn't save
+         * -Game constants (ObjectType, WeatherType, etc.)
+         * -F5: Refresh current file
+         * -Shift + F5: Refresh slots
+         * -Better crashdump output
+         * -Android/iOS support
+         * -Documentation
          */
         
         initLogger();
@@ -124,7 +137,7 @@ public final class Main
         parseCommandLineArgs(args);
         initShutdownHooks();
         loadSettings();
-        ImageIcon icon = loadIcon();
+        Image icon = loadIcon();
         createAndShowGUI(icon);
     }
     
@@ -258,6 +271,7 @@ public final class Main
             }
         };
         
+        // TODO: Potentially buggy
         Runtime.getRuntime()
                 .addShutdownHook(new Thread(saveSettingsHook, "Save-Settings"));
         Logger.debug("\"Save-Settings\" hook initialized!");
@@ -318,10 +332,10 @@ public final class Main
     /*
      * Loads and returns the program icon.
      */
-    private static ImageIcon loadIcon()
+    private static Image loadIcon()
     {
         Logger.debug("Loading icon from %s...\n", PROGRAM_ICON_PATH);
-        ImageIcon icon = null;
+        Image icon = null;
 
         try {
             icon = IO.loadImageResource(PROGRAM_ICON_PATH);
@@ -356,7 +370,7 @@ public final class Main
     /*
      * Loads the main GUI frame. 
      */
-    private static void createAndShowGUI(final ImageIcon icon)
+    private static void createAndShowGUI(final Image icon)
     {
         Logger.info("Loading user interface...");
         SwingUtilities.invokeLater(new Runnable()
@@ -366,7 +380,7 @@ public final class Main
             {
                 EditorWindow frame = new EditorWindow();
                 frame.setTitle(PROGRAM_TITLE + " " + PROGRAM_VERSION);
-                frame.setIconImage(icon.getImage());
+                frame.setIconImage(icon);
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setSize(630, 515);
                 frame.setLocationRelativeTo(null);

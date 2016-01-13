@@ -16,6 +16,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.variable.Variable;
  * @version 0.1
  * @param <T> a subclass of {@link thehambone.gtatools.gta3savefileeditor.savefile.struct.GTADataType}
  * @since 0.1, February 23, 2015
+ * @deprecated 
  */
 public class Array<T extends GTADataType> implements DataStructure
 {

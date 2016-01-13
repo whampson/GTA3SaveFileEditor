@@ -1,5 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.io;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -169,13 +170,14 @@ public class IO
         return totalBytesRead == srcFileSize;
     }
     
-    public static ImageIcon loadImageResource(String path) throws IOException
+    public static BufferedImage loadImageResource(String path)
+            throws IOException
     {
         InputStream in = IO.class.getClassLoader().getResourceAsStream(path);
         if (in == null) {
             throw new IOException("image not found - " + path);
         }
-        return new ImageIcon(ImageIO.read(in));
+        return ImageIO.read(in);
     }
     
     public static void saveOutput(File f) throws IOException

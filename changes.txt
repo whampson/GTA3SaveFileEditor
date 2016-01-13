@@ -1,0 +1,8 @@
+GTA III Save File Editor - changes in version 0.2
+
+(not final)
+* Internal data handling completely rewritten. Much safer.
+* Better logging.
+* Added command line option --log-level=<level>
+* Support for unsigned input
+* Better input validation
