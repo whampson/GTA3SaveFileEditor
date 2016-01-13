@@ -14,6 +14,7 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
  * @version 0.1
  * @param <E> the type of the elements of this ComboBox
  * @since 0.1, March 29, 2015
+ * @deprecated 
  */
 public class VariableValueComboBox<E>
         extends JComboBox<E> implements VariableValueComponent

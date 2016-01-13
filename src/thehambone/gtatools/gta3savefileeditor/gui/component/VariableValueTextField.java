@@ -31,6 +31,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * Created on Mar 29, 2015.
  * 
  * @author thehambone
+ * @deprecated 
  */
 public final class VariableValueTextField
         extends JTextField implements VariableValueComponent

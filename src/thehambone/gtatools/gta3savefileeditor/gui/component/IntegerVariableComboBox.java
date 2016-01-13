@@ -13,20 +13,33 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * @author thehambone
  * @param <E>
  */
-public class VariableComboBox<E>
+public class IntegerVariableComboBox<E>
         extends JComboBox<E> implements VariableComponent<IntegerVariable>
 {
     private IntegerVariable var;
+    private int valueOffset;
     
-    public VariableComboBox()
+    public IntegerVariableComboBox()
     {
-        this(null);
+        this(null, 0);
     }
     
-    public VariableComboBox(IntegerVariable var)
+    public IntegerVariableComboBox(IntegerVariable var, int valueOffset)
     {
         this.var = var;
+        this.valueOffset = valueOffset;
+        
         initActionListener();
+    }
+    
+    public int getValueOffset()
+    {
+        return valueOffset;
+    }
+    
+    public void setValueOffset(int valueOffset)
+    {
+        this.valueOffset = valueOffset;
     }
     
     private void initActionListener()
@@ -51,6 +64,7 @@ public class VariableComboBox<E>
     public void setVariable(IntegerVariable var)
     {
         this.var = var;
+        
         refreshComponent();
     }
     
@@ -61,7 +75,12 @@ public class VariableComboBox<E>
             return;
         }
         
-        setSelectedIndex(Integer.parseInt(var.getValue().toString()));
+        Logger.debug(var.toString());
+        
+        int val = Integer.parseInt(var.getValue().toString());
+        if (val > 0 && val < getItemCount() - 1) {
+            setSelectedIndex(val - valueOffset);
+        }
     }
 
     @Override
@@ -71,7 +90,7 @@ public class VariableComboBox<E>
             return;
         }
         
-        var.parseValue(Integer.toString(getSelectedIndex()));
+        var.parseValue(Integer.toString(getSelectedIndex() + valueOffset));
         Logger.debug("Variable updated: " + var);
     }
 }

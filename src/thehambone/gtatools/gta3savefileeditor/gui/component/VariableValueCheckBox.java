@@ -13,6 +13,7 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
  * @author thehambone
  * @version 0.1
  * @since 0.1, March 31, 2015
+ * @deprecated 
  */
 public class VariableValueCheckBox
         extends JCheckBox implements VariableValueComponent

@@ -10,6 +10,7 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
  * Created on Mar 29, 2015.
  * 
  * @author thehambone
+ * @deprecated 
  */
 public interface VariableValueComponent
 {

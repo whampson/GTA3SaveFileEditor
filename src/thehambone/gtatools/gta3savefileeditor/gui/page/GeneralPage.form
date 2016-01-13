@@ -267,7 +267,7 @@
                                   <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                                   <Component id="monthLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="monthTextField" max="32767" attributes="0"/>
+                                  <Component id="monthComboBox" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
@@ -309,8 +309,8 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="monthLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="dayLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="monthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="dayTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="monthComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -344,9 +344,24 @@
                     <Property name="text" type="java.lang.String" value="Month:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="monthTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="monthComboBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="0"/>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="12">
+                        <StringItem index="0" value="Jan."/>
+                        <StringItem index="1" value="Feb."/>
+                        <StringItem index="2" value="Mar."/>
+                        <StringItem index="3" value="Apr."/>
+                        <StringItem index="4" value="May"/>
+                        <StringItem index="5" value="Jun."/>
+                        <StringItem index="6" value="Jul."/>
+                        <StringItem index="7" value="Aug."/>
+                        <StringItem index="8" value="Sep."/>
+                        <StringItem index="9" value="Oct."/>
+                        <StringItem index="10" value="Nov."/>
+                        <StringItem index="11" value="Dec."/>
+                      </StringArray>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="dayLabel">
@@ -364,7 +379,7 @@
                     <Property name="text" type="java.lang.String" value="Day of week:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableComboBox" name="dayOfWeekComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="dayOfWeekComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="7">
@@ -610,14 +625,6 @@
                 </Component>
                 <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="previousWeatherComboBox">
                 </Component>
-                <Component class="javax.swing.JCheckBox" name="weatherNeverChangesCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Never changes"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weatherNeverChangesCheckBoxActionPerformed"/>
-                  </Events>
-                </Component>
                 <Component class="javax.swing.JLabel" name="previousWeatherSliderLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="WeatherA"/>
@@ -629,6 +636,11 @@
                   </Properties>
                 </Component>
                 <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableSlider" name="weatherInterpolationSlider">
+                </Component>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableCheckBox" name="weatherNeverChangesCheckBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Never changes"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
