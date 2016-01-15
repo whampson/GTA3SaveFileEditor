@@ -1,4 +1,4 @@
-package thehambone.gtatools.gta3savefileeditor.gui.component;
+package thehambone.gtatools.gta3savefileeditor.gui.component.old;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;

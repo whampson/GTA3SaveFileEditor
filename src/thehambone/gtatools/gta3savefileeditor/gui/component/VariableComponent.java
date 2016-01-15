@@ -1,6 +1,7 @@
 
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
+import java.util.List;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 
@@ -14,7 +15,9 @@ public interface VariableComponent<T extends Variable>
 {
     public T getVariable();
     
-    public void setVariable(T var);
+    public void setVariable(T var, T... supplementaryVars);
+    
+    public List<T> getSupplementaryVariables();
     
     /**
      * Sets the data displayed by the component based on the current value of

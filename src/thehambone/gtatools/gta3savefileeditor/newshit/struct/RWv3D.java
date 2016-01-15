@@ -1,9 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarFloat;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 
 /**

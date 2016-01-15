@@ -35,13 +35,13 @@ public class InvisibilitySetting extends Record
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("Android not supported yet.");
+        load(buf);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("iOS not supported yet.");
+        load(buf);
     }
     
     @Override

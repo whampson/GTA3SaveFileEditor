@@ -1,5 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer;
 
+import com.sun.java.swing.plaf.windows.WindowsBorders;
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -16,22 +18,26 @@ import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
  * @version 0.1
  * @since 0.1, April 06, 2015
  */
-public class WeaponListCellRenderer implements ListCellRenderer<GameConstants.Weapon>
+public class WeaponListCellRenderer extends DefaultListCellRenderer
 {
-    private final DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
-    
     @Override
-    public Component getListCellRendererComponent(JList<? extends GameConstants.Weapon> list, GameConstants.Weapon value, int index, boolean isSelected, boolean cellHasFocus)
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus)
     {
-        JLabel renderer = (JLabel)defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (value == null) {
-            return renderer;
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (value == null || !(value instanceof GameConstants.Weapon)) {
+            return this;
         }
-        renderer.setText(value.getFriendlyName());
+        
+        GameConstants.Weapon weapon = (GameConstants.Weapon)value;
+        setText(weapon.getFriendlyName());
+        
         if (isSelected) {
-            renderer.setForeground(list.getSelectionForeground());
-            renderer.setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+            setBackground(list.getSelectionBackground());
+            if (index == -1 && list.hasFocus()) {
+                setBorder(new WindowsBorders.DashedBorder(Color.BLACK));
+            }
         }
-        return renderer;
+        return this;
     }
 }

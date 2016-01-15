@@ -48,6 +48,28 @@ public class RunningScript extends Record
         super(0x88);
     }
     
+    private void load(DataBuffer buf)
+    {
+        pNextScript.load(buf, offset + 0x00);
+        pPreviousScript.load(buf, offset + 0x04);
+        szName.load(buf, offset + 0x08);
+        pCurrentInstruction.load(buf, offset + 0x10);
+        aReturnStack.load(buf, offset + 0x14);
+        nReturnStackCount.load(buf, offset + 0x2C);
+        aLocalVariable.load(buf, offset + 0x30);
+        nTimerA.load(buf, offset + 0x70);
+        nTimerB.load(buf, offset + 0x74);
+        bIfResult.load(buf, offset + 0x78);
+        bIsMissionScript.load(buf, offset + 0x79);
+        bIsActive.load(buf, offset + 0x7A);
+        nWakeTime.load(buf, offset + 0x7C);
+        nIfNumber.load(buf, offset + 0x80);
+        bNotFlag.load(buf, offset + 0x82);
+        bIsWastedBustedCheckEnabled.load(buf, offset + 0x83);
+        bWastedBustedCheckResult.load(buf, offset + 0x84);
+        bIsMissionFlag.load(buf, offset + 0x85);
+    }
+    
     @Override
     public DataStructure[] getMembers()
     {
@@ -63,36 +85,19 @@ public class RunningScript extends Record
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("Android not supported yet.");
+        load(buf);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("iOS not supported yet.");
+        load(buf);
     }
     
     @Override
     protected void loadPC(DataBuffer buf)
     {
-        pNextScript.load(buf, offset + 0x00);
-        pPreviousScript.load(buf, offset + 0x04);
-        szName.load(buf, offset + 0x08);
-        pCurrentInstruction.load(buf, offset + 0x10);
-        aReturnStack.load(buf, offset + 0x14/*, SaveFileNew.Platform.PC*/);
-        nReturnStackCount.load(buf, offset + 0x2C);
-        aLocalVariable.load(buf, offset + 0x30);
-        nTimerA.load(buf, offset + 0x70);
-        nTimerB.load(buf, offset + 0x74);
-        bIfResult.load(buf, offset + 0x78);
-        bIsMissionScript.load(buf, offset + 0x79);
-        bIsActive.load(buf, offset + 0x7A);
-        nWakeTime.load(buf, offset + 0x7C);
-        nIfNumber.load(buf, offset + 0x80);
-        bNotFlag.load(buf, offset + 0x82);
-        bIsWastedBustedCheckEnabled.load(buf, offset + 0x83);
-        bWastedBustedCheckResult.load(buf, offset + 0x84);
-        bIsMissionFlag.load(buf, offset + 0x85);
+        load(buf);
     }
     
     @Override

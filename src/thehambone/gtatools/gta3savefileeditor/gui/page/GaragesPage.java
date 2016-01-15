@@ -254,21 +254,21 @@ public class GaragesPage extends Page
         garageSlotScrollPane = new javax.swing.JScrollPane();
         garageSlotList = new javax.swing.JList();
         vehicleLabel = new javax.swing.JLabel();
-        vehicleComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        vehicleComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         immunitiesPanel = new javax.swing.JPanel();
-        bulletproofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        fireproofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        collisionProofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        explosionProofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
+        bulletproofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox();
+        fireproofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox();
+        collisionProofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox();
+        explosionProofCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox();
         colorsPanel = new javax.swing.JPanel();
         primaryColorLabel = new javax.swing.JLabel();
         secondaryColorLabel = new javax.swing.JLabel();
-        primaryColorComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
-        secondaryColorComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        primaryColorComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
+        secondaryColorComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         radioStationPanel = new javax.swing.JPanel();
-        radioStationComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        radioStationComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         bombTypePanel = new javax.swing.JPanel();
-        bombTypeComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        bombTypeComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
 
         safehouseLabel.setText("Safehouse:");
         safehouseLabel.setToolTipText("");
@@ -661,28 +661,28 @@ public class GaragesPage extends Page
     }//GEN-LAST:event_bombTypeComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox bombTypeComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox bombTypeComboBox;
     private javax.swing.JPanel bombTypePanel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox bulletproofCheckBox;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox collisionProofCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox bulletproofCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox collisionProofCheckBox;
     private javax.swing.JPanel colorsPanel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox explosionProofCheckBox;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox fireproofCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox explosionProofCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox fireproofCheckBox;
     private javax.swing.JList garageSlotList;
     private javax.swing.JScrollPane garageSlotScrollPane;
     private javax.swing.JPanel immunitiesPanel;
     private javax.swing.JPanel mainPanel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox primaryColorComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox primaryColorComboBox;
     private javax.swing.JLabel primaryColorLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox radioStationComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox radioStationComboBox;
     private javax.swing.JPanel radioStationPanel;
     private javax.swing.JComboBox safehouseComboBox;
     private javax.swing.JLabel safehouseLabel;
     private javax.swing.JPanel saveGaragePanel;
     private javax.swing.JScrollPane scrollPane;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox secondaryColorComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox secondaryColorComboBox;
     private javax.swing.JLabel secondaryColorLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox vehicleComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox vehicleComboBox;
     private javax.swing.JLabel vehicleLabel;
     // End of variables declaration//GEN-END:variables
 }

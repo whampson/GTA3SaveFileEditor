@@ -101,17 +101,23 @@ public final class Main
         /* TODO:
          * -cmd options: --log-to-file
          * -merge new data handling code
+         * -Record size should be determined by size of members
+         * -write block size when saving file
          * -BUG: "File deleted successfully!" message shows when user says No to
          *       file deletion from Welcome page
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related?
          * -BUG: Mac OS X crash when using "Save Slot" feature
          * -BUG: "Never Changes" checkbox doesn't save
+         * -BUG: Combobox witth custom cell renderer does not show focus when
+         *       tabbed to
          * -Game constants (ObjectType, WeatherType, etc.)
+         * -Remove Ctrl+Q shortcut
          * -F5: Refresh current file
          * -Shift + F5: Refresh slots
          * -Better crashdump output
          * -Android/iOS support
+         * -GXT/Plain text selector for save title (mobile only)
          * -Documentation
          */
         

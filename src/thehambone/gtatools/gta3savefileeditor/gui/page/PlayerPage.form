@@ -16,12 +16,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="scrollPane" alignment="0" max="32767" attributes="0"/>
+          <Component id="scrollPane" alignment="0" pref="553" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="scrollPane" alignment="0" max="32767" attributes="0"/>
+          <Component id="scrollPane" alignment="0" pref="301" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -37,7 +37,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="playerCoordinatesPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -48,7 +48,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="playerPerksPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="weaponsPanel" max="32767" attributes="0"/>
+                              <Component id="weaponsPanel" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -59,17 +59,15 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="generalPanel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="playerPerksPanel" alignment="0" max="32767" attributes="0"/>
-                          </Group>
-                          <Component id="weaponsPanel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="weaponsPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="playerPerksPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="generalPanel" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="otherPanel" max="32767" attributes="0"/>
-                          <Component id="playerCoordinatesPanel" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="playerCoordinatesPanel" min="-2" max="-2" attributes="0"/>
+                          <Component id="otherPanel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -81,7 +79,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="General"/>
+                    <TitledBorder title="Player Properties"/>
                   </Border>
                 </Property>
               </Properties>
@@ -89,8 +87,8 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="moneyLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="armorLabel" min="-2" max="-2" attributes="0"/>
@@ -98,9 +96,9 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="healthTextField" pref="100" max="32767" attributes="0"/>
+                              <Component id="armorTextField" max="32767" attributes="0"/>
                               <Component id="moneyTextField" max="32767" attributes="0"/>
-                              <Component id="armorTextField" alignment="0" max="32767" attributes="0"/>
-                              <Component id="healthTextField" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -135,7 +133,7 @@
                     <Property name="text" type="java.lang.String" value="Health:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="healthTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField" name="healthTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0.0"/>
                   </Properties>
@@ -145,7 +143,7 @@
                     <Property name="text" type="java.lang.String" value="Armor:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="armorTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField" name="armorTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0.0"/>
                   </Properties>
@@ -155,7 +153,7 @@
                     <Property name="text" type="java.lang.String" value="Money:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="moneyTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="moneyTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
@@ -177,7 +175,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="freeHealthcareCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="freeHealthCareCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="getOutOfJailFreeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="infiniteSprintCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="freeBombsCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -191,14 +189,14 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="freeHealthcareCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="getOutOfJailFreeCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="infiniteSprintCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="getOutOfJailFreeCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="freeHealthCareCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="freeBombsCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="freeRespraysCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -206,27 +204,27 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="freeHealthcareCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Free healthcare"/>
-                  </Properties>
-                </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="getOutOfJailFreeCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Get out of jail free"/>
-                  </Properties>
-                </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="infiniteSprintCheckBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox" name="infiniteSprintCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Infinite sprint"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="freeBombsCheckBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox" name="getOutOfJailFreeCheckBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Get out of jail free"/>
+                  </Properties>
+                </Component>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox" name="freeHealthCareCheckBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Free healthcare"/>
+                  </Properties>
+                </Component>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox" name="freeBombsCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Free bombs"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="freeRespraysCheckBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox" name="freeRespraysCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Free resprays"/>
                   </Properties>
@@ -246,15 +244,11 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jPanel1" max="32767" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="weaponSlotLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="weaponSlotComboBox" max="32767" attributes="0"/>
-                              </Group>
+                              <Component id="weaponPropertiesPanel" max="32767" attributes="0"/>
+                              <Component id="weaponSlotComboBox" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -263,41 +257,33 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
+                          <Component id="weaponSlotComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="weaponSlotLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="weaponSlotComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="weaponPropertiesPanel" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="18" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="weaponSlotLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Slot:"/>
-                  </Properties>
-                </Component>
                 <Component class="javax.swing.JComboBox" name="weaponSlotComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="1">
-                        <StringItem index="0" value="Bat"/>
-                      </StringArray>
+                      <StringArray count="0"/>
                     </Property>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weaponSlotComboBoxActionPerformed"/>
                   </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;GameConstants.Weapon&gt;"/>
+                  </AuxValues>
                 </Component>
-                <Container class="javax.swing.JPanel" name="jPanel1">
+                <Container class="javax.swing.JPanel" name="weaponPropertiesPanel">
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Slot Properties"/>
+                        <TitledBorder title="Weapon Properties"/>
                       </Border>
                     </Property>
                   </Properties>
@@ -307,15 +293,15 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jCheckBox1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="weaponInInventoryCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="weaponAmmoLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="weaponAmmoTextField" min="-2" pref="50" max="-2" attributes="0"/>
+                                      <Component id="weaponAmmoTextField" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="53" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -323,7 +309,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                              <Component id="weaponInInventoryCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="weaponAmmoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -335,23 +321,24 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
+                    <Component class="javax.swing.JCheckBox" name="weaponInInventoryCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="In inventory"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weaponInInventoryCheckBoxActionPerformed"/>
+                      </Events>
+                    </Component>
                     <Component class="javax.swing.JLabel" name="weaponAmmoLabel">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Ammo:"/>
                       </Properties>
                     </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="weaponAmmoTextField">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField" name="weaponAmmoTextField">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="0"/>
+                        <Property name="toolTipText" type="java.lang.String" value=""/>
                       </Properties>
-                    </Component>
-                    <Component class="javax.swing.JCheckBox" name="jCheckBox1">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="In inventory"/>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
-                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -371,17 +358,17 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerXLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xTextField" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="playerXTextField" min="-2" pref="75" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="yLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerYLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="yTextField" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="playerYTextField" min="-2" pref="75" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="zLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerZLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="zTextField" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="playerZTextField" min="-2" pref="75" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -391,47 +378,53 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="xLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="yLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="zLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="xTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="yTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="zTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerXLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerYLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerZLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerXTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerYTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerZTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="43" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="xLabel">
+                <Component class="javax.swing.JLabel" name="playerXLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="X:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="xTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField" name="playerXTextField">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="0.0"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Unavailable at this time."/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="yLabel">
+                <Component class="javax.swing.JLabel" name="playerYLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Y:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="yTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField" name="playerYTextField">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="0.0"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Unavailable at this time."/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="zLabel">
+                <Component class="javax.swing.JLabel" name="playerZLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Z:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="zTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField" name="playerZTextField">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="0.0"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Unavailable at this time."/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -440,7 +433,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Other"/>
+                    <TitledBorder title="Wanted Level"/>
                   </Border>
                 </Property>
               </Properties>
@@ -450,14 +443,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="maxWantedLevelLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="maxChaosLevelLabel" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="maxChaosLevelTextField" pref="50" max="32767" attributes="0"/>
-                              <Component id="maxWantedLevelTextField" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="enableWantedLevelCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="maxWantedLevelLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="maxWantedLevelComboBox" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -467,39 +459,43 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="maxChaosLevelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="maxChaosLevelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="enableWantedLevelCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="maxWantedLevelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="maxWantedLevelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="maxWantedLevelComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="17" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="maxChaosLevelLabel">
+                <Component class="javax.swing.JCheckBox" name="enableWantedLevelCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Max chaos level:"/>
+                    <Property name="text" type="java.lang.String" value="Enable wanted level"/>
                   </Properties>
-                </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="maxChaosLevelTextField">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="0"/>
-                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableWantedLevelCheckBoxActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="maxWantedLevelLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Max wanted level:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField" name="maxWantedLevelTextField">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="maxWantedLevelComboBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="0"/>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="6">
+                        <StringItem index="0" value="1 star"/>
+                        <StringItem index="1" value="2 stars"/>
+                        <StringItem index="2" value="3 stars"/>
+                        <StringItem index="3" value="4 stars"/>
+                        <StringItem index="4" value="5 stars"/>
+                        <StringItem index="5" value="6 stars"/>
+                      </StringArray>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>

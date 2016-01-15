@@ -1,8 +1,6 @@
 
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
 import thehambone.gtatools.gta3savefileeditor.gui.component.document.StringDocumentFilter;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarString;
@@ -22,12 +20,12 @@ public class StringVariableTextField extends VariableTextField<VarString>
         this(null);
     }
     
-    public StringVariableTextField(VarString var)
+    public StringVariableTextField(VarString var,
+            VarString... supplementaryVars)
     {
-        super(var);
+        super(var, supplementaryVars);
         maxChars = -1;
         
-//        initDocumentListener();
         initDocumentFilter();
     }
     
@@ -41,30 +39,6 @@ public class StringVariableTextField extends VariableTextField<VarString>
         this.maxChars = maxChars;
         initDocumentFilter();
     }
-    
-//    private void initDocumentListener()
-//    {
-//        getDocument().addDocumentListener(new DocumentListener()
-//        {
-//            @Override
-//            public void insertUpdate(DocumentEvent e)
-//            {
-//                updateVariable();
-//            }
-//            
-//            @Override
-//            public void removeUpdate(DocumentEvent e)
-//            {
-//                updateVariable();
-//            }
-//            
-//            @Override
-//            public void changedUpdate(DocumentEvent e)
-//            {
-//                // Nop
-//            }
-//        });
-//    }
     
     private void initDocumentFilter()
     {
@@ -105,5 +79,10 @@ public class StringVariableTextField extends VariableTextField<VarString>
         
         v.setValue(getText());
         Logger.debug("Variable updated: " + v);
+        
+        for (VarString v1 : getSupplementaryVariables()) {
+            v1.parseValue(getText());
+            Logger.debug("Variable updated: " + v1);
+        }
     }
 }

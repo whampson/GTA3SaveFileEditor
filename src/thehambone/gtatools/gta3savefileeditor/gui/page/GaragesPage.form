@@ -180,7 +180,7 @@
                     <Property name="text" type="java.lang.String" value="Vehicle:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="vehicleComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="vehicleComboBox">
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="vehicleComboBoxActionPerformed"/>
                   </Events>
@@ -226,7 +226,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="bulletproofCheckBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox" name="bulletproofCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Bulletproof"/>
                       </Properties>
@@ -234,7 +234,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bulletproofCheckBoxActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="fireproofCheckBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox" name="fireproofCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Fireproof"/>
                       </Properties>
@@ -242,7 +242,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fireproofCheckBoxActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="collisionProofCheckBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox" name="collisionProofCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Collision-proof"/>
                       </Properties>
@@ -250,7 +250,7 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="collisionProofCheckBoxActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="explosionProofCheckBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox" name="explosionProofCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Explosion-proof"/>
                       </Properties>
@@ -316,12 +316,12 @@
                         <Property name="text" type="java.lang.String" value="Secondary:"/>
                       </Properties>
                     </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="primaryColorComboBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="primaryColorComboBox">
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="primaryColorComboBoxActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="secondaryColorComboBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="secondaryColorComboBox">
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="secondaryColorComboBoxActionPerformed"/>
                       </Events>
@@ -358,7 +358,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="radioStationComboBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="radioStationComboBox">
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioStationComboBoxActionPerformed"/>
                       </Events>
@@ -395,7 +395,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="bombTypeComboBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="bombTypeComboBox">
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bombTypeComboBoxActionPerformed"/>
                       </Events>

@@ -3,6 +3,10 @@ package thehambone.gtatools.gta3savefileeditor.gui.component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JComboBox;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.IntegerVariable;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
@@ -16,6 +20,8 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
 public class IntegerVariableComboBox<E>
         extends JComboBox<E> implements VariableComponent<IntegerVariable>
 {
+    private final List<IntegerVariable> supplementaryVars;
+    
     private IntegerVariable var;
     private int valueOffset;
     
@@ -24,10 +30,13 @@ public class IntegerVariableComboBox<E>
         this(null, 0);
     }
     
-    public IntegerVariableComboBox(IntegerVariable var, int valueOffset)
+    public IntegerVariableComboBox(IntegerVariable var, int valueOffset,
+            IntegerVariable... supplementaryVars)
     {
         this.var = var;
         this.valueOffset = valueOffset;
+        this.supplementaryVars
+                = new ArrayList<>(Arrays.asList(supplementaryVars));
         
         initActionListener();
     }
@@ -61,11 +70,21 @@ public class IntegerVariableComboBox<E>
     }
     
     @Override
-    public void setVariable(IntegerVariable var)
+    public void setVariable(IntegerVariable var,
+            IntegerVariable... supplementaryVars)
     {
         this.var = var;
         
+        this.supplementaryVars.clear();
+        this.supplementaryVars.addAll(Arrays.asList(supplementaryVars));
+        
         refreshComponent();
+    }
+    
+    @Override
+    public List<IntegerVariable> getSupplementaryVariables()
+    {
+        return Collections.unmodifiableList(supplementaryVars);
     }
     
     @Override
@@ -90,7 +109,13 @@ public class IntegerVariableComboBox<E>
             return;
         }
         
-        var.parseValue(Integer.toString(getSelectedIndex() + valueOffset));
+        String val = Integer.toString(getSelectedIndex() + valueOffset);
+        var.parseValue(val);
         Logger.debug("Variable updated: " + var);
+        
+        for (IntegerVariable v : getSupplementaryVariables()) {
+            v.parseValue(val);
+            Logger.debug("Variable updated: " + v);
+        }
     }
 }

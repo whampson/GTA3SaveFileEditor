@@ -27,9 +27,9 @@ public final class IntegerVariableTextField
     }
 
     public IntegerVariableTextField(IntegerVariable var,
-            boolean isUnsigned)
+            boolean isUnsigned, IntegerVariable... supplementaryVars)
     {
-        super(var);
+        super(var, supplementaryVars);
         this.isUnsigned = isUnsigned;
         dataType = DataType.INT;
         
@@ -144,6 +144,11 @@ public final class IntegerVariableTextField
         
         v.parseValue(getText(), isUnsigned);
         Logger.debug("Variable updated: " + v);
+        
+        for (IntegerVariable v1 : getSupplementaryVariables()) {
+            v1.parseValue(getText(), isUnsigned);
+            Logger.debug("Variable updated: " + v1);
+        }
     }
     
     private static enum DataType

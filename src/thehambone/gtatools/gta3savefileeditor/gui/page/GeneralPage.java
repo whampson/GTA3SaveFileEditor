@@ -72,7 +72,9 @@ public class GeneralPage extends Page
         
         isPageInitializing = true;
         
-        BlockSimpleVars simp = SaveFileNew.getCurrentSaveFile().simpleVars;
+        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        
+        BlockSimpleVars simp = saveFile.simpleVars;
         
         saveTitleTextField.setMaxInputLength(simp.szSaveName.getMaxLength()- 1);
         saveTitleTextField.setVariable(simp.szSaveName);
@@ -94,31 +96,76 @@ public class GeneralPage extends Page
         minuteLengthTextField.setUnsigned(true);
         minuteLengthTextField.setVariable(simp.nGameMinuteLengthMillis);
         
-        monthComboBox.setValueOffset(1);
-        monthComboBox.setVariable(simp.timestamp.nMonth);
-        
-        dayTextField.setUnsigned(true);
-        dayTextField.setVariable(simp.timestamp.nDay);
-        
-        dayOfWeekComboBox.setVariable(simp.timestamp.nDayOfWeek);
-        
-        yearTextField.setUnsigned(true);
-        yearTextField.setVariable(simp.timestamp.nYear);
-        
-        hourTextField.setDisplayFormat("%02d");
-        hourTextField.setUnsigned(true);
-        hourTextField.setVariable(simp.timestamp.nHour);
-        
-        minuteTextField.setDisplayFormat("%02d");
-        minuteTextField.setUnsigned(true);
-        minuteTextField.setVariable(simp.timestamp.nMinute);
-        
-        secondTextField.setDisplayFormat("%02d");
-        secondTextField.setUnsigned(true);
-        secondTextField.setVariable(simp.timestamp.nSecond);
-        
-        millisTextField.setUnsigned(true);
-        millisTextField.setVariable(simp.timestamp.nMillisecond);
+        // TODO: put into array and loop setEnabled() and setTooltipText()
+        if (saveFile.getPlatform() == SaveFileNew.Platform.PC) {
+            timestampPanel.setEnabled(true);
+            
+            monthLabel.setEnabled(true);
+            monthComboBox.setEnabled(true);
+            monthComboBox.setValueOffset(1);
+            monthComboBox.setVariable(simp.timestamp.nMonth);
+            
+            dayLabel.setEnabled(true);
+            dayTextField.setEnabled(true);
+            dayTextField.setUnsigned(true);
+            dayTextField.setVariable(simp.timestamp.nDay);
+            
+            dayOfWeekLabel.setEnabled(true);
+            dayOfWeekComboBox.setEnabled(true);
+            dayOfWeekComboBox.setVariable(simp.timestamp.nDayOfWeek);
+            
+            yearLabel.setEnabled(true);
+            yearTextField.setEnabled(true);
+            yearTextField.setUnsigned(true);
+            yearTextField.setVariable(simp.timestamp.nYear);
+            
+            hourLabel.setEnabled(true);
+            hourTextField.setEnabled(true);
+            hourTextField.setDisplayFormat("%02d");
+            hourTextField.setUnsigned(true);
+            hourTextField.setVariable(simp.timestamp.nHour);
+            
+            minuteLabel.setEnabled(true);
+            minuteTextField.setEnabled(true);
+            minuteTextField.setDisplayFormat("%02d");
+            minuteTextField.setUnsigned(true);
+            minuteTextField.setVariable(simp.timestamp.nMinute);
+            
+            secondLabel.setEnabled(true);
+            secondTextField.setEnabled(true);
+            secondTextField.setDisplayFormat("%02d");
+            secondTextField.setUnsigned(true);
+            secondTextField.setVariable(simp.timestamp.nSecond);
+            
+            millisLabel.setEnabled(true);
+            millisTextField.setEnabled(true);
+            millisTextField.setUnsigned(true);
+            millisTextField.setVariable(simp.timestamp.nMillisecond);
+            
+            jRadioButton3.setVisible(false);
+            jRadioButton4.setVisible(false);
+        } else {
+            timestampPanel.setEnabled(false);
+            monthLabel.setEnabled(false);
+            dayLabel.setEnabled(false);
+            dayOfWeekLabel.setEnabled(false);
+            yearLabel.setEnabled(false);
+            hourLabel.setEnabled(false);
+            minuteLabel.setEnabled(false);
+            secondLabel.setEnabled(false);
+            millisLabel.setEnabled(false);
+            monthComboBox.setEnabled(false);
+            dayTextField.setEnabled(false);
+            dayOfWeekComboBox.setEnabled(false);
+            yearTextField.setEnabled(false);
+            hourTextField.setEnabled(false);
+            minuteTextField.setEnabled(false);
+            secondTextField.setEnabled(false);
+            millisTextField.setEnabled(false);
+            
+            jRadioButton3.setVisible(true);
+            jRadioButton4.setVisible(true);
+        }
         
         weatherInterpolationSlider.setMinimum(0);
         weatherInterpolationSlider.setMaximum(1000);
@@ -188,6 +235,8 @@ public class GeneralPage extends Page
         mainPanel = new javax.swing.JPanel();
         saveTitlePanel = new javax.swing.JPanel();
         saveTitleTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.StringVariableTextField();
+        jRadioButton3 = new javax.swing.JRadioButton();
+        jRadioButton4 = new javax.swing.JRadioButton();
         gameTimePanel = new javax.swing.JPanel();
         gameTimeHourLabel = new javax.swing.JLabel();
         gameTimeHourTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField();
@@ -224,9 +273,9 @@ public class GeneralPage extends Page
         reversePedHostilityCheatsButton = new javax.swing.JButton();
         weatherPanel = new javax.swing.JPanel();
         currentWeatherSelectionLabel = new javax.swing.JLabel();
-        currentWeatherComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        currentWeatherComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         previousWeatherSelectionLabel = new javax.swing.JLabel();
-        previousWeatherComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        previousWeatherComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         previousWeatherSliderLabel = new javax.swing.JLabel();
         currentWeatherSliderLabel = new javax.swing.JLabel();
         weatherInterpolationSlider = new thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableSlider();
@@ -236,20 +285,36 @@ public class GeneralPage extends Page
 
         saveTitleTextField.setText("a");
 
+        jRadioButton3.setText("GXT Key");
+
+        jRadioButton4.setText("Plain Text");
+
         javax.swing.GroupLayout saveTitlePanelLayout = new javax.swing.GroupLayout(saveTitlePanel);
         saveTitlePanel.setLayout(saveTitlePanelLayout);
         saveTitlePanelLayout.setHorizontalGroup(
             saveTitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(saveTitlePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(saveTitleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(saveTitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(saveTitlePanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jRadioButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButton4)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(saveTitlePanelLayout.createSequentialGroup()
+                        .addComponent(saveTitleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         saveTitlePanelLayout.setVerticalGroup(
             saveTitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, saveTitlePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(saveTitlePanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(saveTitleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(saveTitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton4))
                 .addContainerGap())
         );
 
@@ -551,7 +616,7 @@ public class GeneralPage extends Page
                 .addGroup(weatherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(previousWeatherSelectionLabel)
                     .addComponent(previousWeatherComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(18, 21, Short.MAX_VALUE)
                 .addGroup(weatherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(previousWeatherSliderLabel)
                     .addComponent(currentWeatherSliderLabel))
@@ -589,9 +654,9 @@ public class GeneralPage extends Page
                         .addComponent(saveTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(gameTimePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(glitchAndBugFixesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(glitchAndBugFixesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
 
         scrollPane.setViewportView(mainPanel);
@@ -669,7 +734,7 @@ public class GeneralPage extends Page
     }//GEN-LAST:event_reversePedHostilityCheatsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox currentWeatherComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox currentWeatherComboBox;
     private javax.swing.JLabel currentWeatherSelectionLabel;
     private javax.swing.JLabel currentWeatherSliderLabel;
     private javax.swing.JLabel dayLabel;
@@ -686,6 +751,8 @@ public class GeneralPage extends Page
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField globalTimerTextField;
     private javax.swing.JLabel hourLabel;
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField hourTextField;
+    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel millisLabel;
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField millisTextField;
@@ -696,7 +763,7 @@ public class GeneralPage extends Page
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox monthComboBox;
     private javax.swing.JLabel monthLabel;
     private javax.swing.JLabel msLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox previousWeatherComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox previousWeatherComboBox;
     private javax.swing.JLabel previousWeatherSelectionLabel;
     private javax.swing.JLabel previousWeatherSliderLabel;
     private javax.swing.JButton purpleNinesGlitchFixButton;

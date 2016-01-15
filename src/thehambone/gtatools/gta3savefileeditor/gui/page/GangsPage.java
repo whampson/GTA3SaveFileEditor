@@ -121,14 +121,14 @@ public class GangsPage extends Page
         gangLabel = new javax.swing.JLabel();
         gangComboBox = new javax.swing.JComboBox();
         vehiclePanel = new javax.swing.JPanel();
-        vehicleComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        vehicleComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         weaponsPanel = new javax.swing.JPanel();
         primaryWeaponLabel = new javax.swing.JLabel();
-        primaryWeaponComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        primaryWeaponComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         secondaryWeaponLabel = new javax.swing.JLabel();
-        secondaryWeaponComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox();
+        secondaryWeaponComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
         hostilityPanel = new javax.swing.JPanel();
-        hostileTowardsPlayerCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
+        hostileTowardsPlayerCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox();
 
         gangLabel.setText("Gang:");
 
@@ -338,15 +338,15 @@ public class GangsPage extends Page
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox gangComboBox;
     private javax.swing.JLabel gangLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox hostileTowardsPlayerCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox hostileTowardsPlayerCheckBox;
     private javax.swing.JPanel hostilityPanel;
     private javax.swing.JPanel mainPanel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox primaryWeaponComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox primaryWeaponComboBox;
     private javax.swing.JLabel primaryWeaponLabel;
     private javax.swing.JScrollPane scrollPane;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox secondaryWeaponComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox secondaryWeaponComboBox;
     private javax.swing.JLabel secondaryWeaponLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox vehicleComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox vehicleComboBox;
     private javax.swing.JPanel vehiclePanel;
     private javax.swing.JPanel weaponsPanel;
     // End of variables declaration//GEN-END:variables

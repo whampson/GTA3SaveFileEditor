@@ -6,3 +6,6 @@ GTA III Save File Editor - changes in version 0.2
 * Added command line option --log-level=<level>
 * Support for unsigned input
 * Better input validation
+* Weather interpolation value is now adjusted via a slider
+* Minor visual changes
+* Support for iOS and Android saves

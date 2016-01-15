@@ -65,11 +65,11 @@
                               <Component id="saveTitlePanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="gameTimePanel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="glitchAndBugFixesPanel" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="glitchAndBugFixesPanel" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="104" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -89,16 +89,32 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="saveTitleTextField" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                  <Component id="jRadioButton3" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jRadioButton4" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Component id="saveTitleTextField" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="saveTitleTextField" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jRadioButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jRadioButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -108,6 +124,16 @@
                 <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.StringVariableTextField" name="saveTitleTextField">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="a"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="jRadioButton3">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="GXT Key"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="jRadioButton4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Plain Text"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -598,7 +624,7 @@
                               <Component id="previousWeatherSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="previousWeatherComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" pref="21" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="previousWeatherSliderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="currentWeatherSliderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -616,14 +642,14 @@
                     <Property name="text" type="java.lang.String" value="Current weather:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="currentWeatherComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="currentWeatherComboBox">
                 </Component>
                 <Component class="javax.swing.JLabel" name="previousWeatherSelectionLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Previous weather:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="previousWeatherComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="previousWeatherComboBox">
                 </Component>
                 <Component class="javax.swing.JLabel" name="previousWeatherSliderLabel">
                   <Properties>

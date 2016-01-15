@@ -18,9 +18,9 @@ public class FloatVariableTextField
         this(null);
     }
     
-    public FloatVariableTextField(VarFloat var)
+    public FloatVariableTextField(VarFloat var, VarFloat... supplementaryVars)
     {
-        super(var);
+        super(var, supplementaryVars);
     }
     
     @Override
@@ -61,5 +61,10 @@ public class FloatVariableTextField
         
         v.parseValue(getText());
         Logger.debug("Variable updated: " + v);
+        
+        for (VarFloat v1 : getSupplementaryVariables()) {
+            v1.parseValue(getText());
+            Logger.debug("Variable updated: " + v1);
+        }
     }
 }

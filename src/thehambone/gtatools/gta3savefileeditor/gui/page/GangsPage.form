@@ -125,7 +125,7 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="vehicleComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="vehicleComboBox">
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="vehicleComboBoxActionPerformed"/>
                   </Events>
@@ -183,7 +183,7 @@
                     <Property name="text" type="java.lang.String" value="Primary weapon:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="primaryWeaponComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="primaryWeaponComboBox">
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="primaryWeaponComboBoxActionPerformed"/>
                   </Events>
@@ -193,7 +193,7 @@
                     <Property name="text" type="java.lang.String" value="Secondary weapon:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueComboBox" name="secondaryWeaponComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="secondaryWeaponComboBox">
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="secondaryWeaponComboBoxActionPerformed"/>
                   </Events>
@@ -230,7 +230,7 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox" name="hostileTowardsPlayerCheckBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox" name="hostileTowardsPlayerCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Hostile towards player"/>
                   </Properties>

@@ -1,14 +1,22 @@
 package thehambone.gtatools.gta3savefileeditor.gui.page;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAFloat;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.CPed;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.WeaponSlot;
 import thehambone.gtatools.gta3savefileeditor.savefile.variable.Variable;
-import thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField;
+import thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueTextField;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.WeaponListCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerPeds;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.PlayerPed;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.WeaponSlot;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -19,13 +27,25 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  */
 public class PlayerPage extends Page
 {
-    private Variable<WeaponSlot> weaponSlots;
+    private VarArray<WeaponSlot> weaponSlots;
+    
+    private PlayerPed playerped;
     
     public PlayerPage()
     {
         super("Player", Visibility.VISIBLE_WHEN_GAMESAVE_LOADED_ONLY);
         initComponents();
         addNotifiersToComponents(mainPanel, weaponSlotComboBox);
+        
+        maxWantedLevelComboBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                updateMaxChaosLevel(maxWantedLevelComboBox
+                        .getSelectedIndex() + 1);
+            }
+        });
     }
     
     @Override
@@ -35,86 +55,113 @@ public class PlayerPage extends Page
         Logger.debug("Loading page: %s...\n", getTitle());
         
         isPageInitializing = true;
-//        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
-//        
-//        CPed cPed = vars.aPlayerPed.getValue().getCPed();
-//        Variable<GTAFloat> playerHealth = cPed.getHealthAsVariable();
-//        Variable<GTAFloat> playerArmor = cPed.getArmorAsVariable();
-//        Variable[] playerCoords = { cPed.getPlayerXAsVariable(), cPed.getPlayerYAsVariable(), cPed.getPlayerZAsVariable() };
-//        weaponSlots = cPed.getWeaponSlotsAsVariable();
-//        
-//        DefaultComboBoxModel<GameConstants.Weapon> weaponComboBoxModel = new DefaultComboBoxModel<>();
-//        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
-//            if (w == GameConstants.Weapon.FIST) {
-//                continue;
-//            }
-//            weaponComboBoxModel.addElement(w);
-//        }
-//        weaponSlotComboBox.setModel(weaponComboBoxModel);
-//        weaponSlotComboBox.setRenderer(new WeaponListCellRenderer());
-//        
-//        healthTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-//        healthTextField.setVariable(playerHealth);
-//        armorTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-//        armorTextField.setVariable(playerArmor);
-//        moneyTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-//        moneyTextField.setVariable(vars.iMoney2);
-//        moneyTextField.addVariableToUpdate(vars.iMoney);
-//        
-//        freeHealthcareCheckBox.setVariable(vars.bFreeHealthcare);
-//        getOutOfJailFreeCheckBox.setVariable(vars.bGetOutOfJailFree);
-//        infiniteSprintCheckBox.setVariable(vars.bInfiniteSprint);
-//        freeBombsCheckBox.setVariable(vars.bFreeBombs);
-//        freeRespraysCheckBox.setVariable(vars.bFreeResprays);
-//        
-//        weaponAmmoTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-//        
-//        xTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-//        yTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-//        zTextField.setInputType(VariableValueTextField.InputType.DECIMAL);
-//        xTextField.setVariable(playerCoords[0]);
-//        yTextField.setVariable(playerCoords[1]);
-//        zTextField.setVariable(playerCoords[2]);
-//        
-//        // Until I can figure out how to prevent the game from loading player at safehouse coords
-//        xTextField.setEnabled(false);
-//        yTextField.setEnabled(false);
-//        zTextField.setEnabled(false);
-//        
-//        maxChaosLevelTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-//        maxWantedLevelTextField.setInputType(VariableValueTextField.InputType.INTEGER);
-//        maxChaosLevelTextField.setVariable(vars.aPlayerPed.getValue().getMaxChaosLevelAsVariable());
-//        maxWantedLevelTextField.setVariable(vars.aPlayerPed.getValue().getMaxWantedLevelAsVariable());
-//        
-//        weaponSlotComboBoxActionPerformed(null);
+        
+        BlockPlayerInfo player = SaveFileNew.getCurrentSaveFile().playerInfo;
+        playerped = SaveFileNew.getCurrentSaveFile()
+                .playerPeds.aPlayerPed.getElementAt(0);
+        
+        healthTextField.setVariable(playerped.cPlayerPed.fHealth);
+        armorTextField.setVariable(playerped.cPlayerPed.fArmor);
+        moneyTextField.setVariable(player.nMoney, player.nMoneyOnScreen);
+        
+        infiniteSprintCheckBox.setVariable(player.bPlayerNeverGetsTired);
+        getOutOfJailFreeCheckBox.setVariable(player.bPlayerGetOutOfJailFree);
+        freeHealthCareCheckBox.setVariable(player.bPlayerFreeHealthCare);
+        
+        boolean wantedLevelEnabled = playerped.nMaxChaosLevel.getValue() >= 40;
+        setWantedLevelEnabled(wantedLevelEnabled);
+        enableWantedLevelCheckBox.setSelected(wantedLevelEnabled);
+        
+        maxWantedLevelComboBox.setValueOffset(1);
+        maxWantedLevelComboBox.setVariable(playerped.nMaxWantedLevel);
+        
+        playerXTextField.setVariable(playerped.cPlayerPed.vPosition.fX);
+        playerYTextField.setVariable(playerped.cPlayerPed.vPosition.fY);
+        playerZTextField.setVariable(playerped.cPlayerPed.vPosition.fZ);
+        
+        weaponSlots = playerped.cPlayerPed.aWeaponSlot;
+        DefaultComboBoxModel<GameConstants.Weapon> weaponComboBoxModel
+                = new DefaultComboBoxModel<>();
+        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
+            if (w == GameConstants.Weapon.FIST) {
+                continue;
+            }
+            weaponComboBoxModel.addElement(w);
+        }
+        weaponSlotComboBox.setModel(weaponComboBoxModel);
+        weaponSlotComboBox.setRenderer(new WeaponListCellRenderer());
+        
+        weaponSlotComboBoxActionPerformed(null);
         
         isPageInitializing = false;
     }
     
     private void updateWeaponInInventoryCheckBox(WeaponSlot ws)
     {
-        boolean isEmpty = ws.getWeaponID() == 0;
-        jCheckBox1.setSelected(!isEmpty);
+        boolean isEmpty = ws.nWeaponID.getValue() == 0;
+        weaponInInventoryCheckBox.setSelected(!isEmpty);
     }
     
     private void updateWeaponAmmoTextField(int weaponSlotID, WeaponSlot ws)
     {
-//        boolean isBat = weaponSlotID == GameConstants.Weapon.BAT.getID();
-//        boolean isEmpty = ws.getWeaponID() == 0;
+        boolean isBat = weaponSlotID == GameConstants.Weapon.BAT.getID();
+        boolean isEmpty = ws.nWeaponID.getValue() == 0;
 //        weaponAmmoTextField.updateVariable();
-//        weaponAmmoTextField.setEnabled(!isBat);
-//        if (isBat) {
-//            weaponAmmoTextField.setVariable(null);
-//            weaponAmmoTextField.setText("0");
-//            return;
-//        }
-//        if (!isEmpty) {
-//            weaponAmmoTextField.setVariable(ws.getBulletsTotalAsVariable());
-//        } else {
-//            weaponAmmoTextField.setVariable(null);
-//            weaponAmmoTextField.setText("0");
-//        }
-//        weaponAmmoTextField.setEnabled(!isEmpty);
+        weaponAmmoTextField.setEnabled(!isBat);
+        if (isBat) {
+            weaponAmmoTextField.setVariable(null);
+            weaponAmmoTextField.setText("0");
+            return;
+        }
+        if (!isEmpty) {
+            weaponAmmoTextField.setVariable(ws.nWeaponAmmo);
+        } else {
+            weaponAmmoTextField.setVariable(null);
+            weaponAmmoTextField.setText("0");
+        }
+        weaponAmmoTextField.setEnabled(!isEmpty);
+    }
+    
+    private void setWantedLevelEnabled(boolean isEnabled)
+    {
+        maxWantedLevelLabel.setEnabled(isEnabled);
+        maxWantedLevelComboBox.setEnabled(isEnabled);
+        
+        if (isEnabled) {
+            int maxWantedLevel = playerped.nMaxWantedLevel.getValue();            
+            
+            maxWantedLevelComboBox.setSelectedIndex(maxWantedLevel - 1);
+            updateMaxChaosLevel(maxWantedLevel);
+        } else {
+            updateMaxChaosLevel(0);
+        }
+    }
+    
+    private void updateMaxChaosLevel(int maxWantedLevel)
+    {
+        int maxChaosLevel = 0;
+        switch (maxWantedLevel) {
+                case 1:
+                    maxChaosLevel = 120;
+                    break;
+                case 2:
+                    maxChaosLevel = 300;
+                    break;
+                case 3:
+                    maxChaosLevel = 600;
+                    break;
+                case 4:
+                    maxChaosLevel = 1200;
+                    break;
+                case 5:
+                    maxChaosLevel = 2400;
+                    break;
+                case 6:
+                    maxChaosLevel = 4800;
+                    break;
+            }
+            playerped.nMaxChaosLevel.setValue(maxChaosLevel);
+            Logger.debug("Variable updated: " + playerped.nMaxChaosLevel);
     }
 
     /**
@@ -131,38 +178,36 @@ public class PlayerPage extends Page
         mainPanel = new javax.swing.JPanel();
         generalPanel = new javax.swing.JPanel();
         healthLabel = new javax.swing.JLabel();
-        healthTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
+        healthTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField();
         armorLabel = new javax.swing.JLabel();
-        armorTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
+        armorTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField();
         moneyLabel = new javax.swing.JLabel();
-        moneyTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
+        moneyTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField();
         playerPerksPanel = new javax.swing.JPanel();
-        freeHealthcareCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        getOutOfJailFreeCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        infiniteSprintCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        freeBombsCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
-        freeRespraysCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox();
+        infiniteSprintCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox();
+        getOutOfJailFreeCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox();
+        freeHealthCareCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox();
+        freeBombsCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox();
+        freeRespraysCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox();
         weaponsPanel = new javax.swing.JPanel();
-        weaponSlotLabel = new javax.swing.JLabel();
-        weaponSlotComboBox = new javax.swing.JComboBox();
-        jPanel1 = new javax.swing.JPanel();
+        weaponSlotComboBox = new javax.swing.JComboBox<>();
+        weaponPropertiesPanel = new javax.swing.JPanel();
+        weaponInInventoryCheckBox = new javax.swing.JCheckBox();
         weaponAmmoLabel = new javax.swing.JLabel();
-        weaponAmmoTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        weaponAmmoTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField();
         playerCoordinatesPanel = new javax.swing.JPanel();
-        xLabel = new javax.swing.JLabel();
-        xTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
-        yLabel = new javax.swing.JLabel();
-        yTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
-        zLabel = new javax.swing.JLabel();
-        zTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
+        playerXLabel = new javax.swing.JLabel();
+        playerXTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField();
+        playerYLabel = new javax.swing.JLabel();
+        playerYTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField();
+        playerZLabel = new javax.swing.JLabel();
+        playerZTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField();
         otherPanel = new javax.swing.JPanel();
-        maxChaosLevelLabel = new javax.swing.JLabel();
-        maxChaosLevelTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
+        enableWantedLevelCheckBox = new javax.swing.JCheckBox();
         maxWantedLevelLabel = new javax.swing.JLabel();
-        maxWantedLevelTextField = new thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField();
+        maxWantedLevelComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox();
 
-        generalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("General"));
+        generalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Player Properties"));
 
         healthLabel.setText("Health:");
 
@@ -181,16 +226,16 @@ public class PlayerPage extends Page
         generalPanelLayout.setHorizontalGroup(
             generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(generalPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
                 .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(moneyLabel)
                     .addComponent(armorLabel)
                     .addComponent(healthLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(moneyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(healthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                     .addComponent(armorTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(healthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(moneyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         generalPanelLayout.setVerticalGroup(
@@ -213,11 +258,11 @@ public class PlayerPage extends Page
 
         playerPerksPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Player Perks"));
 
-        freeHealthcareCheckBox.setText("Free healthcare");
+        infiniteSprintCheckBox.setText("Infinite sprint");
 
         getOutOfJailFreeCheckBox.setText("Get out of jail free");
 
-        infiniteSprintCheckBox.setText("Infinite sprint");
+        freeHealthCareCheckBox.setText("Free healthcare");
 
         freeBombsCheckBox.setText("Free bombs");
 
@@ -230,7 +275,7 @@ public class PlayerPage extends Page
             .addGroup(playerPerksPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(playerPerksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(freeHealthcareCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(freeHealthCareCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(getOutOfJailFreeCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(infiniteSprintCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(freeBombsCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -241,14 +286,14 @@ public class PlayerPage extends Page
             playerPerksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(playerPerksPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(freeHealthcareCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(getOutOfJailFreeCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infiniteSprintCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(getOutOfJailFreeCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(freeHealthCareCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(freeBombsCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(freeRespraysCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -256,9 +301,6 @@ public class PlayerPage extends Page
         weaponsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Weapons"));
         weaponsPanel.setToolTipText("");
 
-        weaponSlotLabel.setText("Slot:");
-
-        weaponSlotComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bat" }));
         weaponSlotComboBox.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -267,42 +309,43 @@ public class PlayerPage extends Page
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Slot Properties"));
+        weaponPropertiesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Weapon Properties"));
+
+        weaponInInventoryCheckBox.setText("In inventory");
+        weaponInInventoryCheckBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                weaponInInventoryCheckBoxActionPerformed(evt);
+            }
+        });
 
         weaponAmmoLabel.setText("Ammo:");
 
         weaponAmmoTextField.setText("0");
+        weaponAmmoTextField.setToolTipText("");
 
-        jCheckBox1.setText("In inventory");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jCheckBox1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout weaponPropertiesPanelLayout = new javax.swing.GroupLayout(weaponPropertiesPanel);
+        weaponPropertiesPanel.setLayout(weaponPropertiesPanelLayout);
+        weaponPropertiesPanelLayout.setHorizontalGroup(
+            weaponPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(weaponPropertiesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(weaponPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(weaponInInventoryCheckBox)
+                    .addGroup(weaponPropertiesPanelLayout.createSequentialGroup()
                         .addComponent(weaponAmmoLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(weaponAmmoTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(weaponAmmoTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        weaponPropertiesPanelLayout.setVerticalGroup(
+            weaponPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(weaponPropertiesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBox1)
+                .addComponent(weaponInInventoryCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(weaponPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(weaponAmmoLabel)
                     .addComponent(weaponAmmoTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -315,38 +358,38 @@ public class PlayerPage extends Page
             .addGroup(weaponsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(weaponsPanelLayout.createSequentialGroup()
-                        .addComponent(weaponSlotLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(weaponSlotComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(weaponPropertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(weaponSlotComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         weaponsPanelLayout.setVerticalGroup(
             weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(weaponsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(weaponSlotLabel)
-                    .addComponent(weaponSlotComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(weaponSlotComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(weaponPropertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         playerCoordinatesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Player Coordinates"));
 
-        xLabel.setText("X:");
+        playerXLabel.setText("X:");
 
-        xTextField.setText("0.0");
+        playerXTextField.setEditable(false);
+        playerXTextField.setText("0.0");
+        playerXTextField.setToolTipText("Unavailable at this time.");
 
-        yLabel.setText("Y:");
+        playerYLabel.setText("Y:");
 
-        yTextField.setText("0.0");
+        playerYTextField.setEditable(false);
+        playerYTextField.setText("0.0");
+        playerYTextField.setToolTipText("Unavailable at this time.");
 
-        zLabel.setText("Z:");
+        playerZLabel.setText("Z:");
 
-        zTextField.setText("0.0");
+        playerZTextField.setEditable(false);
+        playerZTextField.setText("0.0");
+        playerZTextField.setToolTipText("Unavailable at this time.");
 
         javax.swing.GroupLayout playerCoordinatesPanelLayout = new javax.swing.GroupLayout(playerCoordinatesPanel);
         playerCoordinatesPanel.setLayout(playerCoordinatesPanelLayout);
@@ -354,17 +397,17 @@ public class PlayerPage extends Page
             playerCoordinatesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(playerCoordinatesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xLabel)
+                .addComponent(playerXLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(playerXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(yLabel)
+                .addComponent(playerYLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(yTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(playerYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(zLabel)
+                .addComponent(playerZLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(zTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(playerZTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         playerCoordinatesPanelLayout.setVerticalGroup(
@@ -372,24 +415,29 @@ public class PlayerPage extends Page
             .addGroup(playerCoordinatesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(playerCoordinatesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xLabel)
-                    .addComponent(yLabel)
-                    .addComponent(zLabel)
-                    .addComponent(xTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(yTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(zTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(playerXLabel)
+                    .addComponent(playerYLabel)
+                    .addComponent(playerZLabel)
+                    .addComponent(playerXTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playerYTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playerZTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
-        otherPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Other"));
+        otherPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Wanted Level"));
 
-        maxChaosLevelLabel.setText("Max chaos level:");
-
-        maxChaosLevelTextField.setText("0");
+        enableWantedLevelCheckBox.setText("Enable wanted level");
+        enableWantedLevelCheckBox.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                enableWantedLevelCheckBoxActionPerformed(evt);
+            }
+        });
 
         maxWantedLevelLabel.setText("Max wanted level:");
 
-        maxWantedLevelTextField.setText("0");
+        maxWantedLevelComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1 star", "2 stars", "3 stars", "4 stars", "5 stars", "6 stars" }));
 
         javax.swing.GroupLayout otherPanelLayout = new javax.swing.GroupLayout(otherPanel);
         otherPanel.setLayout(otherPanelLayout);
@@ -397,27 +445,24 @@ public class PlayerPage extends Page
             otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(otherPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(maxWantedLevelLabel)
-                    .addComponent(maxChaosLevelLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(maxChaosLevelTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                    .addComponent(maxWantedLevelTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(enableWantedLevelCheckBox)
+                    .addGroup(otherPanelLayout.createSequentialGroup()
+                        .addComponent(maxWantedLevelLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(maxWantedLevelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         otherPanelLayout.setVerticalGroup(
             otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(otherPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(maxChaosLevelLabel)
-                    .addComponent(maxChaosLevelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(enableWantedLevelCheckBox)
+                .addGap(7, 7, 7)
                 .addGroup(otherPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(maxWantedLevelLabel)
-                    .addComponent(maxWantedLevelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(maxWantedLevelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -426,7 +471,7 @@ public class PlayerPage extends Page
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(playerCoordinatesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -436,22 +481,21 @@ public class PlayerPage extends Page
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(playerPerksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(weaponsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(weaponsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(generalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(playerPerksPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(weaponsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(weaponsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(playerPerksPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(generalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(otherPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(playerCoordinatesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(playerCoordinatesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(otherPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -461,64 +505,67 @@ public class PlayerPage extends Page
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane)
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane)
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void weaponInInventoryCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_weaponInInventoryCheckBoxActionPerformed
+    {//GEN-HEADEREND:event_weaponInInventoryCheckBoxActionPerformed
+        GameConstants.Weapon w = (GameConstants.Weapon)weaponSlotComboBox.getSelectedItem();
+        WeaponSlot ws = weaponSlots.getElementAt(w.getID());
+        ws.nWeaponID.setValue(weaponInInventoryCheckBox.isSelected() ? w.getID() : 0);
+        updateWeaponAmmoTextField(w.getID(), ws);
+    }//GEN-LAST:event_weaponInInventoryCheckBoxActionPerformed
+
+    private void enableWantedLevelCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_enableWantedLevelCheckBoxActionPerformed
+    {//GEN-HEADEREND:event_enableWantedLevelCheckBoxActionPerformed
+        setWantedLevelEnabled(enableWantedLevelCheckBox.isSelected());
+    }//GEN-LAST:event_enableWantedLevelCheckBoxActionPerformed
 
     private void weaponSlotComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_weaponSlotComboBoxActionPerformed
     {//GEN-HEADEREND:event_weaponSlotComboBoxActionPerformed
         GameConstants.Weapon w = (GameConstants.Weapon)weaponSlotComboBox.getSelectedItem();
-        WeaponSlot ws = weaponSlots.getValueAt(w.getID());
+        WeaponSlot ws = weaponSlots.getElementAt(w.getID());
         updateWeaponInInventoryCheckBox(ws);
         updateWeaponAmmoTextField(w.getID(), ws);
     }//GEN-LAST:event_weaponSlotComboBoxActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBox1ActionPerformed
-    {//GEN-HEADEREND:event_jCheckBox1ActionPerformed
-        GameConstants.Weapon w = (GameConstants.Weapon)weaponSlotComboBox.getSelectedItem();
-        WeaponSlot ws = weaponSlots.getValueAt(w.getID());
-        ws.setWeaponID(jCheckBox1.isSelected() ? w.getID() : 0);
-        updateWeaponAmmoTextField(w.getID(), ws);
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel armorLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField armorTextField;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox freeBombsCheckBox;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox freeHealthcareCheckBox;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox freeRespraysCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField armorTextField;
+    private javax.swing.JCheckBox enableWantedLevelCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox freeBombsCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox freeHealthCareCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox freeRespraysCheckBox;
     private javax.swing.JPanel generalPanel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox getOutOfJailFreeCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox getOutOfJailFreeCheckBox;
     private javax.swing.JLabel healthLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField healthTextField;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueCheckBox infiniteSprintCheckBox;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JPanel jPanel1;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField healthTextField;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.BooleanVariableCheckBox infiniteSprintCheckBox;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JLabel maxChaosLevelLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField maxChaosLevelTextField;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox maxWantedLevelComboBox;
     private javax.swing.JLabel maxWantedLevelLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField maxWantedLevelTextField;
     private javax.swing.JLabel moneyLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField moneyTextField;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField moneyTextField;
     private javax.swing.JPanel otherPanel;
     private javax.swing.JPanel playerCoordinatesPanel;
     private javax.swing.JPanel playerPerksPanel;
+    private javax.swing.JLabel playerXLabel;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField playerXTextField;
+    private javax.swing.JLabel playerYLabel;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField playerYTextField;
+    private javax.swing.JLabel playerZLabel;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableTextField playerZTextField;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JLabel weaponAmmoLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField weaponAmmoTextField;
-    private javax.swing.JComboBox weaponSlotComboBox;
-    private javax.swing.JLabel weaponSlotLabel;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField weaponAmmoTextField;
+    private javax.swing.JCheckBox weaponInInventoryCheckBox;
+    private javax.swing.JPanel weaponPropertiesPanel;
+    private javax.swing.JComboBox<GameConstants.Weapon> weaponSlotComboBox;
     private javax.swing.JPanel weaponsPanel;
-    private javax.swing.JLabel xLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField xTextField;
-    private javax.swing.JLabel yLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField yTextField;
-    private javax.swing.JLabel zLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.VariableValueTextField zTextField;
     // End of variables declaration//GEN-END:variables
 }

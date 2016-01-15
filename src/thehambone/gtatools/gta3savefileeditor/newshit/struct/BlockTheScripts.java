@@ -45,29 +45,73 @@ public class BlockTheScripts extends Block
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("Android not supported yet.");
+        nScriptVariableSpaceSize.load(buf, offset + 0x08);
+        
+        aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue()
+                / aScriptVariable.getSizeOfElement());
+        aScriptVariable.load(buf, offset + 0x0C, SaveFileNew.Platform.ANDROID);
+        
+        buf.seek(offset + nScriptVariableSpaceSize.getValue() + 0x0C);
+        scmState.setSize(buf.readInt());
+        scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10,
+                SaveFileNew.Platform.ANDROID);
+        
+        nNumberOfRunningScripts.load(buf,
+                offset + nScriptVariableSpaceSize.getValue()
+                        + scmState.getSize() + 0x10);
+        
+        aRunningScript.setElementCount(nNumberOfRunningScripts.getValue());
+        aRunningScript.load(buf,
+                offset + nScriptVariableSpaceSize.getValue()+ scmState.getSize()
+                        + 0x14, SaveFileNew.Platform.ANDROID);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("iOS not supported yet.");
+        nScriptVariableSpaceSize.load(buf, offset + 0x08);
+        
+        aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue()
+                / aScriptVariable.getSizeOfElement());
+        aScriptVariable.load(buf, offset + 0x0C, SaveFileNew.Platform.IOS);
+        
+        buf.seek(offset + nScriptVariableSpaceSize.getValue() + 0x0C);
+        scmState.setSize(buf.readInt());
+        scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10,
+                SaveFileNew.Platform.IOS);
+        
+        nNumberOfRunningScripts.load(buf,
+                offset + nScriptVariableSpaceSize.getValue()
+                        + scmState.getSize() + 0x10);
+        
+        aRunningScript.setElementCount(nNumberOfRunningScripts.getValue());
+        aRunningScript.load(buf,
+                offset + nScriptVariableSpaceSize.getValue()+ scmState.getSize()
+                        + 0x14, SaveFileNew.Platform.IOS);
     }
     
     @Override
     protected void loadPC(DataBuffer buf)
     {
         nScriptVariableSpaceSize.load(buf, offset + 0x08);
-        aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue() / aScriptVariable.getSizeOfElement());
+        
+        aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue()
+                / aScriptVariable.getSizeOfElement());
         aScriptVariable.load(buf, offset + 0x0C, SaveFileNew.Platform.PC);
         
         buf.seek(offset + nScriptVariableSpaceSize.getValue() + 0x0C);
         scmState.setSize(buf.readInt());
-        scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10, SaveFileNew.Platform.PC);
+        scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10,
+                SaveFileNew.Platform.PC);
         
-        nNumberOfRunningScripts.load(buf, offset + nScriptVariableSpaceSize.getValue() + scmState.getSize() + 0x10);
+        nNumberOfRunningScripts.load(buf,
+                offset + nScriptVariableSpaceSize.getValue()
+                        + scmState.getSize() + 0x10);
+        
         aRunningScript.setElementCount(nNumberOfRunningScripts.getValue());
-        aRunningScript.load(buf, offset + nScriptVariableSpaceSize.getValue() + scmState.getSize() + 0x14, SaveFileNew.Platform.PC);
+        aRunningScript.load(buf,
+                offset + nScriptVariableSpaceSize.getValue()+ scmState.getSize()
+                        + 0x14, SaveFileNew.Platform.PC);
     }
     
     @Override

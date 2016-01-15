@@ -2,6 +2,8 @@ package thehambone.gtatools.gta3savefileeditor.newshit;
 
 import java.io.File;
 import java.io.IOException;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerPeds;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockSimpleVars;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -131,6 +133,8 @@ public class SaveFileNew
      * anywhere.
      */
     public BlockSimpleVars simpleVars;
+    public BlockPlayerPeds playerPeds;
+    public BlockPlayerInfo playerInfo;
     
     private final DataBuffer buf;
     private final Platform platform;
@@ -228,6 +232,18 @@ public class SaveFileNew
                     simpleVars = new BlockSimpleVars(blockSize);
                     simpleVars.load(buf, offset, platform);
                     break;
+                    
+                case 1:
+                    Logger.debug("Loading block 1...");
+                    playerPeds = new BlockPlayerPeds(blockSize);
+                    playerPeds.load(buf, offset, platform);
+                    break;
+                
+                case 16:
+                    Logger.debug("Loading block 16...");
+                    playerInfo = new BlockPlayerInfo(blockSize);
+                    playerInfo.load(buf, offset, platform);
+                    break;
             }
             buf.seek(offset);
             buf.skip(blockSize);
@@ -301,8 +317,8 @@ public class SaveFileNew
      */
     public static enum Platform
     {
-        ANDROID(false),
-        IOS(false),
+        ANDROID(true),
+        IOS(true),
         PC(true),
         PS2(false),
         XBOX(false);

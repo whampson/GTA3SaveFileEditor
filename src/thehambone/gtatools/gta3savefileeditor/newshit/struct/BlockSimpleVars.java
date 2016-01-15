@@ -42,7 +42,6 @@ public class BlockSimpleVars extends Block
     @Override
     public void setSize(int size)
     {
-        // TODO: implement
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
@@ -61,13 +60,47 @@ public class BlockSimpleVars extends Block
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("Android not supported yet.");
+        szSaveName.load(buf, offset + 0x00);
+//        timestamp.load(buf, offset + 0x30, SaveFileNew.Platform.ANDROID);
+        nCurrentLevel.load(buf, offset + 0x34);
+        vCameraPosition.load(buf, offset + 0x38, SaveFileNew.Platform.ANDROID);
+        nGameMinuteLengthMillis.load(buf, offset + 0x44);
+        nLastClockTick.load(buf, offset + 0x48);
+        nGameHours.load(buf, offset + 0x4C);
+        nGameMinutes.load(buf, offset + 0x50);
+        nTimeInMillis.load(buf, offset + 0x58);
+        nFrameCounter.load(buf, offset + 0x68);
+        nPreviousWeatherType.load(buf, offset + 0x78);
+        nCurrentWeatherType.load(buf, offset + 0x7C);
+        nForcedWeatherType.load(buf, offset + 0x80);
+        fWeatherInterpolationValue.load(buf, offset + 0x84);
+        
+        buf.seek(offset + 0xB0);
+        theScripts.setSize(buf.readInt());
+        theScripts.load(buf, offset + 0xB4, SaveFileNew.Platform.ANDROID);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("iOS not supported yet.");
+        szSaveName.load(buf, offset + 0x00);
+//        timestamp.load(buf, offset + 0x30, SaveFileNew.Platform.IOS);
+        nCurrentLevel.load(buf, offset + 0x34);
+        vCameraPosition.load(buf, offset + 0x38, SaveFileNew.Platform.IOS);
+        nGameMinuteLengthMillis.load(buf, offset + 0x44);
+        nLastClockTick.load(buf, offset + 0x48);
+        nGameHours.load(buf, offset + 0x4C);
+        nGameMinutes.load(buf, offset + 0x50);
+        nTimeInMillis.load(buf, offset + 0x58);
+        nFrameCounter.load(buf, offset + 0x68);
+        nPreviousWeatherType.load(buf, offset + 0x78);
+        nCurrentWeatherType.load(buf, offset + 0x7C);
+        nForcedWeatherType.load(buf, offset + 0x80);
+        fWeatherInterpolationValue.load(buf, offset + 0x84);
+        
+        buf.seek(offset + 0xB0);
+        theScripts.setSize(buf.readInt());
+        theScripts.load(buf, offset + 0xB4, SaveFileNew.Platform.IOS);
     }
     
     @Override

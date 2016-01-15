@@ -218,7 +218,7 @@ public class GameConstants
     public static enum WeatherType
     {
         SUNNY(0, "Sunny"),
-        OVERCAST(1, "Overcast"),
+        CLOUDY(1, "Cloudy"),
         RAINY(2, "Rainy"),
         FOGGY(3, "Foggy");
         

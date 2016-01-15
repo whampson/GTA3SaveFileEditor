@@ -3,13 +3,16 @@ package thehambone.gtatools.gta3savefileeditor.gui.component;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
-import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * Created on Jan 11, 2016.
@@ -22,12 +25,17 @@ public abstract class VariableTextField<T extends Variable>
 {
     protected volatile boolean isComponentRefreshing;
     
+    private final List<T> supplementaryVars;
+    
     private T var;
     private String displayFormat;
     
-    protected VariableTextField(T var)
+    protected VariableTextField(T var, T... supplementaryVars)
     {
         this.var = var;
+        this.supplementaryVars
+                = new ArrayList<>(Arrays.asList(supplementaryVars));
+        
         isComponentRefreshing = false;
         displayFormat = null;
         
@@ -132,10 +140,19 @@ public abstract class VariableTextField<T extends Variable>
     }
     
     @Override
-    public final void setVariable(T var)
+    public final void setVariable(T var, T... supplementaryVars)
     {
         this.var = var;
         
+        this.supplementaryVars.clear();
+        this.supplementaryVars.addAll(Arrays.asList(supplementaryVars));
+        
         refreshComponent();
+    }
+    
+    @Override
+    public List<T> getSupplementaryVariables()
+    {
+        return Collections.unmodifiableList(supplementaryVars);
     }
 }

@@ -1,3 +1,4 @@
+
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
@@ -5,31 +6,33 @@ import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformExcepti
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
 
 /**
- * Created on Sep 20, 2015.
- * 
+ * Created on Jan 14, 2016.
+ *
  * @author thehambone
  */
-public class ContactInfo extends Record
+public class WeaponSlot extends Record
 {
-    public VarInt pMissionFlag = new VarInt();
-    public VarInt nBaseBrief = new VarInt();
+    public final VarInt nWeaponID = new VarInt();
+    public final VarInt nClipAmmo = new VarInt();
+    public final VarInt nWeaponAmmo = new VarInt();
     
-    public ContactInfo()
+    public WeaponSlot()
     {
-        super(0x08);
+        super(0x18);
     }
     
     private void load(DataBuffer buf)
     {
-        pMissionFlag.load(buf, offset + 0x00);
-        nBaseBrief.load(buf, offset + 0x04);
+        nWeaponID.load(buf, offset + 0x00);
+        nClipAmmo.load(buf, offset + 0x08);
+        nWeaponAmmo.load(buf, offset + 0x0C);
     }
     
     @Override
     public DataStructure[] getMembers()
     {
-        return new VarInt[] {
-            pMissionFlag, nBaseBrief
+        return new DataStructure[] {
+            nWeaponID, nClipAmmo, nWeaponAmmo
         };
     }
     

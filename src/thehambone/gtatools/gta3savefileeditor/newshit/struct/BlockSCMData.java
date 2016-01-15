@@ -52,13 +52,29 @@ public class BlockSCMData extends Block
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("Android not supported yet.");
+        pOnAMissionFlag.load(buf, offset + 0x00);
+        aContactInfo.load(buf, offset + 0x04, SaveFileNew.Platform.ANDROID);
+        aBuildingSwap.load(buf, offset + 0x188, SaveFileNew.Platform.ANDROID);
+        aInvisibilitySetting.load(buf, offset + 0x318,
+                SaveFileNew.Platform.ANDROID);
+        bIsAlreadyRunningAMissionScript.load(buf, offset + 0x3B8);
+        nMainScriptSize.load(buf, offset + 0x3BC);
+        nLargestMissionScriptSize.load(buf, offset + 0x3C0);
+        nNumberOfExclusiveMissionScripts.load(buf, offset + 0x3C4);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        throw new UnsupportedPlatformException("iOS not supported yet.");
+        pOnAMissionFlag.load(buf, offset + 0x00);
+        aContactInfo.load(buf, offset + 0x04, SaveFileNew.Platform.IOS);
+        aBuildingSwap.load(buf, offset + 0x188, SaveFileNew.Platform.IOS);
+        aInvisibilitySetting.load(buf, offset + 0x318,
+                SaveFileNew.Platform.IOS);
+        bIsAlreadyRunningAMissionScript.load(buf, offset + 0x3B8);
+        nMainScriptSize.load(buf, offset + 0x3BC);
+        nLargestMissionScriptSize.load(buf, offset + 0x3C0);
+        nNumberOfExclusiveMissionScripts.load(buf, offset + 0x3C4);
     }
     
     @Override
