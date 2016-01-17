@@ -435,6 +435,7 @@ public class EditorWindow extends JFrame implements Observer
                     if (addPage) {
                         p.loadPage();
                         tabbedPane.addTab(p.getTitle(), p);
+                        pack();
                     }
                 }
             }

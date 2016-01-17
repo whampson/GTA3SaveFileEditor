@@ -24,6 +24,7 @@ public class IntegerVariableCheckBox
     private IntegerVariable var;
     private int deselectedValue;
     private int selectedValue;
+    private boolean doUpdateOnChange;
     
     public IntegerVariableCheckBox()
     {
@@ -38,6 +39,7 @@ public class IntegerVariableCheckBox
         this.selectedValue = selectedValue;
         this.supplementaryVars
                 = new ArrayList<>(Arrays.asList(supplementaryVars));
+        doUpdateOnChange = true;
         
         initActionListener();
     }
@@ -69,9 +71,17 @@ public class IntegerVariableCheckBox
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                updateVariable();
+                if (doUpdateOnChange) {
+                    updateVariable();
+                }
             }
         });
+    }
+    
+    @Override
+    public boolean hasVariable()
+    {
+        return var != null;
     }
     
     @Override
@@ -96,6 +106,12 @@ public class IntegerVariableCheckBox
     public List<IntegerVariable> getSupplementaryVariables()
     {
         return Collections.unmodifiableList(supplementaryVars);
+    }
+    
+    @Override
+    public void updateVariableOnChange(boolean doUpdate)
+    {
+        doUpdateOnChange = doUpdate;
     }
     
     @Override

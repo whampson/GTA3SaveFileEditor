@@ -57,7 +57,7 @@ public abstract class Page extends JPanel implements Observable
         @Override
         public void changedUpdate(DocumentEvent e)
         {
-            update();
+            // Nop
         }
     };
     

@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="scrollPane" alignment="0" pref="553" max="32767" attributes="0"/>
+          <Component id="scrollPane" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -37,7 +37,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="playerCoordinatesPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -48,10 +48,10 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="playerPerksPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="weaponsPanel" min="-2" max="-2" attributes="0"/>
+                              <Component id="weaponsPanel" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="18" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -301,7 +301,7 @@
                                       <Component id="weaponAmmoTextField" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace pref="53" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -400,7 +400,7 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="0.0"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Unavailable at this time."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Unavailable for editing at this time."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="playerYLabel">
@@ -412,7 +412,7 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="0.0"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Unavailable at this time."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Unavailable for editing at this time."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="playerZLabel">
@@ -424,7 +424,7 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="0.0"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Unavailable at this time."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Unavailable for editing at this time."/>
                   </Properties>
                 </Component>
               </SubComponents>

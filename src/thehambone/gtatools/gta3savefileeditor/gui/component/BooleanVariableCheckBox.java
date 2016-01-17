@@ -23,10 +23,12 @@ public class BooleanVariableCheckBox
     private final List<VarBoolean> supplementaryVars;
     
     private VarBoolean var;
+    private boolean doUpdateOnChange;
     
     public BooleanVariableCheckBox()
     {
         this(null);
+        doUpdateOnChange = true;
     }
     
     public BooleanVariableCheckBox(VarBoolean var,
@@ -46,9 +48,17 @@ public class BooleanVariableCheckBox
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                updateVariable();
+                if (doUpdateOnChange) {
+                    updateVariable();
+                }
             }
         });
+    }
+    
+    @Override
+    public boolean hasVariable()
+    {
+        return var != null;
     }
     
     @Override
@@ -72,6 +82,12 @@ public class BooleanVariableCheckBox
     public List<VarBoolean> getSupplementaryVariables()
     {
         return Collections.unmodifiableList(supplementaryVars);
+    }
+    
+    @Override
+    public void updateVariableOnChange(boolean doUpdate)
+    {
+        doUpdateOnChange = doUpdate;
     }
     
     @Override

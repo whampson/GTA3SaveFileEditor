@@ -24,6 +24,7 @@ public class IntegerVariableComboBox<E>
     
     private IntegerVariable var;
     private int valueOffset;
+    private boolean doUpdateOnChange;
     
     public IntegerVariableComboBox()
     {
@@ -37,6 +38,7 @@ public class IntegerVariableComboBox<E>
         this.valueOffset = valueOffset;
         this.supplementaryVars
                 = new ArrayList<>(Arrays.asList(supplementaryVars));
+        doUpdateOnChange = true;
         
         initActionListener();
     }
@@ -58,9 +60,17 @@ public class IntegerVariableComboBox<E>
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                updateVariable();
+                if (doUpdateOnChange) {
+                    updateVariable();
+                }
             }
         });
+    }
+    
+    @Override
+    public boolean hasVariable()
+    {
+        return var != null;
     }
     
     @Override
@@ -85,6 +95,12 @@ public class IntegerVariableComboBox<E>
     public List<IntegerVariable> getSupplementaryVariables()
     {
         return Collections.unmodifiableList(supplementaryVars);
+    }
+    
+    @Override
+    public void updateVariableOnChange(boolean doUpdate)
+    {
+        doUpdateOnChange = doUpdate;
     }
     
     @Override

@@ -13,11 +13,21 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
  */
 public interface VariableComponent<T extends Variable>
 {
+    public boolean hasVariable();
+    
     public T getVariable();
     
     public void setVariable(T var, T... supplementaryVars);
     
     public List<T> getSupplementaryVariables();
+    
+    /**
+     * Sets whether the variable should be updated when the component state
+     * changes.
+     * 
+     * @param doUpdate a boolean indicating whether to update the variable
+     */
+    public void updateVariableOnChange(boolean doUpdate);
     
     /**
      * Sets the data displayed by the component based on the current value of

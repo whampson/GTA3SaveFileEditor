@@ -26,7 +26,7 @@ public interface Observable
     
     /**
      * Notifies all observers of an incoming message by calling their update()
-     * method. It is up to each specific observer to decide how to handle these
+     * method. It is up to each specific observer to decide how to handle this
      * message.
      * 
      * @param message the message to send

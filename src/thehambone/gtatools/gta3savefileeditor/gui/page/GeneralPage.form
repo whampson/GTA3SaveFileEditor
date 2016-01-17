@@ -35,7 +35,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="gameTimePanel" alignment="0" max="32767" attributes="0"/>
@@ -54,22 +54,22 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="timestampPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="weatherPanel" min="-2" max="-2" attributes="0"/>
+                              <Component id="weatherPanel" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="saveTitlePanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="gameTimePanel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="glitchAndBugFixesPanel" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="104" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -92,9 +92,11 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                                  <Component id="jRadioButton3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="textRadioButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="jRadioButton4" min="-2" max="-2" attributes="0"/>
+                                  <Component id="gxtKeyRadioButton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="selectGXTStringButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
@@ -110,10 +112,11 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="saveTitleTextField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jRadioButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jRadioButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="gxtKeyRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="textRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="selectGXTStringButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -126,14 +129,19 @@
                     <Property name="text" type="java.lang.String" value="a"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton3">
+                <Component class="javax.swing.JRadioButton" name="gxtKeyRadioButton">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="GXT Key"/>
+                    <Property name="text" type="java.lang.String" value="GXT String"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JRadioButton" name="jRadioButton4">
+                <Component class="javax.swing.JRadioButton" name="textRadioButton">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Plain Text"/>
+                    <Property name="text" type="java.lang.String" value="Text"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="selectGXTStringButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Select GXT String"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -210,7 +218,7 @@
                               <Component id="msLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="minuteLengthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="14" max="32767" attributes="0"/>
+                          <EmptySpace pref="35" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -580,11 +588,6 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="weatherInterpolationSlider" pref="227" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="previousWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="currentWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
@@ -603,6 +606,11 @@
                                       </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="previousWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="currentWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -624,14 +632,14 @@
                               <Component id="previousWeatherSelectionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="previousWeatherComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="separate" pref="21" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="previousWeatherSliderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="currentWeatherSliderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="weatherInterpolationSlider" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -643,6 +651,13 @@
                   </Properties>
                 </Component>
                 <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="currentWeatherComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="&lt;weather_name&gt;"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="previousWeatherSelectionLabel">
                   <Properties>
@@ -650,6 +665,13 @@
                   </Properties>
                 </Component>
                 <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="previousWeatherComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="&lt;weather_name&gt;"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="previousWeatherSliderLabel">
                   <Properties>

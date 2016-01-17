@@ -337,7 +337,7 @@ public class PlayerPage extends Page
                         .addComponent(weaponAmmoLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(weaponAmmoTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         weaponPropertiesPanelLayout.setVerticalGroup(
             weaponPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -377,19 +377,19 @@ public class PlayerPage extends Page
 
         playerXTextField.setEditable(false);
         playerXTextField.setText("0.0");
-        playerXTextField.setToolTipText("Unavailable at this time.");
+        playerXTextField.setToolTipText("Unavailable for editing at this time.");
 
         playerYLabel.setText("Y:");
 
         playerYTextField.setEditable(false);
         playerYTextField.setText("0.0");
-        playerYTextField.setToolTipText("Unavailable at this time.");
+        playerYTextField.setToolTipText("Unavailable for editing at this time.");
 
         playerZLabel.setText("Z:");
 
         playerZTextField.setEditable(false);
         playerZTextField.setText("0.0");
-        playerZTextField.setToolTipText("Unavailable at this time.");
+        playerZTextField.setToolTipText("Unavailable for editing at this time.");
 
         javax.swing.GroupLayout playerCoordinatesPanelLayout = new javax.swing.GroupLayout(playerCoordinatesPanel);
         playerCoordinatesPanel.setLayout(playerCoordinatesPanelLayout);
@@ -471,7 +471,7 @@ public class PlayerPage extends Page
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(playerCoordinatesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -481,8 +481,8 @@ public class PlayerPage extends Page
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(playerPerksPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(weaponsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(weaponsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -505,7 +505,7 @@ public class PlayerPage extends Page
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
+            .addComponent(scrollPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

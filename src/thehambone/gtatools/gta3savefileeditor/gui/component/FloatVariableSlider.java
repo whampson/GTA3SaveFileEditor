@@ -23,6 +23,7 @@ public class FloatVariableSlider
     
     private VarFloat var;
     private int scale;
+    private boolean doUpdateOnChange;
     
     public FloatVariableSlider()
     {
@@ -36,6 +37,7 @@ public class FloatVariableSlider
         this.var = var;
         this.supplementaryVars
                 = new ArrayList<>(Arrays.asList(supplementaryVars));
+        doUpdateOnChange = true;
         
         initChangeListener();
     }
@@ -67,9 +69,17 @@ public class FloatVariableSlider
             @Override
             public void stateChanged(ChangeEvent e)
             {
-                updateVariable();
+                if (doUpdateOnChange) {
+                    updateVariable();
+                }
             }
         });
+    }
+    
+    @Override
+    public boolean hasVariable()
+    {
+        return var != null;
     }
     
     @Override
@@ -93,6 +103,12 @@ public class FloatVariableSlider
     public List<VarFloat> getSupplementaryVariables()
     {
         return Collections.unmodifiableList(supplementaryVars);
+    }
+    
+    @Override
+    public void updateVariableOnChange(boolean doUpdate)
+    {
+        doUpdateOnChange = doUpdate;
     }
     
     @Override

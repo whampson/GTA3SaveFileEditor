@@ -29,6 +29,7 @@ public abstract class VariableTextField<T extends Variable>
     
     private T var;
     private String displayFormat;
+    private boolean doUpdateOnChange;
     
     protected VariableTextField(T var, T... supplementaryVars)
     {
@@ -38,10 +39,12 @@ public abstract class VariableTextField<T extends Variable>
         
         isComponentRefreshing = false;
         displayFormat = null;
+        doUpdateOnChange = true;
         
         initDocumentListener();
         initFocusListener();
         refreshComponent();
+        
     }
     
     public String getDisplayFormat()
@@ -60,7 +63,9 @@ public abstract class VariableTextField<T extends Variable>
         {
             private void update()
             {
-                if (isInputValid() && !isComponentRefreshing) {
+                if (isInputValid()
+                        && !isComponentRefreshing
+                        && doUpdateOnChange) {
                     updateVariable();
                 }
             }
@@ -134,6 +139,12 @@ public abstract class VariableTextField<T extends Variable>
     protected abstract boolean isInputValid();
     
     @Override
+    public boolean hasVariable()
+    {
+        return var != null;
+    }
+    
+    @Override
     public T getVariable()
     {
         return var;
@@ -154,5 +165,11 @@ public abstract class VariableTextField<T extends Variable>
     public List<T> getSupplementaryVariables()
     {
         return Collections.unmodifiableList(supplementaryVars);
+    }
+    
+    @Override
+    public void updateVariableOnChange(boolean doUpdate)
+    {
+        doUpdateOnChange = doUpdate;
     }
 }

@@ -119,7 +119,9 @@ public class WelcomePage extends Page
             return;
         }
         notifyObservers("delete.file", f);
-        JOptionPane.showMessageDialog(this, "File deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        if (!f.exists()) {
+            JOptionPane.showMessageDialog(this, "File deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
         populateSlotList();
     }
     

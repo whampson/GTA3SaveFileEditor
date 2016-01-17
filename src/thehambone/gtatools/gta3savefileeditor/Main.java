@@ -1,6 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor;
 
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -15,6 +16,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import thehambone.gtatools.gta3savefileeditor.gui.EditorWindow;
 import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
+import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
@@ -103,22 +105,24 @@ public final class Main
          * -merge new data handling code
          * -Record size should be determined by size of members
          * -write block size when saving file
-         * -BUG: "File deleted successfully!" message shows when user says No to
-         *       file deletion from Welcome page
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related?
          * -BUG: Mac OS X crash when using "Save Slot" feature
-         * -BUG: "Never Changes" checkbox doesn't save
          * -BUG: Combobox witth custom cell renderer does not show focus when
          *       tabbed to
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Remove Ctrl+Q shortcut
+         * -Update status bar with platform info and notifications like "All
+         *  changes saved".
          * -F5: Refresh current file
          * -Shift + F5: Refresh slots
+         * -Rewrite changes made detection (use message "change.reset") (enum of observer messages)
+         * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
          * -Android/iOS support
-         * -GXT/Plain text selector for save title (mobile only)
          * -Documentation
+         * -Tooltip text
+         * -New icon
          */
         
         initLogger();
@@ -143,6 +147,7 @@ public final class Main
         parseCommandLineArgs(args);
         initShutdownHooks();
         loadSettings();
+        loadGXT();
         Image icon = loadIcon();
         createAndShowGUI(icon);
     }
@@ -368,8 +373,26 @@ public final class Main
                     + "Default settings will be used.";
             Logger.warn(errMsg + " [%s: %s]\n",
                     ex.getClass().getName(), ex.getMessage());
+            Logger.stackTrace(ex);
             GUIUtils.showErrorMessage(null, errMsg, "IO Error", ex);
             Settings.loadDefaults();
+        }
+    }
+    
+    /*
+     * Loads a GXT table from a GXT file.
+     */
+    private static void loadGXT()
+    {
+        try {
+            GXT.loadGXTTable(new File("american.gxt"));
+        } catch (IOException ex) {
+            String errMsg = "Failed to load GXT table. "
+                    + "Some features will be unavailable.";
+            Logger.error(errMsg + " [%s: %s]\n",
+                    ex.getClass().getName(), ex.getMessage());
+            Logger.stackTrace(ex.fillInStackTrace());
+            GUIUtils.showErrorMessage(null, errMsg, "IO Error", ex);
         }
     }
     
