@@ -32,9 +32,9 @@ public class GaragesPage extends Page
     
     public GaragesPage()
     {
-        super("Garages", Visibility.VISIBLE_WHEN_GAMESAVE_LOADED_ONLY);
+        super("Garages", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         initComponents();
-        addNotifiersToComponents(mainPanel, safehouseComboBox);
+        addChangeNotifiersToComponents(mainPanel, safehouseComboBox);
         initSelectionListener();
     }
     
@@ -107,7 +107,7 @@ public class GaragesPage extends Page
     @SuppressWarnings("unchecked")
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         
         isPageInitializing = true;
 //        vars = SaveFile.getCurrentlyLoadedFile().getVariables();

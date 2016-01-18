@@ -1,6 +1,8 @@
 package thehambone.gtatools.gta3savefileeditor.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -29,8 +31,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.Main;
+import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observable;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
@@ -81,7 +83,7 @@ public class EditorWindow extends JFrame implements Observer
         initObservers();
         refreshMenus();
         refreshPages();
-        clearChangesMadeFlag();
+        changesMade = false;
         setStatus("Welcome to the GTA III Save File Editor!");
     }
     
@@ -292,8 +294,7 @@ public class EditorWindow extends JFrame implements Observer
     private void initObservers()
     {
         for (Page p : pages) {
-            p.register(this);
-            addSubject(p);
+            p.addObserver(this);
         }
     }
     
@@ -421,12 +422,12 @@ public class EditorWindow extends JFrame implements Observer
                         case ALWAYS_VISIBLE:
                             addPage = true;
                             break;
-                        case VISIBLE_WHEN_GAMESAVE_LOADED_ONLY:
+                        case VISIBLE_WHEN_FILE_LOADED_ONLY:
                             if (SaveFileNew.isFileLoaded()) {
                                 addPage = true;
                             }
                             break;
-                        case VISIBLE_WHEN_GAMESAVE_NOT_LOADED_ONLY:
+                        case VISIBLE_WHEN_FILE_NOT_LOADED_ONLY:
                             if (!SaveFileNew.isFileLoaded()) {
                                 addPage = true;
                             }
@@ -434,7 +435,7 @@ public class EditorWindow extends JFrame implements Observer
                     }
                     if (addPage) {
                         p.loadPage();
-                        tabbedPane.addTab(p.getTitle(), p);
+                        tabbedPane.addTab(p.getPageTitle(), p);
                         pack();
                     }
                 }
@@ -478,16 +479,6 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    private void setChangesMadeFlag()
-    {
-        changesMade = true;
-    }
-    
-    private void clearChangesMadeFlag()
-    {
-        changesMade = false;
-    }
-    
     private void closeFile()
     {
         Logger.info("Closing file...");
@@ -497,7 +488,7 @@ public class EditorWindow extends JFrame implements Observer
         setStatus(String.format("Closed file: %s", f));
         refreshMenus();
         refreshPages();
-        clearChangesMadeFlag();
+        changesMade = false;
         updateFrameTitle();
     }
     
@@ -511,7 +502,7 @@ public class EditorWindow extends JFrame implements Observer
             JOptionPane.showMessageDialog(this, "File loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             refreshMenus();
             refreshPages();
-            clearChangesMadeFlag();
+            changesMade = false;
             updateFrameTitle();
         } catch (IOException ex) {
             String errMsg = "An error occured while loading the file.";
@@ -531,12 +522,12 @@ public class EditorWindow extends JFrame implements Observer
         try {
             Logger.info("Saving file...");
             SaveFileNew.getCurrentSaveFile().save(f);
-            clearChangesMadeFlag();
+            changesMade = false;
             Logger.info("Successfully saved file: %s\n", f);
             setStatus(String.format("Saved file: %s", f));
             updateFrameTitle();
             refreshSlotMenus();
-            pages[1].loadPage();
+//            pages[1].loadPage();
         } catch (IOException ex) {
             String errMsg = "An error occured while attempting to save the file.";
             Logger.error(errMsg);
@@ -615,50 +606,72 @@ public class EditorWindow extends JFrame implements Observer
     }
 
     @Override
-    public void update()
+    public void update(Object message, Object... args)
     {
-        for (Observable o : subjects) {
-            Object[] update = o.getUpdate();
-            if (update == null || update.length == 0) {
-                continue;
-            }
-            String msg = (String)update[0];
-            List<Object> args = new ArrayList<>();
-            for (int i = 1; i < update.length; i++) {
-                args.add(update[i]);
-            }
-            switch (msg) {
-                case "refresh.slots":
-                    refreshSlotMenus();
+        if (!(message instanceof Page.Event)) {
+            return;
+        }
+        
+        Page.Event e = (Page.Event)message;
+        Logger.debug("Page event: " + e);
+        
+        switch (e) {
+            case VARIABLE_CHANGED:
+                if (!changesMade) {
+                    changesMade = true;
+                    updateFrameTitle();
+                }
+                break;
+            case VARIABLE_UNCHANGED:
+                if (!changesMade) {
                     break;
-                case "load.file":
-                    File fileToLoad = (File)args.get(0);
-                    if (fileToLoad == null) {
-                        return;
+                }
+                
+                boolean changesReverted = true;
+                for (Page p : pages) {
+                    List<VariableComponent> comps = getAllVariableComponents(p);
+                    for (VariableComponent c : comps) {
+                        if (c.hasVariable() && c.getVariable().dataChanged()) {
+                            changesReverted = false;
+                            break;
+                        }
                     }
-                    loadFile(fileToLoad);
-                    break;
-                case "delete.file":
-                    File fileToDelete = (File)args.get(0);
-                    if (fileToDelete == null) {
-                        return;
-                    }
-                    deleteFile(fileToDelete);
-                    break;
-                case "change.made":
-                    if (!changesMade) {
-                        setChangesMadeFlag();
-                        updateFrameTitle();
-                    }
-                    break;
-            }
+                    changesMade = !changesReverted;
+                    updateFrameTitle();
+                }
+                break;
+            case FILE_LOAD:
+                File fileToLoad = (File)args[0];    // TODO: unsafe!!
+                if (fileToLoad == null) {
+                    return;
+                }
+                loadFile(fileToLoad);
+                break;
+            case FILE_DELETE:
+                File fileToDelete = (File)args[0];  // TODO: unsafe!!
+                if (fileToDelete == null) {
+                    return;
+                }
+                deleteFile(fileToDelete);
+                break;
+            case REFRESH_SLOTS:
+                refreshSlotMenus();
+                break;
         }
     }
-
-    @Override
-    public void addSubject(Observable o)
+    
+    public List<VariableComponent> getAllVariableComponents(Container parent)
     {
-        subjects.add(o);
+        List<VariableComponent> comps = new ArrayList<>();
+        for (Component c : parent.getComponents()) {
+            if (c instanceof Container) {
+                comps.addAll(getAllVariableComponents((Container)c));
+            }
+            if (c instanceof VariableComponent) {
+                comps.add((VariableComponent)c);
+            }
+        }
+        return comps;
     }
     
     private static enum SlotMenuItemAction

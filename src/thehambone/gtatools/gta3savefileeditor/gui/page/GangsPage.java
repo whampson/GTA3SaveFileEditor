@@ -22,16 +22,16 @@ public class GangsPage extends Page
     
     public GangsPage()
     {
-        super("Gangs", Visibility.VISIBLE_WHEN_GAMESAVE_LOADED_ONLY);
+        super("Gangs", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         initComponents();
-        addNotifiersToComponents(mainPanel, gangComboBox);
+        addChangeNotifiersToComponents(mainPanel, gangComboBox);
     }
     
     @Override
     @SuppressWarnings("unchecked")
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         
         isPageInitializing = true;
 //        vars = SaveFile.getCurrentlyLoadedFile().getVariables();

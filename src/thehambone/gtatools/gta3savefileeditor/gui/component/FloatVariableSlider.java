@@ -16,8 +16,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  *
  * @author thehambone
  */
-public class FloatVariableSlider
-        extends JSlider implements VariableComponent<VarFloat>
+public class FloatVariableSlider extends VariableSlider<VarFloat>
 {
     private final List<VarFloat> supplementaryVars;
     

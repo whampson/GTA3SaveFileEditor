@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JComboBox;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.IntegerVariable;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -18,7 +17,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * @param <E>
  */
 public class IntegerVariableComboBox<E>
-        extends JComboBox<E> implements VariableComponent<IntegerVariable>
+        extends VariableComboBox<IntegerVariable, E>
 {
     private final List<IntegerVariable> supplementaryVars;
     

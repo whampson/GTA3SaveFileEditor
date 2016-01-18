@@ -33,7 +33,7 @@ public class WelcomePage extends Page
     
     public WelcomePage()
     {
-        super("Welcome", Visibility.VISIBLE_WHEN_GAMESAVE_NOT_LOADED_ONLY);
+        super("Welcome", Visibility.VISIBLE_WHEN_FILE_NOT_LOADED_ONLY);
         initComponents();
         initKeyListener();
         initListSelectionListener();
@@ -108,7 +108,7 @@ public class WelcomePage extends Page
         if (saveSlot.isEmpty()) {
             return;
         }
-        notifyObservers("load.file", f);
+        notifyObservers(Event.FILE_LOAD, f);
     }
     
     private void deleteSelectedSlot()
@@ -118,7 +118,7 @@ public class WelcomePage extends Page
         if (saveSlot.isEmpty()) {
             return;
         }
-        notifyObservers("delete.file", f);
+        notifyObservers(Event.FILE_DELETE, f);
         if (!f.exists()) {
             JOptionPane.showMessageDialog(this, "File deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -127,14 +127,14 @@ public class WelcomePage extends Page
     
     private void refresh()
     {
-        notifyObservers("refresh.slots");
+        notifyObservers(Event.REFRESH_SLOTS);
         populateSlotList();
     }
     
     @Override
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         
         try {
             imageLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));

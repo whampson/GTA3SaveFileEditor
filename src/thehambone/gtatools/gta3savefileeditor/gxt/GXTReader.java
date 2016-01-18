@@ -12,8 +12,9 @@ import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
 /**
  * The purpose of this class is to read text data found within a Grand Theft
  * Auto III GXT file. GXT files contain all of the strings used in a given GTA
- * game. The file follows a key-value format where a unique, 8-character long
- * key maps to a variable-length UTF-16 string.
+ * game. This reader is designed to handle GTA III-format GXT files only. The
+ * file follows a key-value format where a unique, 8-character long key maps to
+ * a variable-length UTF-16 string.
  * <p>
  * Created on Jan 16, 2016.
  *
@@ -54,7 +55,7 @@ public class GXTReader
         
         // Read TKEY section header
         gxtBuf.read(sigBuf);
-        int sizeOfTKEY = gxtBuf.readInt();
+        int sizeOfTKEYSection = gxtBuf.readInt();
         
         // Check if section signature is correct
         if (!Arrays.equals(sigBuf, TKEY_SIG)) {
@@ -63,7 +64,7 @@ public class GXTReader
         
         // Read TDAT section header
         gxtBuf.mark();
-        gxtBuf.seek(sizeOfTKEY + 0x08);
+        gxtBuf.seek(sizeOfTKEYSection + 0x08);
         gxtBuf.read(sigBuf);
         
         // Check if section signature is correct
@@ -73,12 +74,12 @@ public class GXTReader
         gxtBuf.reset();
         
         // Iterate through all TKEY entries and dereference GXT string
-        int numEntries = sizeOfTKEY / SIZE_OF_TKEY_ENTRY;
+        int numEntries = sizeOfTKEYSection / SIZE_OF_TKEY_ENTRY;
         for (int i = 0; i < numEntries; i++) {
             int pValue = gxtBuf.readInt();
             gxtBuf.read(entryNameBuf);
             String key = new String(entryNameBuf).trim();
-            String value = readGXTString(sizeOfTKEY, pValue);
+            String value = readGXTString(sizeOfTKEYSection, pValue);
             gxt.put(key, value);
         }
         
@@ -89,17 +90,17 @@ public class GXTReader
     /*
      * Dereferences a GXT string from the pointer found in the TKEY section.
      */
-    private String readGXTString(int sizeOfTKEY, int pString)
+    private String readGXTString(int sizeOfTKEYSection, int pString)
     {
         // Move to offset of string in file buffer; preserve previous offset
         gxtBuf.mark();
-        gxtBuf.seek(sizeOfTKEY + 0x10);
+        gxtBuf.seek(sizeOfTKEYSection + 0x10);
         gxtBuf.skip(pString);
         
         // Search for UTF-16 null terminator (0x00 0x00)
         int startOffset = gxtBuf.getOffset();
         while (gxtBuf.readShort() != 0) {
-            continue;   // Keep looping until a 0 is found
+            continue;   // Keep looping until a 0 (null terminator) is found
         }
         
         // Determine size of UTF-16 string buffer

@@ -28,7 +28,7 @@ public class DebugPage extends Page
     @Override
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         consoleOutputTextArea.setDocument(IO.getOutputDocument());
     }
 

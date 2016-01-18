@@ -34,7 +34,7 @@ public class GeneralPage extends Page
     
     public GeneralPage()
     {
-        super("General", Visibility.VISIBLE_WHEN_GAMESAVE_LOADED_ONLY);
+        super("General", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         
         initComponents();
         initVariableComponentParameters();
@@ -42,7 +42,7 @@ public class GeneralPage extends Page
         initTimestampComponents();
         initWeatherComponents();
         
-        addNotifiersToComponents(mainPanel);
+        addChangeNotifiersToComponents(mainPanel);
     }
     
     /*
@@ -234,8 +234,8 @@ public class GeneralPage extends Page
     {
         // Show GXT Selector dialog
         Window parent = SwingUtilities.getWindowAncestor(this);
-        GXTSelectorDialog gxtSelect = new GXTSelectorDialog(parent);
-        String key = gxtSelect.showSelectionDialog(gxt);
+        GXTSelectorDialog gxtSelect = new GXTSelectorDialog(parent, gxt);
+        String key = gxtSelect.showKeySelectionDialog();
         
         // Update save name if user made a selection
         if (key != null) {
@@ -271,11 +271,12 @@ public class GeneralPage extends Page
     @Override
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         
         // Disables page event notifiers; required for all pages
         isPageInitializing = true;
         
+        // Get most up-to-date GXT table
         gxt = GXT.getGXTTable();
         
         SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();

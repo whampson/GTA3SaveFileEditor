@@ -68,7 +68,7 @@ public class OptionsPage extends Page
     @Override
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         
         saveFileFolderTextField.setText(Settings.get("gta3.save.dir"));
         backupCheckBox.setSelected(Boolean.parseBoolean(Settings.get("make.backups")));

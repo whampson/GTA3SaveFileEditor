@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JCheckBox;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.IntegerVariable;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -16,8 +15,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  *
  * @author thehambone
  */
-public class IntegerVariableCheckBox
-        extends JCheckBox implements VariableComponent<IntegerVariable>
+public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
 {
     private final List<IntegerVariable> supplementaryVars;
     
@@ -34,6 +32,7 @@ public class IntegerVariableCheckBox
     public IntegerVariableCheckBox(IntegerVariable var, int deselectedValue,
             int selectedValue, IntegerVariable... supplementaryVars)
     {
+        super();
         this.var = var;
         this.deselectedValue = deselectedValue;
         this.selectedValue = selectedValue;

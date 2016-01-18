@@ -7,6 +7,10 @@ import java.util.Map;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * This class is responsible for keeping track of the active GXT table. A GXT
+ * table contains all of the strings used in a particular GTA game for a
+ * specific language.
+ * <p>
  * Created on Jan 17, 2016.
  *
  * @author thehambone
@@ -15,16 +19,29 @@ public final class GXT
 {
     private static Map<String, String> gxtTable;
     
+    /**
+     * Gets the loaded GXT table as a {@code Map} of strings. If no table is
+     * loaded, {@code null} is returned.
+     * 
+     * @return a {@code Map} containing the GXT keys and values; {@code null}
+     *         if no GXT table is loaded
+     */
     public static Map<String, String> getGXTTable()
     {
         return gxtTable;
     }
     
+    /**
+     * Loads a GXT table from a file.
+     * 
+     * @param gxtFile the file to load
+     * @throws IOException if an IO error occurs while reading the file
+     */
     public static void loadGXTTable(File gxtFile) throws IOException
     {
         GXTReader r = new GXTReader(gxtFile);
         gxtTable = r.readFile();
         
-        Logger.info("Loaded GXT Table from file: " + gxtFile);
+        Logger.info("Loaded GXT table from file: " + gxtFile);
     }
 }

@@ -33,9 +33,9 @@ public class PlayerPage extends Page
     
     public PlayerPage()
     {
-        super("Player", Visibility.VISIBLE_WHEN_GAMESAVE_LOADED_ONLY);
+        super("Player", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         initComponents();
-        addNotifiersToComponents(mainPanel, weaponSlotComboBox);
+        addChangeNotifiersToComponents(mainPanel, weaponSlotComboBox);
         
         maxWantedLevelComboBox.addActionListener(new ActionListener()
         {
@@ -52,7 +52,7 @@ public class PlayerPage extends Page
     @SuppressWarnings("unchecked")
     public void loadPage()
     {
-        Logger.debug("Loading page: %s...\n", getTitle());
+        Logger.debug("Loading page: %s...\n", getPageTitle());
         
         isPageInitializing = true;
         
