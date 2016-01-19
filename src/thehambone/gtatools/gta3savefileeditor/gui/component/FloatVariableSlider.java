@@ -1,13 +1,7 @@
 
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarFloat;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -18,11 +12,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  */
 public class FloatVariableSlider extends VariableSlider<VarFloat>
 {
-    private final List<VarFloat> supplementaryVars;
-    
-    private VarFloat var;
     private int scale;
-    private boolean doUpdateOnChange;
     
     public FloatVariableSlider()
     {
@@ -32,13 +22,7 @@ public class FloatVariableSlider extends VariableSlider<VarFloat>
     public FloatVariableSlider(VarFloat var, int min, int max, int value,
             int scale, VarFloat... supplementaryVars)
     {
-        super(min, max, value);
-        this.var = var;
-        this.supplementaryVars
-                = new ArrayList<>(Arrays.asList(supplementaryVars));
-        doUpdateOnChange = true;
-        
-        initChangeListener();
+        super(var, min, max, value, supplementaryVars);
     }
     
     public int getScale()
@@ -61,78 +45,37 @@ public class FloatVariableSlider extends VariableSlider<VarFloat>
         setValue((int)(value * scale));
     }
     
-    private void initChangeListener()
-    {
-        addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                if (doUpdateOnChange) {
-                    updateVariable();
-                }
-            }
-        });
-    }
-    
-    @Override
-    public boolean hasVariable()
-    {
-        return var != null;
-    }
-    
-    @Override
-    public VarFloat getVariable()
-    {
-        return var;
-    }
-    
-    @Override
-    public void setVariable(VarFloat var, VarFloat... supplementaryVars)
-    {
-        this.var = var;
-        
-        this.supplementaryVars.clear();
-        this.supplementaryVars.addAll(Arrays.asList(supplementaryVars));
-        
-        refreshComponent();
-    }
-    
-    @Override
-    public List<VarFloat> getSupplementaryVariables()
-    {
-        return Collections.unmodifiableList(supplementaryVars);
-    }
-    
-    @Override
-    public void updateVariableOnChange(boolean doUpdate)
-    {
-        doUpdateOnChange = doUpdate;
-    }
-    
     @Override
     public void refreshComponent()
     {
-        if (var == null) {
+        VarFloat v = getVariable();
+        if (v == null) {
             return;
         }
         
-        setScaledValue(var.getValue());
+        setScaledValue(v.getValue());
     }
     
     @Override
     public void updateVariable()
     {
-        if (var == null) {
+        VarFloat v = getVariable();
+        if (v == null) {
             return;
         }
         
-        var.setValue(getScaledValue());
-        Logger.debug("Variable updated: " + var);
+        v.setValue(getScaledValue());
+        Logger.debug("Variable updated: " + v);
         
-        for (VarFloat v : getSupplementaryVariables()) {
-            v.setValue(getScaledValue());
-            Logger.debug("Variable updated: " + v);
+        for (VarFloat v1 : getSupplementaryVariables()) {
+            v1.setValue(getScaledValue());
+            Logger.debug("Variable updated: " + v1);
+        }
+        
+        if (v.dataChanged()) {
+            notifyObservers(Page.Event.VARIABLE_CHANGED);
+        } else {
+            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

@@ -1,12 +1,7 @@
 
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.IntegerVariable;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -19,11 +14,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
 public class IntegerVariableComboBox<E>
         extends VariableComboBox<IntegerVariable, E>
 {
-    private final List<IntegerVariable> supplementaryVars;
-    
-    private IntegerVariable var;
     private int valueOffset;
-    private boolean doUpdateOnChange;
     
     public IntegerVariableComboBox()
     {
@@ -33,13 +24,8 @@ public class IntegerVariableComboBox<E>
     public IntegerVariableComboBox(IntegerVariable var, int valueOffset,
             IntegerVariable... supplementaryVars)
     {
-        this.var = var;
+        super(var, supplementaryVars);
         this.valueOffset = valueOffset;
-        this.supplementaryVars
-                = new ArrayList<>(Arrays.asList(supplementaryVars));
-        doUpdateOnChange = true;
-        
-        initActionListener();
     }
     
     public int getValueOffset()
@@ -52,66 +38,17 @@ public class IntegerVariableComboBox<E>
         this.valueOffset = valueOffset;
     }
     
-    private void initActionListener()
-    {
-        addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (doUpdateOnChange) {
-                    updateVariable();
-                }
-            }
-        });
-    }
-    
-    @Override
-    public boolean hasVariable()
-    {
-        return var != null;
-    }
-    
-    @Override
-    public IntegerVariable getVariable()
-    {
-        return var;
-    }
-    
-    @Override
-    public void setVariable(IntegerVariable var,
-            IntegerVariable... supplementaryVars)
-    {
-        this.var = var;
-        
-        this.supplementaryVars.clear();
-        this.supplementaryVars.addAll(Arrays.asList(supplementaryVars));
-        
-        refreshComponent();
-    }
-    
-    @Override
-    public List<IntegerVariable> getSupplementaryVariables()
-    {
-        return Collections.unmodifiableList(supplementaryVars);
-    }
-    
-    @Override
-    public void updateVariableOnChange(boolean doUpdate)
-    {
-        doUpdateOnChange = doUpdate;
-    }
-    
     @Override
     public void refreshComponent()
     {
-        if (var == null) {
+        IntegerVariable v = getVariable();
+        if (v == null) {
             return;
         }
         
-        Logger.debug(var.toString());
+        Logger.debug(v.toString());
         
-        int val = Integer.parseInt(var.getValue().toString());
+        int val = Integer.parseInt(v.getValue().toString());
         if (val > 0 && val < getItemCount() - 1) {
             setSelectedIndex(val - valueOffset);
         }
@@ -120,17 +57,24 @@ public class IntegerVariableComboBox<E>
     @Override
     public void updateVariable()
     {
-        if (var == null) {
+        IntegerVariable v = getVariable();
+        if (v == null) {
             return;
         }
         
         String val = Integer.toString(getSelectedIndex() + valueOffset);
-        var.parseValue(val);
-        Logger.debug("Variable updated: " + var);
+        v.parseValue(val);
+        Logger.debug("Variable updated: " + v);
         
-        for (IntegerVariable v : getSupplementaryVariables()) {
-            v.parseValue(val);
-            Logger.debug("Variable updated: " + v);
+        for (IntegerVariable v1 : getSupplementaryVariables()) {
+            v1.parseValue(val);
+            Logger.debug("Variable updated: " + v1);
+        }
+        
+        if (v.dataChanged()) {
+            notifyObservers(Page.Event.VARIABLE_CHANGED);
+        } else {
+            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

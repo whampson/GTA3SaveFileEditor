@@ -10,7 +10,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
 import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.component.document.FloatDocumentFilter;
-import thehambone.gtatools.gta3savefileeditor.gui.component.document.WholeNumberDocumentFilter;
+import thehambone.gtatools.gta3savefileeditor.gui.component.document.IntegerDocumentFilter;
 import thehambone.gtatools.gta3savefileeditor.gui.component.document.StringDocumentFilter;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.DataStructure;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
@@ -111,15 +111,15 @@ public final class VariableValueTextField
 //                doc.setDocumentFilter(new StringDocumentFilter());
                 break;
             case INT:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         Integer.MIN_VALUE, Integer.MAX_VALUE));
                 break;
             case BYTE:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         Byte.MIN_VALUE, Byte.MAX_VALUE));
                 break;
             case SHORT:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         Short.MIN_VALUE, Short.MAX_VALUE));
                 break;
             case FLOAT:

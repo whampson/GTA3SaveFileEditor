@@ -35,7 +35,6 @@ public class PlayerPage extends Page
     {
         super("Player", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         initComponents();
-        addChangeNotifiersToComponents(mainPanel, weaponSlotComboBox);
         
         maxWantedLevelComboBox.addActionListener(new ActionListener()
         {
@@ -53,8 +52,6 @@ public class PlayerPage extends Page
     public void loadPage()
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
-        
-        isPageInitializing = true;
         
         BlockPlayerInfo player = SaveFileNew.getCurrentSaveFile().playerInfo;
         playerped = SaveFileNew.getCurrentSaveFile()
@@ -92,8 +89,6 @@ public class PlayerPage extends Page
         weaponSlotComboBox.setRenderer(new WeaponListCellRenderer());
         
         weaponSlotComboBoxActionPerformed(null);
-        
-        isPageInitializing = false;
     }
     
     private void updateWeaponInInventoryCheckBox(WeaponSlot ws)

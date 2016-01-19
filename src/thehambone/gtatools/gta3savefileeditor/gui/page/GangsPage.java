@@ -24,7 +24,6 @@ public class GangsPage extends Page
     {
         super("Gangs", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         initComponents();
-        addChangeNotifiersToComponents(mainPanel, gangComboBox);
     }
     
     @Override
@@ -32,8 +31,6 @@ public class GangsPage extends Page
     public void loadPage()
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
-        
-        isPageInitializing = true;
 //        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
 //        
 //        DefaultComboBoxModel<GameConstants.Gang> gangComboBoxModel = new DefaultComboBoxModel();
@@ -62,8 +59,6 @@ public class GangsPage extends Page
 //        secondaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
         
 //        updatePanels(GameConstants.Gang.GANG01);
-        
-        isPageInitializing = false;
     }
     
     private int getThreatForGang(GameConstants.Gang g)
@@ -80,8 +75,6 @@ public class GangsPage extends Page
     
     private void updatePanels(GameConstants.Gang g)
     {
-        isPageInitializing = true;
-        
         Gang gang = vars.aGangs.getValueAt(g.getID());
         
         for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
@@ -102,8 +95,6 @@ public class GangsPage extends Page
         
         int threat = getThreatForGang(g);
         hostileTowardsPlayerCheckBox.setSelected((threat & PLAYER_MASK) == PLAYER_MASK);
-        
-        isPageInitializing = false;
     }
 
     /**

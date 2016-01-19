@@ -384,6 +384,7 @@ public final class Main
      */
     private static void loadGXT()
     {
+        Logger.info("Loading GXT table...");
         try {
             GXT.loadGXTTable(new File("american.gxt"));
         } catch (IOException ex) {

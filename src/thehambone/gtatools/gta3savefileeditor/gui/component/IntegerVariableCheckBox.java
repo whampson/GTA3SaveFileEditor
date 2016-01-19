@@ -1,12 +1,7 @@
 
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.IntegerVariable;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -17,12 +12,8 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  */
 public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
 {
-    private final List<IntegerVariable> supplementaryVars;
-    
-    private IntegerVariable var;
     private int deselectedValue;
     private int selectedValue;
-    private boolean doUpdateOnChange;
     
     public IntegerVariableCheckBox()
     {
@@ -32,15 +23,9 @@ public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
     public IntegerVariableCheckBox(IntegerVariable var, int deselectedValue,
             int selectedValue, IntegerVariable... supplementaryVars)
     {
-        super();
-        this.var = var;
+        super(var, supplementaryVars);
         this.deselectedValue = deselectedValue;
         this.selectedValue = selectedValue;
-        this.supplementaryVars
-                = new ArrayList<>(Arrays.asList(supplementaryVars));
-        doUpdateOnChange = true;
-        
-        initActionListener();
     }
     
     public int getDeselectedValue()
@@ -63,64 +48,15 @@ public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
         selectedValue = value;
     }
     
-    private void initActionListener()
-    {
-        addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (doUpdateOnChange) {
-                    updateVariable();
-                }
-            }
-        });
-    }
-    
-    @Override
-    public boolean hasVariable()
-    {
-        return var != null;
-    }
-    
-    @Override
-    public IntegerVariable getVariable()
-    {
-        return var;
-    }
-    
-    @Override
-    public void setVariable(IntegerVariable var,
-            IntegerVariable... supplementaryVars)
-    {
-        this.var = var;
-        
-        this.supplementaryVars.clear();
-        this.supplementaryVars.addAll(Arrays.asList(supplementaryVars));
-        
-        refreshComponent();
-    }
-    
-    @Override
-    public List<IntegerVariable> getSupplementaryVariables()
-    {
-        return Collections.unmodifiableList(supplementaryVars);
-    }
-    
-    @Override
-    public void updateVariableOnChange(boolean doUpdate)
-    {
-        doUpdateOnChange = doUpdate;
-    }
-    
     @Override
     public void refreshComponent()
     {
-        if (var == null) {
+        IntegerVariable v = getVariable();
+        if (v == null) {
             return;
         }
         
-        int val = Integer.parseInt(var.getValue().toString());
+        int val = Integer.parseInt(v.getValue().toString());
         
         setSelected(val == selectedValue);
     }
@@ -128,17 +64,24 @@ public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
     @Override
     public void updateVariable()
     {
-        if (var == null) {
+        IntegerVariable v = getVariable();
+        if (v == null) {
             return;
         }
         
         int val = isSelected() ? selectedValue : deselectedValue;
-        var.parseValue(Integer.toString(val));
-        Logger.debug("Variable updated: " + var);
+        v.parseValue(Integer.toString(val));
+        Logger.debug("Variable updated: " + v);
         
-        for (IntegerVariable v : getSupplementaryVariables()) {
-            v.parseValue(Integer.toString(val));
-            Logger.debug("Variable updated: " + v);
+        for (IntegerVariable v1 : getSupplementaryVariables()) {
+            v1.parseValue(Integer.toString(val));
+            Logger.debug("Variable updated: " + v1);
+        }
+        
+        if (v.dataChanged()) {
+            notifyObservers(Page.Event.VARIABLE_CHANGED);
+        } else {
+            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

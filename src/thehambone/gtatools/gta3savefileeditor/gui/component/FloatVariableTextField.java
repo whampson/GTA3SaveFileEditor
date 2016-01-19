@@ -1,6 +1,7 @@
 
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
+import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarFloat;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
@@ -65,6 +66,12 @@ public class FloatVariableTextField
         for (VarFloat v1 : getSupplementaryVariables()) {
             v1.parseValue(getText());
             Logger.debug("Variable updated: " + v1);
+        }
+        
+        if (v.dataChanged()) {
+            notifyObservers(Page.Event.VARIABLE_CHANGED);
+        } else {
+            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

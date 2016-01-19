@@ -2,6 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
 import java.util.List;
+import thehambone.gtatools.gta3savefileeditor.gui.observe.Observable;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 
@@ -11,7 +12,7 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
  * @author thehambone
  * @param <T>
  */
-public interface VariableComponent<T extends Variable>
+public interface VariableComponent<T extends Variable> extends Observable
 {
     public boolean hasVariable();
     

@@ -34,7 +34,6 @@ public class GaragesPage extends Page
     {
         super("Garages", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
         initComponents();
-        addChangeNotifiersToComponents(mainPanel, safehouseComboBox);
         initSelectionListener();
     }
     
@@ -45,8 +44,6 @@ public class GaragesPage extends Page
             @Override
             public void valueChanged(ListSelectionEvent e)
             {
-                isPageInitializing = true;
-                
                 StoredCar storedCar = getSelectedGarageSlot();
                 if (storedCar == null) {
                     setSlotEditComponentsEnabled(false);
@@ -97,8 +94,6 @@ public class GaragesPage extends Page
                         break;
                     }
                 }
-                
-                isPageInitializing = false;
             }
         });
     }
@@ -109,7 +104,6 @@ public class GaragesPage extends Page
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
-        isPageInitializing = true;
 //        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
 //        
 //        DefaultComboBoxModel safehouseComboBoxModel = new DefaultComboBoxModel();
@@ -150,8 +144,6 @@ public class GaragesPage extends Page
 //        
 //        setSlotEditComponentsEnabled(false);
 //        updateGarageSlots(GameConstants.Island.PORTLAND);
-        
-        isPageInitializing = false;
     }
     
     private StoredCar getSelectedGarageSlot()

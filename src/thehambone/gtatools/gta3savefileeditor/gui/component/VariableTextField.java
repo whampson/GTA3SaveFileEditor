@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
+import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 /**
@@ -25,6 +26,7 @@ public abstract class VariableTextField<T extends Variable>
 {
     protected volatile boolean isComponentRefreshing;
     
+    private final List<Observer> observers;
     private final List<T> supplementaryVars;
     
     private T var;
@@ -34,6 +36,7 @@ public abstract class VariableTextField<T extends Variable>
     protected VariableTextField(T var, T... supplementaryVars)
     {
         this.var = var;
+        this.observers = new ArrayList<>();
         this.supplementaryVars
                 = new ArrayList<>(Arrays.asList(supplementaryVars));
         
@@ -171,5 +174,27 @@ public abstract class VariableTextField<T extends Variable>
     public void updateVariableOnChange(boolean doUpdate)
     {
         doUpdateOnChange = doUpdate;
+    }
+    
+    @Override
+    public void addObserver(Observer o)
+    {
+        if (!observers.contains(o)) {
+            observers.add(o);
+        }
+    }
+    
+    @Override
+    public void removeObserver(Observer o)
+    {
+        observers.remove(o);
+    }
+    
+    @Override
+    public void notifyObservers(Object message, Object... args)
+    {
+        for (Observer o : observers) {
+            o.update(message, args);
+        }
     }
 }

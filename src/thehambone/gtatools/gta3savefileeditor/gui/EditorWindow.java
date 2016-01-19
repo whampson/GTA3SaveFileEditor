@@ -65,7 +65,7 @@ public class EditorWindow extends JFrame implements Observer
         new GangsPage(),
         new OptionsPage(),
         new DebugPage()
-    };   
+    };
     private final List<Observable> subjects = new ArrayList<>();
     
     private JMenu slotLoadMenu;

@@ -2,7 +2,8 @@
 package thehambone.gtatools.gta3savefileeditor.gui.component;
 
 import javax.swing.text.PlainDocument;
-import thehambone.gtatools.gta3savefileeditor.gui.component.document.WholeNumberDocumentFilter;
+import thehambone.gtatools.gta3savefileeditor.gui.component.document.IntegerDocumentFilter;
+import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarByte;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarShort;
@@ -70,27 +71,27 @@ public final class IntegerVariableTextField
         PlainDocument doc = (PlainDocument)getDocument();
         switch (dataType) {
             case BYTE:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         Byte.MIN_VALUE, Byte.MAX_VALUE));
                 break;
             case INT:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         Integer.MIN_VALUE, Integer.MAX_VALUE));
                 break;
             case SHORT:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         Short.MIN_VALUE, Short.MAX_VALUE));
                 break;
             case UNSIGNED_BYTE:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         0, NumberUtilities.UNSIGNED_BYTE_MAX_VALUE));
                 break;
             case UNSIGNED_INT:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         0, NumberUtilities.UNSIGNED_INT_MAX_VALUE));
                 break;
             case UNSIGNED_SHORT:
-                doc.setDocumentFilter(new WholeNumberDocumentFilter(
+                doc.setDocumentFilter(new IntegerDocumentFilter(
                         0, NumberUtilities.UNSIGNED_SHORT_MAX_VALUE));
                 break;
         }
@@ -148,6 +149,12 @@ public final class IntegerVariableTextField
         for (IntegerVariable v1 : getSupplementaryVariables()) {
             v1.parseValue(getText(), isUnsigned);
             Logger.debug("Variable updated: " + v1);
+        }
+        
+        if (v.dataChanged()) {
+            notifyObservers(Page.Event.VARIABLE_CHANGED);
+        } else {
+            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
     

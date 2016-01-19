@@ -31,7 +31,11 @@ public class GeneralPage extends Page
     private JComponent[] timestampComponents;
     private BlockSimpleVars simp;
     private String prevTitleGXTKey;
+    private String prevTitleText;
     
+    /**
+     * Creates a new {@code GeneralPage} object.
+     */
     public GeneralPage()
     {
         super("General", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
@@ -41,8 +45,6 @@ public class GeneralPage extends Page
         initSaveNameComponents();
         initTimestampComponents();
         initWeatherComponents();
-        
-        addChangeNotifiersToComponents(mainPanel);
     }
     
     /*
@@ -189,10 +191,12 @@ public class GeneralPage extends Page
                 saveTitleTextField.setToolTipText(gxtValue);
                 
                 prevTitleGXTKey = str;
+                prevTitleText = gxtValue;
                 
                 // Update variable with GXT key
                 simp.szSaveName.setValue(GXT_INDICATOR + str);
                 Logger.debug("Variable updated: " + simp.szSaveName);
+                notifyChange(simp.szSaveName);
             } else {
                 saveTitleTextField.setText("<invalid GXT key>");
                 saveTitleTextField.setToolTipText("Invalid GXT key.");
@@ -204,9 +208,12 @@ public class GeneralPage extends Page
             saveTitleTextField.setEditable(true);
             saveTitleTextField.updateVariableOnChange(true);
             
+            prevTitleText = str;
+            
             // Update variable with string
             simp.szSaveName.setValue(str);
             Logger.debug("Variable updated: " + simp.szSaveName);
+            notifyChange(simp.szSaveName);
             
             // Refresh text field
             saveTitleTextField.refreshComponent();
@@ -214,12 +221,22 @@ public class GeneralPage extends Page
         }
     }
     
+    /*
+     * Defines the action for the "Text" radio button.
+     */
     private void textRadioButtonAction(ActionEvent e)
     {
         selectGXTStringButton.setEnabled(false);
-        updateSaveTitle(saveTitleTextField.getText(), false);
+        if (prevTitleText != null) {
+            updateSaveTitle(prevTitleText, false);
+        } else {
+            updateSaveTitle(saveTitleTextField.getText(), false);
+        }
     }
     
+    /*
+     * Defines the action for the "GXT Key" radio button.
+     */
     private void gxtKeyRadioButtonAction(ActionEvent e)
     {
         selectGXTStringButton.setEnabled(true);
@@ -230,6 +247,9 @@ public class GeneralPage extends Page
         }
     }
     
+    /*
+     * Defines the action for the "Select GXT String" button.
+     */
     private void selectGXTStringButtonAction(ActionEvent e)
     {
         // Show GXT Selector dialog
@@ -243,6 +263,9 @@ public class GeneralPage extends Page
         }
     }
     
+    /*
+     * Defines the action for the "Current weather" combo box.
+     */
     private void currentWeatherComboBoxAction(ActionEvent e)
     {
         // Update rightmost label above weather interpolation slider
@@ -261,6 +284,9 @@ public class GeneralPage extends Page
         }
     }
     
+    /*
+     * Defines the action for the "Previous weather" combo box.
+     */
     private void previousWeatherComboBoxAction(ActionEvent e)
     {
         // Update leftmost label above weather interpolation slider
@@ -272,9 +298,6 @@ public class GeneralPage extends Page
     public void loadPage()
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
-        
-        // Disables page event notifiers; required for all pages
-        isPageInitializing = true;
         
         // Get most up-to-date GXT table
         gxt = GXT.getGXTTable();
@@ -347,9 +370,6 @@ public class GeneralPage extends Page
         // Detect bugs/glitches
 //        detectPurpleNinesGlitch();
 //        detectPedHostilityCheatsEnabled();
-        
-        // Re-enables page event notifiers; required for all pages
-        isPageInitializing = false;
     }
     
     private void detectPurpleNinesGlitch()

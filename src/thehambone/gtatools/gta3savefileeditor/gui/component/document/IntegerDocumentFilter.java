@@ -17,13 +17,13 @@ import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
  * @version 0.1
  * @since 0.1, March 30, 2015
  */
-public class WholeNumberDocumentFilter extends DocumentFilter
+public class IntegerDocumentFilter extends DocumentFilter
 {
     // longs are used to handle unsigned types
     private final long min;
     private final long max;
     
-    public WholeNumberDocumentFilter(long min, long max)
+    public IntegerDocumentFilter(long min, long max)
     {
         this.min = min;
         this.max = max;

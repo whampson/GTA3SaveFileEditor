@@ -1,24 +1,15 @@
 package thehambone.gtatools.gta3savefileeditor.gui.page;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import thehambone.gtatools.gta3savefileeditor.gui.component.VariableCheckBox;
-import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComboBox;
 import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
-import thehambone.gtatools.gta3savefileeditor.gui.component.VariableSlider;
-import thehambone.gtatools.gta3savefileeditor.gui.component.VariableTextField;
 import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observable;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 /**
  * Created on Mar 7, 2015.
@@ -27,218 +18,160 @@ import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
  */
 public abstract class Page extends JPanel implements Observable
 {
-    protected volatile boolean isPageInitializing;
-    
     protected VariableDefinitions vars;
     
     private final List<Observer> observers;
-    private final Object lock;
     private final String pageTitle;
     private final Visibility visibility;
     
+    /**
+     * Creates a new {@code Page} object.
+     * 
+     * @param pageTitle the name of the page
+     * @param visibility the page visibility type
+     */
     public Page(String pageTitle, Visibility visibility)
     {
         super();
         observers = new ArrayList<>();
-        lock = new Object();
         this.pageTitle = pageTitle;
         this.visibility = visibility;
     }
     
+    /**
+     * Returns the name of this page.
+     * 
+     * @return the page title
+     */
     public final String getPageTitle()
     {
         return pageTitle;
     }
     
+    /**
+     * Gets the page visibility type.
+     * 
+     * @return the page visibility
+     * @see Visibility
+     */
     public final Visibility getVisibility()
     {
         return visibility;
     }
     
-    protected final void addChangeNotifiersToComponents(JPanel root,
-            Component... exclusions)
+    protected void notifyChange(Variable var)
     {
-        boolean exclude;
-        for (Component c : root.getComponents()) {
-            exclude = false;
-            for (Component exclusion : exclusions) {
-                if (c.equals(exclusion)) {
-                    exclude = true;
-                    break;
-                }
-            }
-            
-            if (exclude) {
-                continue;
-            }
-            
-            if (c instanceof VariableTextField) {
-                addChangeNotifier((VariableTextField)c);
-            } else if (c instanceof VariableCheckBox) {
-                addChangeNotifier((VariableCheckBox)c);
-            } else if (c instanceof VariableComboBox) {
-                addChangeNotifier((VariableComboBox)c);
-            } else if (c instanceof VariableSlider) {
-                addChangeNotifier((VariableSlider)c);
-            }/*else if (c instanceof JButton) {
-                ((JButton)c).addActionListener(notifyChangeMadeActionListener);
-            } */else if (c instanceof JPanel) {
-                addChangeNotifiersToComponents((JPanel)c);
-            }
-        }
-    }
-    
-    private void addChangeNotifier(final VariableTextField textField)
-    {
-        textField.getDocument().addDocumentListener(new DocumentListener()
-        {
-            private void update()
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        notifyChange(textField);
-                    }
-                });
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e)
-            {
-                update();
-            }
-            
-            @Override
-            public void removeUpdate(DocumentEvent e)
-            {
-                update();
-            }
-            
-            @Override
-            public void changedUpdate(DocumentEvent e)
-            {
-                // Nop
-            }
-        });
-    }
-    
-    private void addChangeNotifier(final VariableCheckBox checkBox)
-    {
-        checkBox.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        notifyChange(checkBox);
-                    }
-                });
-            }
-        });
-    }
-    
-    private void addChangeNotifier(final VariableComboBox comboBox)
-    {
-        comboBox.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        notifyChange(comboBox);
-                    }
-                });
-            }
-        });
-    }
-    
-    private void addChangeNotifier(final VariableSlider slider)
-    {
-        slider.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                SwingUtilities.invokeLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        notifyChange(slider);
-                    }
-                });
-            }
-        });
-    }
-    
-    private void notifyChange(VariableComponent comp)
-    {
-        if (!comp.hasVariable()) {
-            return;
-        }
-        if (comp.getVariable().dataChanged()) {
+        if (var.dataChanged()) {
             notifyObservers(Event.VARIABLE_CHANGED);
         } else {
             notifyObservers(Event.VARIABLE_UNCHANGED);
         }
     }
     
+    /**
+     * Adds variable change event notifiers to all {@code VariableComponent}
+     * objects found within the specified {@code Container}. These event
+     * notifiers consist of additional {@code ActionListeners},
+     * {@code DocumentListeners}, and {@code ChangeListeners} (depending on the
+     * component type) which send a notification whenever a variable value is
+     * changed. This is used for detecting whether unsaved changes have been
+     * made to the file.
+     * 
+     * @param root a {@code Container} containing {@code VariableComponents}
+     * @param exclusions components to exclude from the process
+     * @see Event
+     */
+    private void addObserverToVariableComponents(Container root, Observer o)
+    {
+        for (Component c : root.getComponents()) {
+            if (c instanceof VariableComponent) {
+                VariableComponent vc = (VariableComponent)c;
+                vc.addObserver(o);
+            } else if (c instanceof Container) {
+                addObserverToVariableComponents((Container)c, o);   // Recurse
+            }
+        }
+    }
+    
+    /**
+     * Associates variables with {@code VariableComponents} and updates the
+     * components' states so they reflect the current values of variables.
+     */
     public abstract void loadPage();
     
     @Override
     public void addObserver(Observer o)
     {
-        synchronized (lock) {
-            if (!observers.contains(o)) {
-                observers.add(o);
-            }
+        if (!observers.contains(o)) {
+            observers.add(o);
+            addObserverToVariableComponents(this, o);
         }
     }
     
     @Override
     public void removeObserver(Observer o)
     {
-        synchronized (lock) {
-            observers.remove(o);
-        }
+        observers.remove(o);
     }
     
     @Override
     public void notifyObservers(Object message, Object... args)
     {
-        if (isPageInitializing) {
-            return;
-        }
-        synchronized (lock) {
-            for (Observer o : observers) {
-                o.update(message, args);
-            }
+        for (Observer o : observers) {
+            o.update(message, args);
         }
     }
     
+    /**
+     * Constants defining Page visibility types.
+     */
     public static enum Visibility
     {
+        /**
+         * The Page is always visible.
+         */
         ALWAYS_VISIBLE,
+        
+        /**
+         * The Page is only visible when a save file is loaded.
+         */
         VISIBLE_WHEN_FILE_LOADED_ONLY,
+        
+        /**
+         * The Page is only visible when a save file is not loaded.
+         */
         VISIBLE_WHEN_FILE_NOT_LOADED_ONLY;
     }
     
+    /**
+     * Constants defining page events.
+     */
     public static enum Event
     {
+        /**
+         * Signifies that a variable's value has been changed.
+         */
         VARIABLE_CHANGED,
+        
+        /**
+         * Indicates that a variable's value has been restored to its original
+         * state.
+         */
         VARIABLE_UNCHANGED,
+        
+        /**
+         * Signals that a file should be loaded.
+         */
         FILE_LOAD,
+        
+        /**
+         * Signals that a file should be deleted.
+         */
         FILE_DELETE,
+        
+        /**
+         * Signals that the save slots should be refreshed.
+         */
         REFRESH_SLOTS;
     }
 }
