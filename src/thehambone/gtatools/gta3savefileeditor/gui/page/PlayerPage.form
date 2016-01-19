@@ -51,7 +51,7 @@
                               <Component id="weaponsPanel" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="18" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -269,14 +269,13 @@
                 <Component class="javax.swing.JComboBox" name="weaponSlotComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="0"/>
+                      <StringArray count="1">
+                        <StringItem index="0" value="&lt;weapon_name&gt;"/>
+                      </StringArray>
                     </Property>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weaponSlotComboBoxActionPerformed"/>
-                  </Events>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;GameConstants.Weapon&gt;"/>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
                 </Component>
                 <Container class="javax.swing.JPanel" name="weaponPropertiesPanel">
@@ -291,14 +290,14 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="weaponInInventoryCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="weaponEquippedCheckBox" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
                                       <Component id="weaponAmmoLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="weaponAmmoTextField" max="32767" attributes="0"/>
+                                      <Component id="weaponAmmoTextField" min="-2" pref="48" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
@@ -309,7 +308,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="weaponInInventoryCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="weaponEquippedCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="weaponAmmoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -321,13 +320,11 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JCheckBox" name="weaponInInventoryCheckBox">
+                    <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableCheckBox" name="weaponEquippedCheckBox">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="In inventory"/>
+                        <Property name="text" type="java.lang.String" value="Equipped"/>
+                        <Property name="toolTipText" type="java.lang.String" value=""/>
                       </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="weaponInInventoryCheckBoxActionPerformed"/>
-                      </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="weaponAmmoLabel">
                       <Properties>
@@ -475,9 +472,6 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Enable wanted level"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableWantedLevelCheckBoxActionPerformed"/>
-                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="maxWantedLevelLabel">
                   <Properties>

@@ -33,6 +33,7 @@ public abstract class VariableCheckBox<T extends Variable>
         this.var = var;
         this.supplementaryVars
                 = new ArrayList<>(Arrays.asList(supplementaryVars));
+        doUpdateOnChange = true;
         
         initActionListener();
     }

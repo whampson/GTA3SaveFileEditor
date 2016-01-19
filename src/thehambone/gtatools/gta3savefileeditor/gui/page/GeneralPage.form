@@ -588,8 +588,17 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="weatherInterpolationSlider" pref="227" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="previousWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="currentWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                          <Component id="weatherNeverChangesCheckBox" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="currentWeatherSelectionLabel" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
@@ -600,17 +609,8 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="previousWeatherComboBox" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                                          <Component id="weatherNeverChangesCheckBox" min="-2" max="-2" attributes="0"/>
-                                      </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="previousWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="currentWeatherSliderLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -650,7 +650,7 @@
                     <Property name="text" type="java.lang.String" value="Current weather:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="currentWeatherComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="currentWeatherComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="1">
@@ -659,12 +659,17 @@
                     </Property>
                   </Properties>
                 </Component>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableCheckBox" name="weatherNeverChangesCheckBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Never changes"/>
+                  </Properties>
+                </Component>
                 <Component class="javax.swing.JLabel" name="previousWeatherSelectionLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Previous weather:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="previousWeatherComboBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="previousWeatherComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="1">
@@ -684,11 +689,6 @@
                   </Properties>
                 </Component>
                 <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.FloatVariableSlider" name="weatherInterpolationSlider">
-                </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableCheckBox" name="weatherNeverChangesCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Never changes"/>
-                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

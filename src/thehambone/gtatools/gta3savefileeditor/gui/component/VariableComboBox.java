@@ -35,6 +35,8 @@ public abstract class VariableComboBox<T extends Variable, E>
         this.supplementaryVars
                 = new ArrayList<>(Arrays.asList(supplementaryVars));
         
+        doUpdateOnChange = true;
+        
         initActionListener();
     }
     

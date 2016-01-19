@@ -149,7 +149,7 @@ public class GameConstants
     }
     
     public static enum Weapon {
-        FIST(0, "<unarmed>"),
+        FISTS(0, "Fists"),
         BAT(1, "Bat"),
         PISTOL(2, "Pistol"),
         UZI(3, "Uzi"),
