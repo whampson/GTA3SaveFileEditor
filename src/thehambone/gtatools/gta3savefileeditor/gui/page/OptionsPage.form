@@ -140,7 +140,7 @@
               <SubComponents>
                 <Component class="javax.swing.JCheckBox" name="backupCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Make backups of each file loaded"/>
+                    <Property name="text" type="java.lang.String" value="Make backups when file is loaded"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backupCheckBoxActionPerformed"/>
@@ -180,7 +180,7 @@
               <SubComponents>
                 <Component class="javax.swing.JCheckBox" name="updateTimestampCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Update timestamp each time a file is saved (shows up in in-game load menu)"/>
+                    <Property name="text" type="java.lang.String" value="Update timestamp on save (shows up in in-game load menu)"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateTimestampCheckBoxActionPerformed"/>

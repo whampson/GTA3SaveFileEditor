@@ -12,21 +12,21 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * Created on Mar 30, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 30, 2015
  */
 public class PlayerPage extends Page
 {
     private BlockPlayerInfo player;
     private PlayerPed playerped;
     private VarArray<WeaponSlot> aWeaponSlot;
-    private WeaponSlot currentWeaponSlot;
+    private boolean updateChaosLevelVar;
     
     public PlayerPage()
     {
         super("Player", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
+        updateChaosLevelVar = true;
         
         initComponents();
         initVariableComponentParameters();
@@ -102,7 +102,6 @@ public class PlayerPage extends Page
         if (isEnabled) {
             int maxWantedLevel = playerped.nMaxWantedLevel.getValue();            
             maxWantedLevelComboBox.setSelectedIndex(maxWantedLevel - 1);
-            updateMaxChaosLevel(maxWantedLevel);
         } else {
             updateMaxChaosLevel(0);
         }
@@ -131,8 +130,12 @@ public class PlayerPage extends Page
                 maxChaosLevel = 4800;
                 break;
         }
-        playerped.nMaxChaosLevel.setValue(maxChaosLevel);
-        Logger.debug("Variable updated: " + playerped.nMaxChaosLevel);
+        
+        if (updateChaosLevelVar) {
+            playerped.nMaxChaosLevel.setValue(maxChaosLevel);
+            Logger.debug("Variable updated: " + playerped.nMaxChaosLevel);
+            notifyChange(playerped.nMaxChaosLevel);
+        }
     }
     
     private void weaponComboBoxAction(ActionEvent e)
@@ -143,13 +146,12 @@ public class PlayerPage extends Page
         }
         selectedWeaponIndex += 1;
         
-        currentWeaponSlot = aWeaponSlot.getElementAt(selectedWeaponIndex);
+        WeaponSlot ws = aWeaponSlot.getElementAt(selectedWeaponIndex);
         
         weaponEquippedCheckBox.setSelectedValue(selectedWeaponIndex);
-        weaponEquippedCheckBox.setVariable(currentWeaponSlot.nWeaponID);
-        weaponAmmoTextField.setVariable(currentWeaponSlot.nWeaponAmmo);
-        weaponAmmoTextField
-                .setEnabled(currentWeaponSlot.nWeaponID.getValue() > 1);
+        weaponEquippedCheckBox.setVariable(ws.nWeaponID);
+        weaponAmmoTextField.setVariable(ws.nWeaponAmmo);
+        weaponAmmoTextField.setEnabled(ws.nWeaponID.getValue() > 1);
     }
     
     private void weaponEquippedCheckBoxAction(ActionEvent e)
@@ -192,10 +194,12 @@ public class PlayerPage extends Page
         
         weaponSlotComboBox.setSelectedIndex(0);
         
+        updateChaosLevelVar = false;
         boolean wantedLevelEnabled = playerped.nMaxChaosLevel.getValue() >= 40;
         setWantedLevelEnabled(wantedLevelEnabled);
         enableWantedLevelCheckBox.setSelected(wantedLevelEnabled);
         maxWantedLevelComboBox.setVariable(playerped.nMaxWantedLevel);
+        updateChaosLevelVar = true;
         
         playerXTextField.setVariable(playerped.cPlayerPed.vPosition.fX);
         playerYTextField.setVariable(playerped.cPlayerPed.vPosition.fY);

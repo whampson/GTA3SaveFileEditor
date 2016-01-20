@@ -42,14 +42,19 @@ public class FloatVariableTextField
             v.setValue(0f);
         }
         
+        boolean temp = doUpdateOnChange;
+        doUpdateOnChange = false;
         isComponentRefreshing = true;
+        
         String format = getDisplayFormat();
         if (format == null || format.isEmpty()) {
             setText(v.getValue().toString());
         } else {
             setText(String.format(format, v.getValue().toString()));
         }
+        
         isComponentRefreshing = false;
+        doUpdateOnChange = temp;
     }
     
     @Override

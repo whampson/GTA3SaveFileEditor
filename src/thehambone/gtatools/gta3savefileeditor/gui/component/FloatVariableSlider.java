@@ -53,7 +53,10 @@ public class FloatVariableSlider extends VariableSlider<VarFloat>
             return;
         }
         
+        boolean temp = doUpdateOnChange;
+        doUpdateOnChange = false;
         setScaledValue(v.getValue());
+        doUpdateOnChange = temp;
     }
     
     @Override

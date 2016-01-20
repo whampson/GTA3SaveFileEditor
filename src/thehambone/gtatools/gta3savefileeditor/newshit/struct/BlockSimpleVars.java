@@ -61,7 +61,6 @@ public class BlockSimpleVars extends Block
     protected void loadAndroid(DataBuffer buf)
     {
         szSaveName.load(buf, offset + 0x00);
-//        timestamp.load(buf, offset + 0x30, SaveFileNew.Platform.ANDROID);
         nCurrentLevel.load(buf, offset + 0x34);
         vCameraPosition.load(buf, offset + 0x38, SaveFileNew.Platform.ANDROID);
         nGameMinuteLengthMillis.load(buf, offset + 0x44);
@@ -84,7 +83,6 @@ public class BlockSimpleVars extends Block
     protected void loadIOS(DataBuffer buf)
     {
         szSaveName.load(buf, offset + 0x00);
-//        timestamp.load(buf, offset + 0x30, SaveFileNew.Platform.IOS);
         nCurrentLevel.load(buf, offset + 0x34);
         vCameraPosition.load(buf, offset + 0x38, SaveFileNew.Platform.IOS);
         nGameMinuteLengthMillis.load(buf, offset + 0x44);

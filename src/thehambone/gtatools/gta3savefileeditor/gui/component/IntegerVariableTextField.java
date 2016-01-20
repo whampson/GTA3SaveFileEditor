@@ -125,14 +125,19 @@ public final class IntegerVariableTextField
                 break;
         }
         
+        boolean temp = doUpdateOnChange;
+        doUpdateOnChange = false;
         isComponentRefreshing = true;
+        
         String format = getDisplayFormat();
         if (format == null || format.isEmpty()) {
             setText(Long.toString(l));
         } else {
             setText(String.format(format, l));
         }
+        
         isComponentRefreshing = false;
+        doUpdateOnChange = temp;
     }
     
     @Override

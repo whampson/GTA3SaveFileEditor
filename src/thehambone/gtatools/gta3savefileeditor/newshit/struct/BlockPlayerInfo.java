@@ -22,6 +22,8 @@ public class BlockPlayerInfo extends Block
     public final VarBoolean8 bPlayerGetOutOfJailFree = new VarBoolean8();
     public final VarBoolean8 bPlayerFreeHealthCare = new VarBoolean8();
     
+    protected final VarInt blockSize = new VarInt();
+    
     public BlockPlayerInfo(int size)
     {
         super("PlayerInfo", size);
@@ -29,6 +31,7 @@ public class BlockPlayerInfo extends Block
     
     private void load(DataBuffer buf)
     {
+        blockSize.load(buf, offset + 0x00);
         nMoney.load(buf, offset + 0x04);
         nMoneyOnScreen.load(buf, offset + 0x13);
         nHiddenPackagesCollected.load(buf, offset + 0x17);

@@ -25,13 +25,13 @@ public abstract class VariableTextField<T extends Variable>
         extends JTextField implements VariableComponent<T>
 {
     protected volatile boolean isComponentRefreshing;
+    protected boolean doUpdateOnChange;
     
     private final List<Observer> observers;
     private final List<T> supplementaryVars;
     
     private T var;
     private String displayFormat;
-    private boolean doUpdateOnChange;
     
     protected VariableTextField(T var, T... supplementaryVars)
     {

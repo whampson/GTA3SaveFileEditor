@@ -31,7 +31,10 @@ public class BooleanVariableCheckBox extends VariableCheckBox<VarBoolean>
             return;
         }
         
+        boolean temp = doUpdateOnChange;
+        doUpdateOnChange = false;
         setSelected(v.getValue());
+        doUpdateOnChange = temp;
     }
     
     @Override

@@ -368,10 +368,14 @@ public class GeneralPage extends Page
         weatherInterpolationSlider.setVariable(simp.fWeatherInterpolationValue);
         
         // Update weather combo boxes to fire action events
+        currentWeatherComboBox.updateVariableOnChange(false);
+        previousWeatherComboBox.updateVariableOnChange(false);
         currentWeatherComboBox
                 .setSelectedIndex(simp.nCurrentWeatherType.getValue());
         previousWeatherComboBox
                 .setSelectedIndex(simp.nPreviousWeatherType.getValue());
+        currentWeatherComboBox.updateVariableOnChange(true);
+        previousWeatherComboBox.updateVariableOnChange(true);
         
         // Detect bugs/glitches
 //        detectPurpleNinesGlitch();
@@ -401,9 +405,9 @@ public class GeneralPage extends Page
             if (pedType.getID() > 6 && pedType.getID() < 16) {
                 continue;   // skip gangs
             }
-            if ((threatValue & GameConstants.PedType.PLAYER01.getThreatNumber()) != 0
-                    || (threatValue & GameConstants.PedType.CIVMALE.getThreatNumber()) != 0
-                    || (threatValue & GameConstants.PedType.CIVFEMALE.getThreatNumber()) != 0) {
+            if ((threatValue & GameConstants.PedType.PLAYER01.getThreatMask()) != 0
+                    || (threatValue & GameConstants.PedType.CIVMALE.getThreatMask()) != 0
+                    || (threatValue & GameConstants.PedType.CIVFEMALE.getThreatMask()) != 0) {
                 // if ped type is hostile toward player, civmale, or civfemale...
                 // one of the cheats was most likely enabled
                 enabled = true;
@@ -898,37 +902,37 @@ public class GeneralPage extends Page
             int threatValue = savedPedType.getThreat();
             if (pedType.getID() > 6 && pedType.getID() < 16) {
                 // If pedtype is a gang...
-                threatValue &= ~pedType.getThreatNumber();  // make gang not hostile towards itself
+                threatValue &= ~pedType.getThreatMask();  // make gang not hostile towards itself
                 if (pedType == GameConstants.PedType.GANG04 || pedType == GameConstants.PedType.GANG07) {
-                    threatValue &= ~GameConstants.PedType.PLAYER01.getThreatNumber();   // make Yakuza and Hoods not hostile towards the player
+                    threatValue &= ~GameConstants.PedType.PLAYER01.getThreatMask();   // make Yakuza and Hoods not hostile towards the player
                 }
             } else {
                 // If pedtype is anything else...
                 // make pedtype not hostile toward gangs or the player
-                threatValue &= ~GameConstants.PedType.PLAYER01.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG01.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG02.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG03.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG04.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG05.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG06.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG07.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG08.getThreatNumber();
-                threatValue &= ~GameConstants.PedType.GANG09.getThreatNumber();
+                threatValue &= ~GameConstants.PedType.PLAYER01.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG01.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG02.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG03.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG04.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG05.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG06.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG07.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG08.getThreatMask();
+                threatValue &= ~GameConstants.PedType.GANG09.getThreatMask();
             }
             // make pedtype not hostile toward anyone else
-            threatValue &= ~GameConstants.PedType.PLAYER02.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.PLAYER03.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.PLAYER04.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.CIVMALE.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.CIVFEMALE.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.COP.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.EMERGENCY.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.FIREMAN.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.CRIMINAL.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.SPECIAL01.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.PROSTITUTE.getThreatNumber();
-            threatValue &= ~GameConstants.PedType.SPECIAL02.getThreatNumber();
+            threatValue &= ~GameConstants.PedType.PLAYER02.getThreatMask();
+            threatValue &= ~GameConstants.PedType.PLAYER03.getThreatMask();
+            threatValue &= ~GameConstants.PedType.PLAYER04.getThreatMask();
+            threatValue &= ~GameConstants.PedType.CIVMALE.getThreatMask();
+            threatValue &= ~GameConstants.PedType.CIVFEMALE.getThreatMask();
+            threatValue &= ~GameConstants.PedType.COP.getThreatMask();
+            threatValue &= ~GameConstants.PedType.EMERGENCY.getThreatMask();
+            threatValue &= ~GameConstants.PedType.FIREMAN.getThreatMask();
+            threatValue &= ~GameConstants.PedType.CRIMINAL.getThreatMask();
+            threatValue &= ~GameConstants.PedType.SPECIAL01.getThreatMask();
+            threatValue &= ~GameConstants.PedType.PROSTITUTE.getThreatMask();
+            threatValue &= ~GameConstants.PedType.SPECIAL02.getThreatMask();
             savedPedType.setThreat(threatValue);
             vars.aPedTypes.setValueAt(pedType.getID(), savedPedType);
         }

@@ -83,17 +83,11 @@
             <Component class="javax.swing.JComboBox" name="gangComboBox">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
+                  <StringArray count="1">
+                    <StringItem index="0" value="&lt;gang_name&gt;"/>
                   </StringArray>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gangComboBoxActionPerformed"/>
-              </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="vehiclePanel">
               <Properties>
@@ -125,10 +119,14 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="vehicleComboBox">
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="vehicleComboBoxActionPerformed"/>
-                  </Events>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="vehicleComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="&lt;vehicle_name&gt;"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -147,13 +145,13 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="primaryWeaponLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="secondaryWeaponLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon1Label" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon2Label" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="primaryWeaponComboBox" min="-2" max="-2" attributes="0"/>
-                              <Component id="secondaryWeaponComboBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon1ComboBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon2ComboBox" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -164,39 +162,47 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="primaryWeaponLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="primaryWeaponComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon1Label" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon1ComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="secondaryWeaponLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="secondaryWeaponComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon2Label" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="weapon2ComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="14" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="primaryWeaponLabel">
+                <Component class="javax.swing.JLabel" name="weapon1Label">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Primary weapon:"/>
+                    <Property name="text" type="java.lang.String" value="Weapon 1:"/>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="primaryWeaponComboBox">
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="primaryWeaponComboBoxActionPerformed"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JLabel" name="secondaryWeaponLabel">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="weapon1ComboBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Secondary weapon:"/>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="&lt;weapon_name&gt;"/>
+                      </StringArray>
+                    </Property>
                   </Properties>
                 </Component>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox" name="secondaryWeaponComboBox">
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="secondaryWeaponComboBoxActionPerformed"/>
-                  </Events>
+                <Component class="javax.swing.JLabel" name="weapon2Label">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Weapon 2:"/>
+                  </Properties>
+                </Component>
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox" name="weapon2ComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="&lt;weapon_name&gt;"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -230,13 +236,10 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox" name="hostileTowardsPlayerCheckBox">
+                <Component class="thehambone.gtatools.gta3savefileeditor.gui.component.BitmaskVariableCheckBox" name="hostileTowardsPlayerCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Hostile towards player"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hostileTowardsPlayerCheckBoxActionPerformed"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>

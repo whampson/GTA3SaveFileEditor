@@ -1,13 +1,13 @@
 package thehambone.gtatools.gta3savefileeditor.gui.page;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAInteger;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.Gang;
-import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.GangListCellRenderer;
-import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.VehicleListCellRenderer;
-import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.WeaponListCellRenderer;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.Gang;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.PedType;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -18,83 +18,105 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  */
 public class GangsPage extends Page
 {
-    private static final int PLAYER_MASK = 0x01;
+    private VarArray<Gang> aGang;
+    private VarArray<PedType> aPedType;
     
     public GangsPage()
     {
         super("Gangs", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
+        
         initComponents();
+        
+        initGangComboBox();
+        initVehicleComboBox();
+        initWeaponComboBoxes();
+    }
+    
+    private void initGangComboBox()
+    {
+        DefaultComboBoxModel<String> gangComboBoxModel
+                = new DefaultComboBoxModel<>();
+        
+        for (GameConstants.Gang g : GameConstants.Gang.values()) {
+            if (g != GameConstants.Gang.GANG08
+                    && g != GameConstants.Gang.GANG09) {
+                gangComboBoxModel.addElement(g.getFriendlyName());
+            }
+        }
+        
+        gangComboBox.setModel(gangComboBoxModel);
+        
+        gangComboBox.addItemListener(new ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                gangComboBoxItemStateChanged(e);
+            }
+        });
+    }
+    
+    private void initVehicleComboBox()
+    {
+        DefaultComboBoxModel<String> vehicleComboBoxModel
+                = new DefaultComboBoxModel<>();
+        
+        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
+            if (v != GameConstants.Vehicle._EMPTY) {
+                vehicleComboBoxModel.addElement(v.getFriendlyName());
+            }
+        }
+        
+        vehicleComboBox.setModel(vehicleComboBoxModel);
+        vehicleComboBox.setValueOffset(90);
+    }
+    
+    private void initWeaponComboBoxes()
+    {
+        DefaultComboBoxModel<String> weapon1ComboBoxModel
+                = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<String> weapon2ComboBoxModel
+                = new DefaultComboBoxModel<>();
+        
+        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
+            if (w != GameConstants.Weapon.DETONATOR) {
+                weapon1ComboBoxModel.addElement(w.getFriendlyName());
+                weapon2ComboBoxModel.addElement(w.getFriendlyName());
+            }
+        }
+        
+        weapon1ComboBox.setModel(weapon1ComboBoxModel);
+        weapon2ComboBox.setModel(weapon2ComboBoxModel);
+    }
+    
+    private void gangComboBoxItemStateChanged(ItemEvent e)
+    {
+        int selectedGangIndex = gangComboBox.getSelectedIndex();
+        if (selectedGangIndex == -1) {
+            return;
+        }
+        
+        Gang g = aGang.getElementAt(selectedGangIndex);
+        PedType pt = aPedType.getElementAt(selectedGangIndex + 7);
+        
+        vehicleComboBox.setVariable(g.nVehicleModelID);
+        weapon1ComboBox.setVariable(g.nWeaponID1);
+        weapon2ComboBox.setVariable(g.nWeaponID2);
+        hostileTowardsPlayerCheckBox
+                .setMask(GameConstants.PedType.PLAYER01.getThreatMask());
+        hostileTowardsPlayerCheckBox.setVariable(pt.nThreatFlags);
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public void loadPage()
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
-//        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
-//        
-//        DefaultComboBoxModel<GameConstants.Gang> gangComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.Gang g : GameConstants.Gang.values()) {
-//            gangComboBoxModel.addElement(g);
-//        }
-//        gangComboBox.setModel(gangComboBoxModel);
-//        gangComboBox.setRenderer(new GangListCellRenderer());
-//        
-//        DefaultComboBoxModel<GameConstants.Vehicle> vehicleComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-//            vehicleComboBoxModel.addElement(v);
-//        }
-//        vehicleComboBox.setRenderer(new VehicleListCellRenderer());
-//        vehicleComboBox.setModel(vehicleComboBoxModel);
-//        
-//        DefaultComboBoxModel<GameConstants.Weapon> primaryWeaponComboBoxModel = new DefaultComboBoxModel<>();
-//        DefaultComboBoxModel<GameConstants.Weapon> secondaryWeaponComboBoxModel = new DefaultComboBoxModel<>();
-//        for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
-//            primaryWeaponComboBoxModel.addElement(w);
-//            secondaryWeaponComboBoxModel.addElement(w);
-//        }
-//        primaryWeaponComboBox.setModel(primaryWeaponComboBoxModel);
-//        primaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
-//        secondaryWeaponComboBox.setModel(secondaryWeaponComboBoxModel);
-//        secondaryWeaponComboBox.setRenderer(new WeaponListCellRenderer());
         
-//        updatePanels(GameConstants.Gang.GANG01);
-    }
-    
-    private int getThreatForGang(GameConstants.Gang g)
-    {
-        int pedTypeID = g.getID() + 7;
-        return vars.aPedTypes.getValueAt(pedTypeID).getThreat();
-    }
-    
-    private void setThreatForGang(GameConstants.Gang g, int threat)
-    {
-        int pedTypeID = g.getID() + 7;
-        vars.aPedTypes.getValueAt(pedTypeID).setThreat(threat);
-    }
-    
-    private void updatePanels(GameConstants.Gang g)
-    {
-        Gang gang = vars.aGangs.getValueAt(g.getID());
+        aGang = SaveFileNew.getCurrentSaveFile().gangs.aGang;
+        aPedType = SaveFileNew.getCurrentSaveFile().pedTypes.aPedType;
         
-        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            if (v.getID() == gang.getVehicleIDAsVariable().getValue().intValue()) {
-                vehicleComboBox.setSelectedItem(v);
-                break;
-            }
-        }
-        
-        for (GameConstants.Weapon w :  GameConstants.Weapon.values()) {
-            if (w.getID() == gang.getPrimaryWeaponIDAsVariable().getValue().intValue()) {
-                primaryWeaponComboBox.setSelectedItem(w);
-            }
-            if (w.getID() == gang.getSecondaryWeaponIDAsVariable().getValue().intValue()) {
-                secondaryWeaponComboBox.setSelectedItem(w);
-            }
-        }
-        
-        int threat = getThreatForGang(g);
-        hostileTowardsPlayerCheckBox.setSelected((threat & PLAYER_MASK) == PLAYER_MASK);
+        gangComboBox.setSelectedIndex(-1);
+        gangComboBox.setSelectedIndex(0);
     }
 
     /**
@@ -112,35 +134,22 @@ public class GangsPage extends Page
         gangLabel = new javax.swing.JLabel();
         gangComboBox = new javax.swing.JComboBox();
         vehiclePanel = new javax.swing.JPanel();
-        vehicleComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
+        vehicleComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox();
         weaponsPanel = new javax.swing.JPanel();
-        primaryWeaponLabel = new javax.swing.JLabel();
-        primaryWeaponComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
-        secondaryWeaponLabel = new javax.swing.JLabel();
-        secondaryWeaponComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox();
+        weapon1Label = new javax.swing.JLabel();
+        weapon1ComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox();
+        weapon2Label = new javax.swing.JLabel();
+        weapon2ComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox();
         hostilityPanel = new javax.swing.JPanel();
-        hostileTowardsPlayerCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox();
+        hostileTowardsPlayerCheckBox = new thehambone.gtatools.gta3savefileeditor.gui.component.BitmaskVariableCheckBox();
 
         gangLabel.setText("Gang:");
 
-        gangComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        gangComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                gangComboBoxActionPerformed(evt);
-            }
-        });
+        gangComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<gang_name>" }));
 
         vehiclePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Vehicle"));
 
-        vehicleComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                vehicleComboBoxActionPerformed(evt);
-            }
-        });
+        vehicleComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<vehicle_name>" }));
 
         javax.swing.GroupLayout vehiclePanelLayout = new javax.swing.GroupLayout(vehiclePanel);
         vehiclePanel.setLayout(vehiclePanelLayout);
@@ -161,25 +170,13 @@ public class GangsPage extends Page
 
         weaponsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Weapons"));
 
-        primaryWeaponLabel.setText("Primary weapon:");
+        weapon1Label.setText("Weapon 1:");
 
-        primaryWeaponComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                primaryWeaponComboBoxActionPerformed(evt);
-            }
-        });
+        weapon1ComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<weapon_name>" }));
 
-        secondaryWeaponLabel.setText("Secondary weapon:");
+        weapon2Label.setText("Weapon 2:");
 
-        secondaryWeaponComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                secondaryWeaponComboBoxActionPerformed(evt);
-            }
-        });
+        weapon2ComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<weapon_name>" }));
 
         javax.swing.GroupLayout weaponsPanelLayout = new javax.swing.GroupLayout(weaponsPanel);
         weaponsPanel.setLayout(weaponsPanelLayout);
@@ -188,12 +185,12 @@ public class GangsPage extends Page
             .addGroup(weaponsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(primaryWeaponLabel)
-                    .addComponent(secondaryWeaponLabel))
+                    .addComponent(weapon1Label)
+                    .addComponent(weapon2Label))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(primaryWeaponComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(secondaryWeaponComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(weapon1ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(weapon2ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         weaponsPanelLayout.setVerticalGroup(
@@ -201,25 +198,18 @@ public class GangsPage extends Page
             .addGroup(weaponsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(primaryWeaponLabel)
-                    .addComponent(primaryWeaponComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(weapon1Label)
+                    .addComponent(weapon1ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(weaponsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(secondaryWeaponLabel)
-                    .addComponent(secondaryWeaponComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(weapon2Label)
+                    .addComponent(weapon2ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         hostilityPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Hostility"));
 
         hostileTowardsPlayerCheckBox.setText("Hostile towards player");
-        hostileTowardsPlayerCheckBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                hostileTowardsPlayerCheckBoxActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout hostilityPanelLayout = new javax.swing.GroupLayout(hostilityPanel);
         hostilityPanel.setLayout(hostilityPanelLayout);
@@ -286,59 +276,20 @@ public class GangsPage extends Page
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void gangComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_gangComboBoxActionPerformed
-    {//GEN-HEADEREND:event_gangComboBoxActionPerformed
-        GameConstants.Gang g = (GameConstants.Gang)gangComboBox.getSelectedItem();
-        updatePanels(g);
-    }//GEN-LAST:event_gangComboBoxActionPerformed
-
-    private void vehicleComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_vehicleComboBoxActionPerformed
-    {//GEN-HEADEREND:event_vehicleComboBoxActionPerformed
-        GameConstants.Gang g = (GameConstants.Gang)gangComboBox.getSelectedItem();
-        GameConstants.Vehicle v = (GameConstants.Vehicle)vehicleComboBox.getSelectedItem();
-        vars.aGangs.getValueAt(g.getID()).getVehicleIDAsVariable().setValue(new GTAInteger(v.getID()));
-    }//GEN-LAST:event_vehicleComboBoxActionPerformed
-
-    private void primaryWeaponComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_primaryWeaponComboBoxActionPerformed
-    {//GEN-HEADEREND:event_primaryWeaponComboBoxActionPerformed
-        GameConstants.Gang g = (GameConstants.Gang)gangComboBox.getSelectedItem();
-        GameConstants.Weapon w = (GameConstants.Weapon)primaryWeaponComboBox.getSelectedItem();
-        vars.aGangs.getValueAt(g.getID()).getPrimaryWeaponIDAsVariable().setValue(new GTAInteger(w.getID()));
-    }//GEN-LAST:event_primaryWeaponComboBoxActionPerformed
-
-    private void secondaryWeaponComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_secondaryWeaponComboBoxActionPerformed
-    {//GEN-HEADEREND:event_secondaryWeaponComboBoxActionPerformed
-        GameConstants.Gang g = (GameConstants.Gang)gangComboBox.getSelectedItem();
-        GameConstants.Weapon w = (GameConstants.Weapon)secondaryWeaponComboBox.getSelectedItem();
-        vars.aGangs.getValueAt(g.getID()).getSecondaryWeaponIDAsVariable().setValue(new GTAInteger(w.getID()));
-    }//GEN-LAST:event_secondaryWeaponComboBoxActionPerformed
-
-    private void hostileTowardsPlayerCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_hostileTowardsPlayerCheckBoxActionPerformed
-    {//GEN-HEADEREND:event_hostileTowardsPlayerCheckBoxActionPerformed
-        GameConstants.Gang g = (GameConstants.Gang)gangComboBox.getSelectedItem();
-        int threat = getThreatForGang(g);
-        if (hostileTowardsPlayerCheckBox.isSelected()) {
-            threat |= PLAYER_MASK;
-        } else {
-            threat &= ~PLAYER_MASK;
-        }
-        setThreatForGang(g, threat);
-    }//GEN-LAST:event_hostileTowardsPlayerCheckBoxActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox gangComboBox;
     private javax.swing.JLabel gangLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueCheckBox hostileTowardsPlayerCheckBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.BitmaskVariableCheckBox hostileTowardsPlayerCheckBox;
     private javax.swing.JPanel hostilityPanel;
     private javax.swing.JPanel mainPanel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox primaryWeaponComboBox;
-    private javax.swing.JLabel primaryWeaponLabel;
     private javax.swing.JScrollPane scrollPane;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox secondaryWeaponComboBox;
-    private javax.swing.JLabel secondaryWeaponLabel;
-    private thehambone.gtatools.gta3savefileeditor.gui.component.old.VariableValueComboBox vehicleComboBox;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox vehicleComboBox;
     private javax.swing.JPanel vehiclePanel;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox weapon1ComboBox;
+    private javax.swing.JLabel weapon1Label;
+    private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox weapon2ComboBox;
+    private javax.swing.JLabel weapon2Label;
     private javax.swing.JPanel weaponsPanel;
     // End of variables declaration//GEN-END:variables
 }

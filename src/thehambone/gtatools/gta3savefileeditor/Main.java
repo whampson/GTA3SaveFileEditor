@@ -19,7 +19,6 @@ import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
-import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
 
 /**
  * This class handles program initialization and contains general program
@@ -104,12 +103,10 @@ public final class Main
          * -cmd options: --log-to-file
          * -merge new data handling code
          * -Record size should be determined by size of members
-         * -write block size when saving file
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
-         *       related?
+         *       related? (bug disappeared?)
          * -BUG: Mac OS X crash when using "Save Slot" feature
-         * -BUG: Combobox witth custom cell renderer does not show focus when
-         *       tabbed to
+         * -Iterator for VarArray class
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Remove Ctrl+Q shortcut
          * -Update status bar with platform info and notifications like "All
@@ -126,6 +123,7 @@ public final class Main
          */
         
         initLogger();
+        parseCommandLineArgs(args);
         initUncaughtExceptionHandler();
         initLookAndFeel();
         determineOS();
@@ -144,7 +142,6 @@ public final class Main
         Logger.info("sun.arch.data.model = %s\n",
                 System.getProperty("sun.arch.data.model"));
         
-        parseCommandLineArgs(args);
         initShutdownHooks();
         loadSettings();
         loadGXT();

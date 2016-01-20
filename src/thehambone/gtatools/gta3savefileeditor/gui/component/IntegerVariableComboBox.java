@@ -46,11 +46,12 @@ public class IntegerVariableComboBox<E>
             return;
         }
         
-        Logger.debug(v.toString());
-        
-        int val = Integer.parseInt(v.getValue().toString());
-        if (val > 0 && val < getItemCount() - 1) {
-            setSelectedIndex(val - valueOffset);
+        int val = Integer.parseInt(v.getValue().toString()) - valueOffset;
+        if (val > -1 && val < getItemCount() - 1) {
+            boolean temp = doUpdateOnChange;
+            doUpdateOnChange = false;
+            setSelectedIndex(val);
+            doUpdateOnChange = temp;
         }
     }
 

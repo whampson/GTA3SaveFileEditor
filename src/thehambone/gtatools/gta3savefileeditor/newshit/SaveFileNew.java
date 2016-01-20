@@ -2,6 +2,8 @@ package thehambone.gtatools.gta3savefileeditor.newshit;
 
 import java.io.File;
 import java.io.IOException;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGangs;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPedTypes;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerPeds;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockSimpleVars;
@@ -134,7 +136,9 @@ public class SaveFileNew
      */
     public BlockSimpleVars simpleVars;
     public BlockPlayerPeds playerPeds;
+    public BlockGangs gangs;
     public BlockPlayerInfo playerInfo;
+    public BlockPedTypes pedTypes;
     
     private final DataBuffer buf;
     private final Platform platform;
@@ -238,11 +242,23 @@ public class SaveFileNew
                     playerPeds = new BlockPlayerPeds(blockSize);
                     playerPeds.load(buf, offset, platform);
                     break;
-                
+                    
+                case 12:
+                    Logger.debug("Loading block 12...");
+                    gangs = new BlockGangs(blockSize);
+                    gangs.load(buf, offset, platform);
+                    break;
+                    
                 case 16:
                     Logger.debug("Loading block 16...");
                     playerInfo = new BlockPlayerInfo(blockSize);
                     playerInfo.load(buf, offset, platform);
+                    break;
+                    
+                case 19:
+                    Logger.debug("Loading block 19...");
+                    pedTypes = new BlockPedTypes(blockSize);
+                    pedTypes.load(buf, offset, platform);
                     break;
             }
             buf.seek(offset);
@@ -305,7 +321,7 @@ public class SaveFileNew
             // TODO: rethink
             throw new IOException("unable to detect platform origin");
         } else {
-            Logger.debug("Detected platfotm: " + p);
+            Logger.debug("Detected platform: " + p);
         }
         
         return p;

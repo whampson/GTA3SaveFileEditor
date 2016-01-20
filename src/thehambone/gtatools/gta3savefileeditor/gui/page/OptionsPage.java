@@ -141,7 +141,7 @@ public class OptionsPage extends Page
 
         backupPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save File Backup"));
 
-        backupCheckBox.setText("Make backups of each file loaded");
+        backupCheckBox.setText("Make backups when file is loaded");
         backupCheckBox.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -169,7 +169,7 @@ public class OptionsPage extends Page
 
         timestampPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Timestamp"));
 
-        updateTimestampCheckBox.setText("Update timestamp each time a file is saved (shows up in in-game load menu)");
+        updateTimestampCheckBox.setText("Update timestamp on save (shows up in in-game load menu)");
         updateTimestampCheckBox.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)

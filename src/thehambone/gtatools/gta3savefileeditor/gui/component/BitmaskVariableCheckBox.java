@@ -6,46 +6,34 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.IntegerVariable
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
- * Created on Jan 13, 2016.
+ * Created on Jan 19, 2016.
  *
  * @author thehambone
  */
-public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
+public class BitmaskVariableCheckBox extends IntegerVariableCheckBox
 {
-    private int deselectedValue;
-    private int selectedValue;
+    private int mask;
     
-    public IntegerVariableCheckBox()
+    public BitmaskVariableCheckBox()
     {
-        this(null, 0, 1);
+        this(null, 0);
     }
     
-    public IntegerVariableCheckBox(IntegerVariable var, int deselectedValue,
-            int selectedValue, IntegerVariable... supplementaryVars)
+    public BitmaskVariableCheckBox(IntegerVariable var, int mask,
+            IntegerVariable... supplementaryVars)
     {
-        super(var, supplementaryVars);
-        this.deselectedValue = deselectedValue;
-        this.selectedValue = selectedValue;
+        super(var, -1, -1, supplementaryVars);
+        this.mask = mask;
     }
     
-    public int getDeselectedValue()
+    public int getMask()
     {
-        return deselectedValue;
+        return mask;
     }
     
-    public void setDeselectedValue(int value)
+    public void setMask(int mask)
     {
-        deselectedValue = value;
-    }
-    
-    public int getSelectedValue()
-    {
-        return selectedValue;
-    }
-    
-    public void setSelectedValue(int value)
-    {
-        selectedValue = value;
+        this.mask = mask;
     }
     
     @Override
@@ -60,7 +48,7 @@ public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
         
         boolean temp = doUpdateOnChange;
         doUpdateOnChange = false;
-        setSelected(val == selectedValue);
+        setSelected((val & mask) == mask);
         doUpdateOnChange = temp;
     }
     
@@ -72,7 +60,10 @@ public class IntegerVariableCheckBox extends VariableCheckBox<IntegerVariable>
             return;
         }
         
-        int val = isSelected() ? selectedValue : deselectedValue;
+        int currentVal = (int)v.toUnsignedLong();
+        int val = isSelected()
+                ? currentVal | mask
+                : currentVal & ~mask;
         v.parseValue(Integer.toString(val));
         Logger.debug("Variable updated: " + v);
         

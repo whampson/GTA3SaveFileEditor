@@ -9,7 +9,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarFloat;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 
 /**
@@ -24,8 +23,9 @@ public abstract class VariableSlider<T extends Variable>
     private final List<Observer> observers;
     private final List<T> supplementaryVars;
     
+    protected boolean doUpdateOnChange;
+    
     private T var;
-    private boolean doUpdateOnChange;
     
     public VariableSlider(T var, int min, int max, int value,
             T... supplementaryVars)

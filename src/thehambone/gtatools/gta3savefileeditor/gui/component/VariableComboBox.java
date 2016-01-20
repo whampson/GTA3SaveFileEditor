@@ -24,8 +24,9 @@ public abstract class VariableComboBox<T extends Variable, E>
     private final List<Observer> observers;
     private final List<T> supplementaryVars;
     
+    protected boolean doUpdateOnChange;
+    
     private T var;
-    private boolean doUpdateOnChange;
     
     public VariableComboBox(T var, T... supplementaryVars)
     {

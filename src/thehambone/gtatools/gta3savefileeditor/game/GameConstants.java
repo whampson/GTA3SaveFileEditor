@@ -94,8 +94,8 @@ public class GameConstants
         BUS(121, "Bus"),
         RHINO(122, "Rhino"),
         BARRCKS(123, "Barracks OL"),
-//        TRAIN(124, "Train"),
-//        HELI(125, "Helicopter"),
+        TRAIN(124, "Train"),
+        HELI(125, "Helicopter"),
         DODO(126, "Dodo"),
         COACH(127, "Coach"),
         CABBIE(128, "Cabbie"),
@@ -110,14 +110,14 @@ public class GameConstants
         DIABLCR(137, "Diablo Stallion"),
         COLOMCR(138, "Cartel Cruiser"),
         HOODSCR(139, "Hoods Rumpo XL"),
-//        AEROPL(140, "Aeroplane"),
-//        DODO2(141, "Deaddodo"),
+        AEROPL(140, "Aeroplane"),
+        DODO2(141, "Deaddodo"),
         SPEEDER(142, "Speeder"),
         REEFER(143, "Reefer"),
         PANLANT(144, "Panlantic"),
         FLATBED(145, "Flatbed"),
         YANKEE(146, "Yankee"),
-//        HELI2(147, "Escape"),
+        HELI2(147, "Escape"),
         BORGNIN(148, "Borgnine"),
         TOYZ(149, "TOYZ"),
         GHOST(150, "Ghost");
@@ -149,7 +149,7 @@ public class GameConstants
     }
     
     public static enum Weapon {
-        FISTS(0, "Fists"),
+        FISTS(0, "unarmed"),
         BAT(1, "Bat"),
         PISTOL(2, "Pistol"),
         UZI(3, "Uzi"),
@@ -268,13 +268,13 @@ public class GameConstants
         SPECIAL02(21, 2097152, "Special 2");
         
         private final int id;
-        private final int threatNumber;
+        private final int threatMask;
         private final String friendlyName;
         
-        private PedType(int id, int threatNumber, String friendlyName)
+        private PedType(int id, int threatMask, String friendlyName)
         {
             this.id = id;
-            this.threatNumber = threatNumber;
+            this.threatMask = threatMask;
             this.friendlyName = friendlyName;
         }
         
@@ -283,9 +283,9 @@ public class GameConstants
             return id;
         }
         
-        public int getThreatNumber()
+        public int getThreatMask()
         {
-            return threatNumber;
+            return threatMask;
         }
         
         public String getFriendlyName()
