@@ -106,11 +106,13 @@ public final class Main
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related? (bug disappeared?)
          * -BUG: Mac OS X crash when using "Save Slot" feature
+         * -BUG: "Exception while removing reference" at shutdown
          * -Iterator for VarArray class
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Remove Ctrl+Q shortcut
          * -Update status bar with platform info and notifications like "All
          *  changes saved".
+         * -Bomb armed checkbox
          * -F5: Refresh current file
          * -Shift + F5: Refresh slots
          * -Rewrite changes made detection (use message "change.reset") (enum of observer messages)

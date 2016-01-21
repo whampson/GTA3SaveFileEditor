@@ -62,9 +62,7 @@ public class GangsPage extends Page
                 = new DefaultComboBoxModel<>();
         
         for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            if (v != GameConstants.Vehicle._EMPTY) {
-                vehicleComboBoxModel.addElement(v.getFriendlyName());
-            }
+            vehicleComboBoxModel.addElement(v.getFriendlyName());
         }
         
         vehicleComboBox.setModel(vehicleComboBoxModel);

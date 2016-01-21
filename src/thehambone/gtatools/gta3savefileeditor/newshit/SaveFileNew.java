@@ -3,6 +3,7 @@ package thehambone.gtatools.gta3savefileeditor.newshit;
 import java.io.File;
 import java.io.IOException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGangs;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGarages;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPedTypes;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerPeds;
@@ -136,6 +137,7 @@ public class SaveFileNew
      */
     public BlockSimpleVars simpleVars;
     public BlockPlayerPeds playerPeds;
+    public BlockGarages garages;
     public BlockGangs gangs;
     public BlockPlayerInfo playerInfo;
     public BlockPedTypes pedTypes;
@@ -241,6 +243,12 @@ public class SaveFileNew
                     Logger.debug("Loading block 1...");
                     playerPeds = new BlockPlayerPeds(blockSize);
                     playerPeds.load(buf, offset, platform);
+                    break;
+                    
+                case 2:
+                    Logger.debug("Loading block 2...");
+                    garages = new BlockGarages(blockSize);
+                    garages.load(buf, offset, platform);
                     break;
                     
                 case 12:

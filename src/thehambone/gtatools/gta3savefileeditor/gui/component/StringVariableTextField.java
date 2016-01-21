@@ -72,7 +72,7 @@ public class StringVariableTextField extends VariableTextField<VarString>
         setText(v.getValue());
         
         isComponentRefreshing = false;
-        doUpdateOnChange = false;
+        doUpdateOnChange = temp;
     }
     
     @Override

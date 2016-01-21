@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.StoredCar;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.StoredCar;
 
 /**
  * Renders a
@@ -19,32 +19,36 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdef
  */
 public class StoredCarListCellRenderer implements ListCellRenderer<StoredCar>
 {
-    private final DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
-
+    private final DefaultListCellRenderer dlcr = new DefaultListCellRenderer();
+    
     @Override
-    public Component getListCellRendererComponent(JList<? extends StoredCar> list, StoredCar value, int index, boolean isSelected, boolean cellHasFocus)
+    public Component getListCellRendererComponent(
+            JList<? extends StoredCar> list, StoredCar value, int index,
+            boolean isSelected, boolean cellHasFocus)
     {
-        JLabel renderer = (JLabel)defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        JLabel comp = (JLabel)dlcr.getListCellRendererComponent(list, value,
+                index, isSelected, cellHasFocus);
+        
+        if (isSelected) {
+            comp.setBackground(list.getSelectionBackground());
+            comp.setForeground(list.getSelectionForeground());
+        }
+        
         if (value == null) {
-            return renderer;
+            return comp;
         }
-        int vehicleID = value.getModelIDAsVariable().getValue().intValue();
-        if (vehicleID == 0) {
-            renderer.setText("(empty)");
-            return renderer;
-        }
-        GameConstants.Vehicle vehicle = GameConstants.Vehicle._EMPTY;
+        
+        int modelID = value.nModelID.getValue();
+        
+        GameConstants.Vehicle vehicle = null;
         for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            if (vehicleID == v.getID()) {
+            if (v.getID() == modelID) {
                 vehicle = v;
             }
         }
-        renderer.setText(vehicle.getFriendlyName());
-        if (isSelected) {
-            renderer.setForeground(list.getSelectionForeground());
-            renderer.setBackground(list.getSelectionBackground());
-        }
-        return renderer;
+        
+        comp.setText(vehicle != null ? vehicle.getFriendlyName() : "<invalid>");
+        
+        return comp;
     }
-
 }

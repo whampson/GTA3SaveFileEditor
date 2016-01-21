@@ -59,7 +59,6 @@ public class GameConstants
     
     public static enum Vehicle
     {
-        _EMPTY(-1, "<empty>"),
         LANDSTK(90, "Landstalker"),
         IDAHO(91, "Idaho"),
         STINGER(92, "Stinger"),
@@ -134,6 +133,39 @@ public class GameConstants
         public int getID()
         {
             return id;
+        }
+        
+        public String getFriendlyName()
+        {
+            return friendlyName;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return friendlyName;
+        }
+    }
+    
+    public static enum VehicleImmunity
+    {
+        BULLETPROOF(1, "Bulletproof"),
+        FIREPROOF(2, "Fireproof"),
+        EXPLOSIONPROOF(4, "Explosionproof"),
+        COLLISIONPROOF(8, "Collisionproof");
+        
+        private final int mask;
+        private final String friendlyName;
+        
+        private VehicleImmunity(int mask, String friendlyName)
+        {
+            this.mask = mask;
+            this.friendlyName = friendlyName;
+        }
+        
+        public int getMask()
+        {
+            return mask;
         }
         
         public String getFriendlyName()
@@ -294,19 +326,19 @@ public class GameConstants
         }
     }
     
-    public enum BombType
+    public enum CarBomb
     {
-        _NONE(0, "<none>"),
-        TIMER(1, "Timer"),
-        IGNITION(2, "Ignition"),
-        REMOTE(3, "Remote"),
-        TIMER_ARMED(4, "Timer (armed)"),
-        IGNITION_ARMED(5, "Ignition (armed)");
+        _NONE(0, "(none)"),
+        CARBOMB_TIMED(1, "Timer"),
+        CARBOMB_ONIGNITION(2, "Ignition"),
+        CARBOMB_REMOTE(3, "Remote"),
+        CARBOMB_TIMEDACTIVE(4, "Timer (armed)"),
+        CARBOMB_ONIGNITIONACTIVE(5, "Ignition (armed)");
         
         private final int id;
         private final String friendlyName;
         
-        private BombType(int id, String friendlyName)
+        private CarBomb(int id, String friendlyName)
         {
             this.id = id;
             this.friendlyName = friendlyName;
@@ -325,7 +357,6 @@ public class GameConstants
     
     public enum RadioStation
     {
-        _RADIO_OFF(11, "<radio off>"),
         HEAD_RADIO(0, "Head Radio"),
         DOUBLE_CLEF_FM(1, "Double Clef FM"),
         JAH_RADIO(2, "Jah Radio"),
@@ -336,7 +367,8 @@ public class GameConstants
         FLASHBACK_95_6(7, "Flashback 95.6"),
         CHATTERBOX_109(8, "Chatterbox 109"),
         USER_TRACK_PLAYER(9, "User track player"),
-        POLICE_RADIO(10, "Police Radio");
+        POLICE_RADIO(10, "Police radio"),
+        RADIO_OFF(11, "(radio off)");
         
         private final int id;
         private final String friendlyName;
@@ -457,7 +489,7 @@ public class GameConstants
         DARK4(93, 78, 89, 96, "Dark 4"),
         DARK5(94, 65, 69, 76, "Dark 5");
         
-        public final int id, r, g, b;
+        private final int id, r, g, b;
         private final String friendlyName;
         
         private CarColor(int id, int r, int g, int b, String friendlyName)

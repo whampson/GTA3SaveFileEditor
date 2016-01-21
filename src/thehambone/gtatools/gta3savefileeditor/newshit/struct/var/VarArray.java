@@ -1,5 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct.var;
 
+import java.util.Iterator;
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
 import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.DataStructure;
@@ -18,7 +19,8 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * @author thehambone
  * @param <T> the type of the elements in the array
  */
-public class VarArray<T extends DataStructure> extends Variable<T>
+public class VarArray<T extends DataStructure>
+        extends Variable<T> implements Iterable<T>
 {
     private final Class<T> elementTypeClass;
     
@@ -172,6 +174,29 @@ public class VarArray<T extends DataStructure> extends Variable<T>
 //            throw new UnsupportedPlatformException("platform unsupported: "
 //                    + platform);
 //        }
+    }
+    
+    @Override
+    public Iterator<T> iterator()
+    {
+        return new Iterator<T>()
+        {
+            private final int maxIndex = getElementCount();
+            
+            private int currentIndex = 0;
+            
+            @Override
+            public boolean hasNext()
+            {
+                return maxIndex > currentIndex;
+            }
+
+            @Override
+            public T next()
+            {
+                return getElementAt(currentIndex++);
+            }
+        };
     }
     
     @Override

@@ -22,3 +22,7 @@ Player
 ------
 * Improved max wanted level setting
 * Wanted level can now be disabled entirely
+
+Garages
+-------
+* Car colors are easier to select
