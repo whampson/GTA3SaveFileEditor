@@ -15,6 +15,11 @@ public class VarDWORD extends Variable<Integer>
         super(4);
     }
     
+    public boolean toBoolean()
+    {
+        return getValue() == 1;
+    }
+    
     public int toInt()
     {
         return getValue();
@@ -28,6 +33,11 @@ public class VarDWORD extends Variable<Integer>
     public long toUnsignedLong()
     {
         return Integer.toUnsignedLong(getValue());
+    }
+    
+    public void parseBoolean(boolean bool)
+    {
+        setValue(bool ? 1 : 0);
     }
     
     public void parseFloat(String s)

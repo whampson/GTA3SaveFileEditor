@@ -74,8 +74,6 @@ public class IntegerVariableComboBox<E>
         
         if (v.dataChanged()) {
             notifyObservers(Page.Event.VARIABLE_CHANGED);
-        } else {
-            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

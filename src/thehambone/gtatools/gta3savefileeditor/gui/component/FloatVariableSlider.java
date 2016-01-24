@@ -77,8 +77,6 @@ public class FloatVariableSlider extends VariableSlider<VarFloat>
         
         if (v.dataChanged()) {
             notifyObservers(Page.Event.VARIABLE_CHANGED);
-        } else {
-            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

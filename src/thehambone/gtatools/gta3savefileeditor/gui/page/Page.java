@@ -18,8 +18,6 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
  */
 public abstract class Page extends JPanel implements Observable
 {
-    protected VariableDefinitions vars;
-    
     private final List<Observer> observers;
     private final String pageTitle;
     private final Visibility visibility;
@@ -63,8 +61,6 @@ public abstract class Page extends JPanel implements Observable
     {
         if (var.dataChanged()) {
             notifyObservers(Event.VARIABLE_CHANGED);
-        } else {
-            notifyObservers(Event.VARIABLE_UNCHANGED);
         }
     }
     
@@ -152,12 +148,6 @@ public abstract class Page extends JPanel implements Observable
          * Signifies that a variable's value has been changed.
          */
         VARIABLE_CHANGED,
-        
-        /**
-         * Indicates that a variable's value has been restored to its original
-         * state.
-         */
-        VARIABLE_UNCHANGED,
         
         /**
          * Signals that a file should be loaded.

@@ -495,17 +495,17 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="reversePedHostilityCheatsLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="purpleNinesGlitchLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="purpleNinesGlitchLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="disableHostilePedsLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="purpleNinesGlitchFixButton" max="32767" attributes="0"/>
-                              <Component id="reversePedHostilityCheatsButton" max="32767" attributes="0"/>
+                              <Component id="disableHostilePedsButton" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -519,8 +519,8 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="reversePedHostilityCheatsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="reversePedHostilityCheatsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="disableHostilePedsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="disableHostilePedsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -535,8 +535,8 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="purpleNinesGlitchFixButton">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Not present"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Disable the Purple Nine&apos;s glitch, allowing you to progress on D-Ice&apos;s missions."/>
+                    <Property name="text" type="java.lang.String" value="Glitch not present"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Disable the Purple Nine&apos;s glitch allowing you to complete on D-Ice&apos;s missions."/>
                     <Property name="enabled" type="boolean" value="false"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[127, 23]"/>
@@ -551,24 +551,18 @@
                   <AccessibilityProperties>
                     <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Not Present"/>
                   </AccessibilityProperties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="purpleNinesGlitchFixButtonActionPerformed"/>
-                  </Events>
                 </Component>
-                <Component class="javax.swing.JLabel" name="reversePedHostilityCheatsLabel">
+                <Component class="javax.swing.JLabel" name="disableHostilePedsLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Reverse ped hostility cheats:"/>
+                    <Property name="text" type="java.lang.String" value="Disable hostile peds:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="reversePedHostilityCheatsButton">
+                <Component class="javax.swing.JButton" name="disableHostilePedsButton">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Cheats not enabled"/>
+                    <Property name="text" type="java.lang.String" value="Peds not hostile"/>
                     <Property name="toolTipText" type="java.lang.String" value="Reverse the effects of the &quot;peds riot&quot; and &quot;peds attack player&quot; cheats."/>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reversePedHostilityCheatsButtonActionPerformed"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>

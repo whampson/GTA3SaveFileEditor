@@ -1,7 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.gui.page;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -328,192 +327,8 @@ public class GaragesPage extends Page
         
         safehouseComboBox.setSelectedIndex(-1);
         safehouseComboBox.setSelectedIndex(0);
-        
-//        vars = SaveFile.getCurrentlyLoadedFile().getVariables();
-//        
-//        DefaultComboBoxModel safehouseComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.Island i : GameConstants.Island.values()) {
-//            safehouseComboBoxModel.addElement(i.getFriendlyName());
-//        }
-//        safehouseComboBox.setModel(safehouseComboBoxModel);
-//        
-//        DefaultComboBoxModel<GameConstants.Vehicle> vehicleComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-//            vehicleComboBoxModel.addElement(v);
-//        }
-//        vehicleComboBox.setRenderer(new VehicleListCellRenderer());
-//        vehicleComboBox.setModel(vehicleComboBoxModel);
-//        
-//        DefaultComboBoxModel radioStationComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.RadioStation r : GameConstants.RadioStation.values()) {
-//            radioStationComboBoxModel.addElement(r.getFriendlyName());
-//        }
-//        radioStationComboBox.setModel(radioStationComboBoxModel);
-//        
-//        DefaultComboBoxModel bombTypeComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.CarBomb b : GameConstants.CarBomb.values()) {
-//            bombTypeComboBoxModel.addElement(b.getFriendlyName());
-//        }
-//        bombTypeComboBox.setModel(bombTypeComboBoxModel);
-//        
-//        primaryColorComboBox.setRenderer(new CarColorListCellRenderer());
-//        secondaryColorComboBox.setRenderer(new CarColorListCellRenderer());
-//        DefaultComboBoxModel primaryColorComboBoxModel = new DefaultComboBoxModel();
-//        DefaultComboBoxModel secondaryColorComboBoxModel = new DefaultComboBoxModel();
-//        for (GameConstants.CarColor c : GameConstants.CarColor.values()) {
-//            primaryColorComboBoxModel.addElement(c);
-//            secondaryColorComboBoxModel.addElement(c);
-//        }
-//        primaryColorComboBox.setModel(primaryColorComboBoxModel);
-//        secondaryColorComboBox.setModel(secondaryColorComboBoxModel);
-//        
-//        setSlotEditComponentsEnabled(false);
-//        updateGarageSlots(GameConstants.Island.PORTLAND);
     }
     
-    //    private void initSelectionListener()
-//    {
-//        garageSlotList.addListSelectionListener(new ListSelectionListener()
-//        {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e)
-//            {
-//                StoredCar storedCar = getSelectedGarageSlot();
-//                if (storedCar == null) {
-//                    setSlotEditComponentsEnabled(false);
-//                    return;
-//                }
-//                setSlotEditComponentsEnabled(true);
-//                
-//                for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-//                    if (storedCar.getModelIDAsVariable().getValue().intValue() == v.getID()) {
-//                        vehicleComboBox.setSelectedItem(v);
-//                        break;
-//                    }
-//                }
-//                
-//                int immunities = storedCar.getImmunitiesAsVariable().getValue().intValue();
-//                bulletproofCheckBox.setSelected((immunities & BP_MASK) == BP_MASK);
-//                fireproofCheckBox.setSelected((immunities & FP_MASK) == FP_MASK);
-//                collisionProofCheckBox.setSelected((immunities & CP_MASK) == CP_MASK);
-//                explosionProofCheckBox.setSelected((immunities & EP_MASK) == EP_MASK);
-//                
-//                int primaryColorID = storedCar.getPrimaryColorIDAsVariable().getValue().byteValue();
-//                for (GameConstants.CarColor col : GameConstants.CarColor.values()) {
-//                    if (col.getID() == primaryColorID) {
-//                        primaryColorComboBox.setSelectedItem(col);
-//                        break;
-//                    }
-//                }
-//                int secondaryColorID = storedCar.getSecondaryColorIDAsVariable().getValue().byteValue();
-//                for (GameConstants.CarColor col : GameConstants.CarColor.values()) {
-//                    if (col.getID() == secondaryColorID) {
-//                        secondaryColorComboBox.setSelectedItem(col);
-//                        break;
-//                    }
-//                }
-//                
-//                int radioStationID = storedCar.getRadioStationIDAsVariable().getValue().byteValue();
-//                for (GameConstants.RadioStation r : GameConstants.RadioStation.values()) {
-//                    if (r.getID() == radioStationID) {
-//                        radioStationComboBox.setSelectedItem(r.getFriendlyName());
-//                        break;
-//                    }
-//                }
-//                
-//                int bombType = storedCar.getBombTypeAsVariable().getValue().byteValue();
-//                for (GameConstants.CarBomb b : GameConstants.CarBomb.values()) {
-//                    if (b.getID() == bombType) {
-//                        bombTypeComboBox.setSelectedItem(b.getFriendlyName());
-//                        break;
-//                    }
-//                }
-//            }
-//        });
-//    }
-    
-//    private StoredCar getSelectedGarageSlot()
-//    {
-//        if (storedCarList.getSelectedIndex() == -1) {
-//            return null;
-//        }
-//        return (StoredCar)storedCarList.getSelectedValue();
-//    }
-//    
-//    private void setSlotEditComponentsEnabled(boolean enabled)
-//    {
-//        vehicleLabel.setEnabled(enabled);
-//        vehicleComboBox.setEnabled(enabled);
-//        
-//        immunitiesPanel.setEnabled(enabled);
-//        bulletproofCheckBox.setEnabled(enabled);
-//        fireproofCheckBox.setEnabled(enabled);
-//        collisionProofCheckBox.setEnabled(enabled);
-//        explosionProofCheckBox.setEnabled(enabled);
-//        
-//        colorsPanel.setEnabled(enabled);
-//        primaryColorLabel.setEnabled(enabled);
-//        primaryColorComboBox.setEnabled(enabled);
-//        secondaryColorLabel.setEnabled(enabled);
-//        secondaryColorComboBox.setEnabled(enabled);
-//        
-//        radioStationPanel.setEnabled(enabled);
-//        radioStationComboBox.setEnabled(enabled);
-//        
-//        bombTypePanel.setEnabled(enabled);
-//        bombTypeComboBox.setEnabled(enabled);
-//        
-//        if (!enabled) {
-//            vehicleComboBox.setSelectedIndex(-1);
-//            bulletproofCheckBox.setSelected(false);
-//            fireproofCheckBox.setSelected(false);
-//            collisionProofCheckBox.setSelected(false);
-//            explosionProofCheckBox.setSelected(false);
-//            primaryColorComboBox.setSelectedIndex(-1);
-//            secondaryColorComboBox.setSelectedIndex(-1);
-//            radioStationComboBox.setSelectedIndex(-1);
-//            bombTypeComboBox.setSelectedIndex(-1);
-//        }
-//    }
-//    
-//    private void setImmunity(JCheckBox checkBox, int immunityMask)
-//    {
-//        StoredCar storedCar = getSelectedGarageSlot();
-//        if (storedCar == null) {
-//            return;
-//        }
-//        int immunities = storedCar.getImmunitiesAsVariable().getValue().intValue();
-//        if (checkBox.isSelected()) {
-//            immunities |= immunityMask;
-//        } else {
-//            immunities &= ~immunityMask;
-//        }
-//        storedCar.getImmunitiesAsVariable().setValue(new GTAInteger(immunities));
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    private void setColor(JComboBox comboBox, Variable colorVar)
-//    {
-//        GameConstants.CarColor newColor = (GameConstants.CarColor)comboBox.getSelectedItem();
-//        colorVar.setValue(new GTAByte((byte)newColor.getID()));
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    private void updateGarageSlots(GameConstants.Island safehouse)
-//    {
-//        storedCarList.setCellRenderer(new StoredCarListCellRenderer());
-//        DefaultListModel garageSlotListModel = new DefaultListModel();
-//        
-//        for (int i = 0; i < 6; i++) {
-//            StoredCar storedCar = vars.aSaveGarageSlots.getValueAt(i).getStoredCars()[safehouse.getID() - 1];
-//            if (storedCar.getModelIDAsVariable().getValue().intValue() == 0) {
-//                continue;
-//            }
-//            garageSlotListModel.addElement(storedCar);
-//        }
-//        storedCarList.setModel(garageSlotListModel);
-//    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -553,13 +368,6 @@ public class GaragesPage extends Page
         safehouseLabel.setToolTipText("");
 
         safehouseComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<safehouse_name>" }));
-        safehouseComboBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                safehouseComboBoxActionPerformed(evt);
-            }
-        });
 
         saveGaragePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save Garage"));
 
@@ -805,17 +613,6 @@ public class GaragesPage extends Page
             .addComponent(scrollPane)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void safehouseComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_safehouseComboBoxActionPerformed
-    {//GEN-HEADEREND:event_safehouseComboBoxActionPerformed
-//        int islandID = safehouseComboBox.getSelectedIndex() + 1;
-//        for (GameConstants.Island i : GameConstants.Island.values()) {
-//            if (i.getID() == islandID) {
-//                updateGarageSlots(i);
-//                return;
-//            }
-//        }
-    }//GEN-LAST:event_safehouseComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableCheckBox bombArmedCheckBox;

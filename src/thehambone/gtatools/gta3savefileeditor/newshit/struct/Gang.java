@@ -2,9 +2,8 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarBoolean8;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarByte;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
 
 /**
@@ -15,7 +14,7 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
 public class Gang extends Record
 {
     public final VarInt nVehicleModelID = new VarInt();
-    public final VarBoolean8 nPedModelOverrideIndex = new VarBoolean8();
+    public final VarByte nPedModelOverrideIndex = new VarByte();
     public final VarInt nWeaponID1 = new VarInt();
     public final VarInt nWeaponID2 = new VarInt();
     

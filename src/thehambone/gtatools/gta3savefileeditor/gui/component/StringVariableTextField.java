@@ -93,8 +93,6 @@ public class StringVariableTextField extends VariableTextField<VarString>
         
         if (v.dataChanged()) {
             notifyObservers(Page.Event.VARIABLE_CHANGED);
-        } else {
-            notifyObservers(Page.Event.VARIABLE_UNCHANGED);
         }
     }
 }

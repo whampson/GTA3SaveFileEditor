@@ -12,7 +12,9 @@ import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
  */
 public class PedType extends Record
 {
+    public final VarInt nPedTypeMask = new VarInt();
     public final VarInt nThreatFlags = new VarInt();
+    public final VarInt nAvoidFlags = new VarInt();
     
     public PedType()
     {
@@ -21,14 +23,16 @@ public class PedType extends Record
     
     private void load(DataBuffer buf)
     {
+        nPedTypeMask.load(buf, offset + 0x00);
         nThreatFlags.load(buf, offset + 0x18);
+        nAvoidFlags.load(buf, offset + 0x1C);
     }
     
     @Override
     public DataStructure[] getMembers()
     {
         return new DataStructure[] {
-            nThreatFlags
+            nPedTypeMask, nThreatFlags, nAvoidFlags
         };
     }
     

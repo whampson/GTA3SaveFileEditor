@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGarages;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.PlayerPed;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.WeaponSlot;
@@ -20,6 +21,7 @@ public class PlayerPage extends Page
 {
     private BlockPlayerInfo player;
     private PlayerPed playerped;
+    private BlockGarages garages;
     private VarArray<WeaponSlot> aWeaponSlot;
     private boolean updateChaosLevelVar;
     
@@ -179,6 +181,7 @@ public class PlayerPage extends Page
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
+        garages = SaveFileNew.getCurrentSaveFile().garages;
         player = SaveFileNew.getCurrentSaveFile().playerInfo;
         playerped = SaveFileNew.getCurrentSaveFile()
                 .playerPeds.aPlayerPed.getElementAt(0);
@@ -191,6 +194,8 @@ public class PlayerPage extends Page
         infiniteSprintCheckBox.setVariable(player.bPlayerNeverGetsTired);
         getOutOfJailFreeCheckBox.setVariable(player.bPlayerGetOutOfJailFree);
         freeHealthCareCheckBox.setVariable(player.bPlayerFreeHealthCare);
+        freeBombsCheckBox.setVariable(garages.bFreeBombs);
+        freeRespraysCheckBox.setVariable(garages.bFreeResprays);
         
         weaponSlotComboBox.setSelectedIndex(0);
         
@@ -205,7 +210,7 @@ public class PlayerPage extends Page
         playerYTextField.setVariable(playerped.cPlayerPed.vPosition.fY);
         playerZTextField.setVariable(playerped.cPlayerPed.vPosition.fZ);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -532,7 +537,7 @@ public class PlayerPage extends Page
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addComponent(scrollPane)
         );
     }// </editor-fold>//GEN-END:initComponents
 

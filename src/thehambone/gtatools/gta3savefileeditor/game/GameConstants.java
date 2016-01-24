@@ -276,37 +276,38 @@ public class GameConstants
     
     public static enum PedType
     {
-        PLAYER01(0, 1, "Player 1"),
-        PLAYER02(1, 2, "Player 2"),
-        PLAYER03(2, 4, "Player 3"),
-        PLAYER04(3, 8, "Player 4"),
-        CIVMALE(4, 16, "Male Civilian"),
-        CIVFEMALE(5, 32, "Female Civilian"),
-        COP(6, 64, "Cop"),
-        GANG01(7, 128, "Mafia"),
-        GANG02(8, 256, "Triads"),
-        GANG03(9, 512, "Diablos"),
-        GANG04(10, 1024, "Yakuza"),
-        GANG05(11, 2048, "Yardies"),
-        GANG06(12, 4096, "Colombians"),
-        GANG07(13, 8192, "Hoods"),
-        GANG08(14, 16384, "<unused gang>"),
-        GANG09(15, 32768, "<unused gang>"),
-        EMERGENCY(16, 65536, "Paramedic"),
-        FIREMAN(17, 131072, "Firefighter"),
-        CRIMINAL(18, 262144, "Criminal"),
-        SPECIAL01(19, 524288, "Special"),
-        PROSTITUTE(20, 1048576, "Prostitute"),
-        SPECIAL02(21, 2097152, "Special 2");
+        PLAYER01    (0,  0x00,       "Player 1"),
+        PLAYER02    (1,  0x00,       "Player 2"),
+        PLAYER03    (2,  0x00,       "Player 3"),
+        PLAYER04    (3,  0x00,       "Player 4"),
+        CIVMALE     (4,  0x20900000, "Male Civilian"),
+        CIVFEMALE   (5,  0x20900000, "Female Civilian"),
+        COP         (6,  0x20900000, "Cop"),
+        GANG01      (7,  0x0090FF00, "Mafia"),
+        GANG02      (8,  0x0090FE80, "Triads"),
+        GANG03      (9,  0x0090FD80, "Diablos"),
+        GANG04      (10, 0x0090FB00, "Yakuza"),
+        GANG05      (11, 0x0090F700, "Yardies"),
+        GANG06      (12, 0x0090EF81, "Colombians"),
+        GANG07      (13, 0x0090DF80, "Hoods"),
+        GANG08      (14, 0x0090BF80, "(unused gang)"),
+        GANG09      (15, 0x00907F80, "(unused gang)"),
+        EMERGENCY   (16, 0x00800000, "Paramedic"),
+        FIREMAN     (17, 0x00,       "Firefighter"),
+        CRIMINAL    (18, 0x00B00040, "Criminal"),
+        _SPECIAL    (19, 0x00,       "Additional Peds"),     // unused?
+        PROSTITUTE  (20, 0x02900000, "Prostitute"),
+        SPECIAL     (21, 0x00,       "Special"),
+        _UNUSED     (22, 0x00,       "(unused)");
         
         private final int id;
-        private final int threatMask;
+        private final int defaultThreatFlags;
         private final String friendlyName;
         
-        private PedType(int id, int threatMask, String friendlyName)
+        private PedType(int id, int defaultThreatFlags, String friendlyName)
         {
             this.id = id;
-            this.threatMask = threatMask;
+            this.defaultThreatFlags = defaultThreatFlags;
             this.friendlyName = friendlyName;
         }
         
@@ -315,9 +316,14 @@ public class GameConstants
             return id;
         }
         
-        public int getThreatMask()
+        public int getDefaultThreatFlags()
         {
-            return threatMask;
+            return defaultThreatFlags;
+        }
+        
+        public int getPedTypeMask()
+        {
+            return (1 << id);
         }
         
         public String getFriendlyName()
@@ -328,7 +334,7 @@ public class GameConstants
     
     public enum CarBomb
     {
-        _NONE(0, "(none)"),
+        CARBOMB_NONE(0, "(none)"),
         CARBOMB_TIMED(1, "Timer"),
         CARBOMB_ONIGNITION(2, "Ignition"),
         CARBOMB_REMOTE(3, "Remote"),

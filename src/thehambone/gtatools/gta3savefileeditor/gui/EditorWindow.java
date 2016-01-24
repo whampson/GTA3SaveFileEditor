@@ -7,6 +7,8 @@ import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -30,6 +32,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
@@ -66,7 +70,6 @@ public class EditorWindow extends JFrame implements Observer
         new OptionsPage(),
         new DebugPage()
     };
-    private final List<Observable> subjects = new ArrayList<>();
     
     private JMenu slotLoadMenu;
     private JMenu slotSaveMenu;
@@ -92,6 +95,23 @@ public class EditorWindow extends JFrame implements Observer
         initWindowListeners();
         initMenus();
         initPanels();
+        
+        // TODO: move this
+        tabbedPane.addChangeListener(new ChangeListener()
+        {
+            @Override
+            public void stateChanged(ChangeEvent e)
+            {
+                Component c = tabbedPane.getSelectedComponent();
+                if (c == null) {
+                    return;
+                }
+                
+                Page p = (Page)c;
+                p.loadPage();
+                Logger.debug("Page loaded");
+            }
+        });
     }
     
     private void initWindowListeners()
@@ -102,6 +122,16 @@ public class EditorWindow extends JFrame implements Observer
             public void windowClosing(WindowEvent evt)
             {
                 closeFrame();
+            }
+        });
+        
+        addWindowFocusListener(new WindowAdapter()
+        {
+            @Override
+            public void windowGainedFocus(WindowEvent evt)
+            {
+                refreshSlotMenus();
+                Logger.debug("Slots refreshed");
             }
         });
     }
@@ -619,24 +649,6 @@ public class EditorWindow extends JFrame implements Observer
             case VARIABLE_CHANGED:
                 if (!changesMade) {
                     changesMade = true;
-                    updateFrameTitle();
-                }
-                break;
-            case VARIABLE_UNCHANGED:
-                if (!changesMade) {
-                    break;
-                }
-                
-                boolean changesReverted = true;
-                for (Page p : pages) {
-                    List<VariableComponent> comps = getAllVariableComponents(p);
-                    for (VariableComponent c : comps) {
-                        if (c.hasVariable() && c.getVariable().dataChanged()) {
-                            changesReverted = false;
-                            break;
-                        }
-                    }
-                    changesMade = !changesReverted;
                     updateFrameTitle();
                 }
                 break;

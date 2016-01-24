@@ -104,10 +104,8 @@ public final class Main
          * -merge new data handling code
          * -Record size should be determined by size of members
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
-         *       related? (bug disappeared?)
+         *       related? (IDE only?)
          * -BUG: Mac OS X crash when using "Save Slot" feature
-         * -BUG: "Exception while removing reference" at shutdown
-         * -Iterator for VarArray class
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Remove Ctrl+Q shortcut
          * -Update status bar with platform info and notifications like "All
@@ -115,10 +113,8 @@ public final class Main
          * -Bomb armed checkbox
          * -F5: Refresh current file
          * -Shift + F5: Refresh slots
-         * -Rewrite changes made detection (use message "change.reset") (enum of observer messages)
          * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
-         * -Android/iOS support
          * -Documentation
          * -Tooltip text
          * -New icon

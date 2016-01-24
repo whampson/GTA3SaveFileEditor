@@ -9,13 +9,15 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
+import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXTSelectorDialog;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.GTAByte;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.Gang;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.PedType;
 import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockSimpleVars;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.Gang;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.PedType;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarDWORD;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -26,12 +28,30 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
 public class GeneralPage extends Page
 {
     private static final char GXT_INDICATOR = '\uFFFF';
+    private static final int FLAG_TONI_MISSION2_PASSED_MOBILE_OFFSET   = 266;
+    private static final int FLAG_TONI_MISSION2_PASSED_PC_OFFSET       = 262;
+    private static final int FLAG_DIABLO_MISSION3_PASSED_MOBILE_OFFSET = 284;
+    private static final int FLAG_DIABLO_MISSION3_PASSED_PC_OFFSET     = 280;
+    private static final int FLAG_ASUKA_MISSION1_PASSED_MOBILE_OFFSET  = 320;
+    private static final int FLAG_ASUKA_MISSION1_PASSED_PC_OFFSET      = 316;
+    private static final int FLAG_YARDIE_MISSION2_PASSED_MOBILE_OFFSET = 344;
+    private static final int FLAG_YARDIE_MISSION2_PASSED_PC_OFFSET     = 340;
+    private static final int FLAG_YARDIE_MISSION4_PASSED_MOBILE_OFFSET = 346;
+    private static final int FLAG_YARDIE_MISSION4_PASSED_PC_OFFSET     = 342;
+    private static final int FLAG_HOOD_MISSION5_PASSED_MOBILE_OFFSET   = 367;
+    private static final int FLAG_HOOD_MISSION5_PASSED_PC_OFFSET       = 363;
     
     private Map<String, String> gxt;
     private JComponent[] timestampComponents;
     private BlockSimpleVars simp;
     private String prevTitleGXTKey;
     private String prevTitleText;
+    private boolean flagToniMission2Passed;
+    private boolean flagDiabloMission3Passed;
+    private boolean flagAsukaMission1Passed;
+    private boolean flagYardieMission2Passed;
+    private boolean flagYardieMission4Passed;
+    private boolean flagHoodMission5Passed;
     
     /**
      * Creates a new {@code GeneralPage} object.
@@ -44,6 +64,7 @@ public class GeneralPage extends Page
         initVariableComponentParameters();
         initSaveNameComponents();
         initTimestampComponents();
+        initGlitchFixButtons();
         initWeatherComponents();
     }
     
@@ -129,6 +150,27 @@ public class GeneralPage extends Page
             monthLabel, dayLabel, dayOfWeekLabel, yearLabel, hourLabel,
             minuteLabel, secondLabel, millisLabel
         };
+    }
+    
+    private void initGlitchFixButtons()
+    {
+        purpleNinesGlitchFixButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                fixPurpleNinesGlitch();
+            }
+        });
+        
+        disableHostilePedsButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                fixHostilePeds();
+            }
+        });
     }
     
     /*
@@ -219,6 +261,130 @@ public class GeneralPage extends Page
             saveTitleTextField.refreshComponent();
             saveTitleTextField.setToolTipText(null);
         }
+    }
+    
+    private void detectPurpleNinesGlitch()
+    {
+        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        
+        // Get Hoods gang data
+        Gang hoods = saveFile.gangs.aGang.getElementAt(6);
+        
+        if (hoods.nPedModelOverrideIndex.getValue() != -1
+                && !flagHoodMission5Passed) {
+            purpleNinesGlitchFixButton.setEnabled(true);
+            purpleNinesGlitchFixButton.setText("Fix");
+        } else {
+            purpleNinesGlitchFixButton.setEnabled(false);
+            purpleNinesGlitchFixButton.setText("Glitch not present");
+        }
+    }
+    
+    private void fixPurpleNinesGlitch()
+    {
+        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        
+        Gang hoods = saveFile.gangs.aGang.getElementAt(6);
+        hoods.nPedModelOverrideIndex.setValue((byte)-1);
+        
+        purpleNinesGlitchFixButton.setEnabled(false);
+        purpleNinesGlitchFixButton.setText("Fixed");
+        
+        Logger.debug("Variable updated: " + hoods.nPedModelOverrideIndex);
+        notifyChange(hoods.nPedModelOverrideIndex);
+    }
+    
+    private void detectHostilePeds()
+    {
+        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        VarArray<PedType> aPedType = saveFile.pedTypes.aPedType;
+        
+        // Get CIVMALE data
+        int civmaleID = GameConstants.PedType.CIVMALE.getID();
+        PedType civmale = aPedType.getElementAt(civmaleID);
+        
+        int civmaleThreat = civmale.nThreatFlags.getValue();
+        int player01Mask = GameConstants.PedType.PLAYER01.getPedTypeMask();
+        int civmaleMask = GameConstants.PedType.CIVMALE.getPedTypeMask();
+        int civfemaleMask = GameConstants.PedType.CIVFEMALE.getPedTypeMask();
+        
+        /* If CIVMALE is hostile towards player, CIVMALE, or CIVFEMALE
+           then the cheats were most likely enabled. */
+        if (((civmaleThreat & player01Mask) != 0)
+                || ((civmaleThreat & civmaleMask) != 0)
+                || ((civmaleThreat & civfemaleMask) != 0)) {
+            disableHostilePedsButton.setEnabled(true);
+            disableHostilePedsButton.setText("Fix");
+        } else {
+            disableHostilePedsButton.setEnabled(false);
+            disableHostilePedsButton.setText("Peds not hostile");
+        }
+    }
+    
+    private void fixHostilePeds()
+    {
+        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        VarArray<PedType> aPedType = saveFile.pedTypes.aPedType;
+        GameConstants.PedType pedTypes[] = GameConstants.PedType.values();
+        
+        GameConstants.PedType player01 = GameConstants.PedType.PLAYER01;
+        GameConstants.PedType mafia = GameConstants.PedType.GANG01;
+        GameConstants.PedType triads = GameConstants.PedType.GANG02;
+        GameConstants.PedType diablos = GameConstants.PedType.GANG03;
+        GameConstants.PedType yakuza = GameConstants.PedType.GANG04;
+        GameConstants.PedType yardies = GameConstants.PedType.GANG05;
+        GameConstants.PedType hoods = GameConstants.PedType.GANG07;
+        
+        // Set default threat flags for all ped types
+        for (int i = 0; i < aPedType.getElementCount(); i++) {
+            // Get ped type data from save file
+            PedType storedPT = aPedType.getElementAt(i);
+            
+            // Get default threat flags for ped type
+            int threat = pedTypes[i].getDefaultThreatFlags();
+            
+            // Update threat flags
+            storedPT.nThreatFlags.setValue(threat);
+            Logger.debug("Variable updated: " + storedPT.nThreatFlags);
+            notifyChange(storedPT.nThreatFlags);
+        }
+        
+        // Set gang hostility towards player based on mission completion status
+        
+        // Mafia
+        if (flagAsukaMission1Passed) {
+            PedType mafiaData = aPedType.getElementAt(mafia.getID());
+            int threat = mafiaData.nThreatFlags.getValue();
+            threat |= player01.getPedTypeMask();
+            mafiaData.nThreatFlags.setValue(threat);
+        }
+        
+        // Triads
+        if (flagToniMission2Passed || flagDiabloMission3Passed) {
+            PedType triadsData = aPedType.getElementAt(triads.getID());
+            int threat = triadsData.nThreatFlags.getValue();
+            threat |= player01.getPedTypeMask();
+            triadsData.nThreatFlags.setValue(threat);
+        }
+        
+        // Diablos
+        if (flagYardieMission2Passed) {
+            PedType diablosData = aPedType.getElementAt(diablos.getID());
+            int threat = diablosData.nThreatFlags.getValue();
+            threat |= player01.getPedTypeMask();
+            diablosData.nThreatFlags.setValue(threat);
+        }
+        
+        // Yardies
+        if (flagYardieMission4Passed) {
+            PedType yardiesData = aPedType.getElementAt(yardies.getID());
+            int threat = yardiesData.nThreatFlags.getValue();
+            threat |= player01.getPedTypeMask();
+            yardiesData.nThreatFlags.setValue(threat);
+        }
+        
+        disableHostilePedsButton.setEnabled(false);
+        disableHostilePedsButton.setText("Fixed");
     }
     
     /*
@@ -344,8 +510,8 @@ public class GeneralPage extends Page
             }
         }
         
-        // Set variables for timestamp components (PC only)
         if (isPC) {
+            // Set variables for timestamp components
             monthComboBox.setVariable(simp.timestamp.nMonth);
             dayTextField.setVariable(simp.timestamp.nDay);
             dayOfWeekComboBox.setVariable(simp.timestamp.nDayOfWeek);
@@ -377,45 +543,39 @@ public class GeneralPage extends Page
         currentWeatherComboBox.updateVariableOnChange(true);
         previousWeatherComboBox.updateVariableOnChange(true);
         
+        // Set flags from global vars
+        VarArray<VarDWORD> globalVars = simp.theScripts.aScriptVariable;
+        if (isPC) {
+            flagToniMission2Passed = globalVars.getElementAt(
+                    FLAG_TONI_MISSION2_PASSED_PC_OFFSET).toBoolean();
+            flagDiabloMission3Passed = globalVars.getElementAt(
+                    FLAG_DIABLO_MISSION3_PASSED_PC_OFFSET).toBoolean();
+            flagAsukaMission1Passed = globalVars.getElementAt(
+                    FLAG_ASUKA_MISSION1_PASSED_PC_OFFSET).toBoolean();
+            flagYardieMission2Passed = globalVars.getElementAt(
+                    FLAG_YARDIE_MISSION2_PASSED_PC_OFFSET).toBoolean();
+            flagYardieMission4Passed = globalVars.getElementAt(
+                    FLAG_YARDIE_MISSION4_PASSED_PC_OFFSET).toBoolean();
+            flagHoodMission5Passed = globalVars.getElementAt(
+                    FLAG_HOOD_MISSION5_PASSED_PC_OFFSET).toBoolean();
+        } else if (isMobile) {
+            flagToniMission2Passed = globalVars.getElementAt(
+                    FLAG_TONI_MISSION2_PASSED_MOBILE_OFFSET).toBoolean();
+            flagDiabloMission3Passed = globalVars.getElementAt(
+                    FLAG_DIABLO_MISSION3_PASSED_MOBILE_OFFSET).toBoolean();
+            flagAsukaMission1Passed = globalVars.getElementAt(
+                    FLAG_ASUKA_MISSION1_PASSED_MOBILE_OFFSET).toBoolean();
+            flagYardieMission2Passed = globalVars.getElementAt(
+                    FLAG_YARDIE_MISSION2_PASSED_MOBILE_OFFSET).toBoolean();
+            flagYardieMission4Passed = globalVars.getElementAt(
+                    FLAG_YARDIE_MISSION4_PASSED_MOBILE_OFFSET).toBoolean();
+            flagHoodMission5Passed = globalVars.getElementAt(
+                    FLAG_HOOD_MISSION5_PASSED_MOBILE_OFFSET).toBoolean();
+        }
+        
         // Detect bugs/glitches
-//        detectPurpleNinesGlitch();
-//        detectPedHostilityCheatsEnabled();
-    }
-    
-    private void detectPurpleNinesGlitch()
-    {
-        boolean glitchPresent = false;
-        Gang hoods = vars.aGangs.getValueAt(GameConstants.Gang.GANG07.getID());
-        if (hoods.getPedModelOverrideFlagAsVariable().getValue().byteValue() != -1) {
-            glitchPresent = true;
-        }
-        purpleNinesGlitchFixButton.setText(glitchPresent ? "Fix" : "Not present");
-        purpleNinesGlitchFixButton.setEnabled(glitchPresent);
-    }
-    
-    private void detectPedHostilityCheatsEnabled()
-    {
-        boolean enabled = false;
-        for (GameConstants.PedType pedType : GameConstants.PedType.values()) {
-            PedType savedPedType = vars.aPedTypes.getValueAt(pedType.getID());
-            int threatValue = savedPedType.getThreat();
-            if (pedType.getID() > -1 && pedType.getID() < 4) {
-                continue;   // skip players
-            }
-            if (pedType.getID() > 6 && pedType.getID() < 16) {
-                continue;   // skip gangs
-            }
-            if ((threatValue & GameConstants.PedType.PLAYER01.getThreatMask()) != 0
-                    || (threatValue & GameConstants.PedType.CIVMALE.getThreatMask()) != 0
-                    || (threatValue & GameConstants.PedType.CIVFEMALE.getThreatMask()) != 0) {
-                // if ped type is hostile toward player, civmale, or civfemale...
-                // one of the cheats was most likely enabled
-                enabled = true;
-                break;
-            }
-        }
-        reversePedHostilityCheatsButton.setText(enabled ? "Fix" : "Cheats not enabled");
-        reversePedHostilityCheatsButton.setEnabled(enabled);
+        detectPurpleNinesGlitch();
+        detectHostilePeds();
     }
     
     /**
@@ -467,8 +627,8 @@ public class GeneralPage extends Page
         glitchAndBugFixesPanel = new javax.swing.JPanel();
         purpleNinesGlitchLabel = new javax.swing.JLabel();
         purpleNinesGlitchFixButton = new javax.swing.JButton();
-        reversePedHostilityCheatsLabel = new javax.swing.JLabel();
-        reversePedHostilityCheatsButton = new javax.swing.JButton();
+        disableHostilePedsLabel = new javax.swing.JLabel();
+        disableHostilePedsButton = new javax.swing.JButton();
         weatherPanel = new javax.swing.JPanel();
         currentWeatherSelectionLabel = new javax.swing.JLabel();
         currentWeatherComboBox = new thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox();
@@ -708,47 +868,33 @@ public class GeneralPage extends Page
 
         purpleNinesGlitchLabel.setText("Purple Nines glitch:");
 
-        purpleNinesGlitchFixButton.setText("Not present");
-        purpleNinesGlitchFixButton.setToolTipText("Disable the Purple Nine's glitch, allowing you to progress on D-Ice's missions.");
+        purpleNinesGlitchFixButton.setText("Glitch not present");
+        purpleNinesGlitchFixButton.setToolTipText("Disable the Purple Nine's glitch allowing you to complete on D-Ice's missions.");
         purpleNinesGlitchFixButton.setEnabled(false);
         purpleNinesGlitchFixButton.setMaximumSize(new java.awt.Dimension(127, 23));
         purpleNinesGlitchFixButton.setMinimumSize(new java.awt.Dimension(127, 23));
         purpleNinesGlitchFixButton.setPreferredSize(new java.awt.Dimension(127, 23));
-        purpleNinesGlitchFixButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                purpleNinesGlitchFixButtonActionPerformed(evt);
-            }
-        });
 
-        reversePedHostilityCheatsLabel.setText("Reverse ped hostility cheats:");
+        disableHostilePedsLabel.setText("Disable hostile peds:");
 
-        reversePedHostilityCheatsButton.setText("Cheats not enabled");
-        reversePedHostilityCheatsButton.setToolTipText("Reverse the effects of the \"peds riot\" and \"peds attack player\" cheats.");
-        reversePedHostilityCheatsButton.setEnabled(false);
-        reversePedHostilityCheatsButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                reversePedHostilityCheatsButtonActionPerformed(evt);
-            }
-        });
+        disableHostilePedsButton.setText("Peds not hostile");
+        disableHostilePedsButton.setToolTipText("Reverse the effects of the \"peds riot\" and \"peds attack player\" cheats.");
+        disableHostilePedsButton.setEnabled(false);
 
         javax.swing.GroupLayout glitchAndBugFixesPanelLayout = new javax.swing.GroupLayout(glitchAndBugFixesPanel);
         glitchAndBugFixesPanel.setLayout(glitchAndBugFixesPanelLayout);
         glitchAndBugFixesPanelLayout.setHorizontalGroup(
             glitchAndBugFixesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(glitchAndBugFixesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(glitchAndBugFixesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(reversePedHostilityCheatsLabel)
-                    .addComponent(purpleNinesGlitchLabel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(glitchAndBugFixesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(purpleNinesGlitchLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(disableHostilePedsLabel, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(glitchAndBugFixesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(purpleNinesGlitchFixButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(reversePedHostilityCheatsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(disableHostilePedsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         glitchAndBugFixesPanelLayout.setVerticalGroup(
             glitchAndBugFixesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -759,8 +905,8 @@ public class GeneralPage extends Page
                     .addComponent(purpleNinesGlitchFixButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(glitchAndBugFixesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(reversePedHostilityCheatsButton)
-                    .addComponent(reversePedHostilityCheatsLabel))
+                    .addComponent(disableHostilePedsButton)
+                    .addComponent(disableHostilePedsLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -880,66 +1026,6 @@ public class GeneralPage extends Page
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void purpleNinesGlitchFixButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_purpleNinesGlitchFixButtonActionPerformed
-    {//GEN-HEADEREND:event_purpleNinesGlitchFixButtonActionPerformed
-        if (vars == null) {
-            return;
-        }
-        int hoodsID = GameConstants.Gang.GANG07.getID();
-        Gang hoods = vars.aGangs.getValueAt(hoodsID);
-        hoods.getPedModelOverrideFlagAsVariable().setValue(new GTAByte((byte)-1));
-        purpleNinesGlitchFixButton.setText("Fixed");
-        purpleNinesGlitchFixButton.setEnabled(false);
-    }//GEN-LAST:event_purpleNinesGlitchFixButtonActionPerformed
-
-    private void reversePedHostilityCheatsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_reversePedHostilityCheatsButtonActionPerformed
-    {//GEN-HEADEREND:event_reversePedHostilityCheatsButtonActionPerformed
-        if (vars == null) {
-            return;
-        }
-        for (GameConstants.PedType pedType : GameConstants.PedType.values()) {
-            PedType savedPedType = vars.aPedTypes.getValueAt(pedType.getID());
-            int threatValue = savedPedType.getThreat();
-            if (pedType.getID() > 6 && pedType.getID() < 16) {
-                // If pedtype is a gang...
-                threatValue &= ~pedType.getThreatMask();  // make gang not hostile towards itself
-                if (pedType == GameConstants.PedType.GANG04 || pedType == GameConstants.PedType.GANG07) {
-                    threatValue &= ~GameConstants.PedType.PLAYER01.getThreatMask();   // make Yakuza and Hoods not hostile towards the player
-                }
-            } else {
-                // If pedtype is anything else...
-                // make pedtype not hostile toward gangs or the player
-                threatValue &= ~GameConstants.PedType.PLAYER01.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG01.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG02.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG03.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG04.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG05.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG06.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG07.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG08.getThreatMask();
-                threatValue &= ~GameConstants.PedType.GANG09.getThreatMask();
-            }
-            // make pedtype not hostile toward anyone else
-            threatValue &= ~GameConstants.PedType.PLAYER02.getThreatMask();
-            threatValue &= ~GameConstants.PedType.PLAYER03.getThreatMask();
-            threatValue &= ~GameConstants.PedType.PLAYER04.getThreatMask();
-            threatValue &= ~GameConstants.PedType.CIVMALE.getThreatMask();
-            threatValue &= ~GameConstants.PedType.CIVFEMALE.getThreatMask();
-            threatValue &= ~GameConstants.PedType.COP.getThreatMask();
-            threatValue &= ~GameConstants.PedType.EMERGENCY.getThreatMask();
-            threatValue &= ~GameConstants.PedType.FIREMAN.getThreatMask();
-            threatValue &= ~GameConstants.PedType.CRIMINAL.getThreatMask();
-            threatValue &= ~GameConstants.PedType.SPECIAL01.getThreatMask();
-            threatValue &= ~GameConstants.PedType.PROSTITUTE.getThreatMask();
-            threatValue &= ~GameConstants.PedType.SPECIAL02.getThreatMask();
-            savedPedType.setThreat(threatValue);
-            vars.aPedTypes.setValueAt(pedType.getID(), savedPedType);
-        }
-        reversePedHostilityCheatsButton.setText("Fixed");
-        reversePedHostilityCheatsButton.setEnabled(false);
-    }//GEN-LAST:event_reversePedHostilityCheatsButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox currentWeatherComboBox;
     private javax.swing.JLabel currentWeatherSelectionLabel;
@@ -948,6 +1034,8 @@ public class GeneralPage extends Page
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableComboBox dayOfWeekComboBox;
     private javax.swing.JLabel dayOfWeekLabel;
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField dayTextField;
+    private javax.swing.JButton disableHostilePedsButton;
+    private javax.swing.JLabel disableHostilePedsLabel;
     private javax.swing.JLabel gameTimeHourLabel;
     private thehambone.gtatools.gta3savefileeditor.gui.component.IntegerVariableTextField gameTimeHourTextField;
     private javax.swing.JLabel gameTimeMinuteLabel;
@@ -974,8 +1062,6 @@ public class GeneralPage extends Page
     private javax.swing.JLabel previousWeatherSliderLabel;
     private javax.swing.JButton purpleNinesGlitchFixButton;
     private javax.swing.JLabel purpleNinesGlitchLabel;
-    private javax.swing.JButton reversePedHostilityCheatsButton;
-    private javax.swing.JLabel reversePedHostilityCheatsLabel;
     private javax.swing.JPanel saveTitlePanel;
     private thehambone.gtatools.gta3savefileeditor.gui.component.StringVariableTextField saveTitleTextField;
     private javax.swing.JScrollPane scrollPane;

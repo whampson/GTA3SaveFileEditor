@@ -101,7 +101,7 @@ public class GangsPage extends Page
         weapon1ComboBox.setVariable(g.nWeaponID1);
         weapon2ComboBox.setVariable(g.nWeaponID2);
         hostileTowardsPlayerCheckBox
-                .setMask(GameConstants.PedType.PLAYER01.getThreatMask());
+                .setMask(GameConstants.PedType.PLAYER01.getPedTypeMask());
         hostileTowardsPlayerCheckBox.setVariable(pt.nThreatFlags);
     }
     
