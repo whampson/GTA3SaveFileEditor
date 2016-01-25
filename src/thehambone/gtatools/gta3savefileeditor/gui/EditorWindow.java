@@ -228,9 +228,11 @@ public class EditorWindow extends JFrame implements Observer
                 }
                 
                 File f = promptForFile("Load File");
-                if (f != null) {
-                    loadFile(f);
+                if (f == null) {
+                    return;
                 }
+                
+                loadFile(f);
             }
         });
         
@@ -244,12 +246,7 @@ public class EditorWindow extends JFrame implements Observer
                     return;
                 }
                 
-                try {
-                    SaveFile.getCurrentSaveFile().save();
-                } catch (IOException ex) {
-                    Logger.stackTrace(ex);
-                    // TODO: show message
-                }
+                saveFile();
             }
         });
         
@@ -268,12 +265,7 @@ public class EditorWindow extends JFrame implements Observer
                     return;
                 }
                 
-                try {
-                    SaveFile.getCurrentSaveFile().save(f);
-                } catch (IOException ex) {
-                    Logger.stackTrace(ex);
-                    // TODO: show message
-                }
+                saveFile(f);
             }
         });
         
@@ -880,8 +872,8 @@ public class EditorWindow extends JFrame implements Observer
         
         String message = "Closed file: " + f;
         Logger.info(message);
-        setStatusMessage(message);
         
+        setStatusMessage(message);
         refreshMenus();
         refreshPages();
         setChangesMade(false);
@@ -933,33 +925,42 @@ public class EditorWindow extends JFrame implements Observer
         
         String message = "Loaded file: " + f;
         Logger.info(message);
-        setStatusMessage(message);
         GUIUtils.showInformationMessage(this,
                 "File loaded successfully!", "Success");
         
         // Update GUI
+        setStatusMessage(message);
         refreshMenus();
         refreshPages();
         setChangesMade(false);
         updatePlatformStatus();
     }
     
+    private void saveFile()
+    {
+        saveFile(SaveFile.getCurrentSaveFile().getSourceFile());
+    }
+    
     private void saveFile(File f)
     {
+        Logger.info("Saving file...");
+        
         try {
-            Logger.info("Saving file...");
             SaveFile.getCurrentSaveFile().save(f);
-            setChangesMade(false);
-            Logger.info("Successfully saved file: %s\n", f);
-            setStatusMessage(String.format("Saved file: %s", f));
-            refreshSlotMenus();
-//            pages[1].loadPage();
         } catch (IOException ex) {
-            String errMsg = "An error occured while attempting to save the file.";
+            String errMsg = "An error occured while attempting to save the "
+                    + "file.";
             Logger.error(errMsg);
             Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Error Saving File", ex);
         }
+        
+        String message = "Saved file: " + f;
+        Logger.info(message);
+        
+        setStatusMessage(message);
+        setChangesMade(false);
+        refreshSlotMenus();
     }
     
     private void deleteFile(File f)
