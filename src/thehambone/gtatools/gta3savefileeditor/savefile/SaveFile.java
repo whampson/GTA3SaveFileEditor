@@ -40,6 +40,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  */
 public class SaveFile
 {
+    private static final String TIMESTAMP_FORMAT = "dd MMM. yyyy HH:mm:ss";
     // Singleton object instance
     private static SaveFile currentSaveFile;
     
@@ -241,9 +242,8 @@ public class SaveFile
         cal.set(Calendar.MILLISECOND, buf.readShort());
         timestamp = cal.getTime();
         
-        String format = "dd MMM. yyyy HH:mm:ss";
         fileInfo[0] = saveName;
-        fileInfo[1] = new SimpleDateFormat(format).format(timestamp);
+        fileInfo[1] = new SimpleDateFormat(TIMESTAMP_FORMAT).format(timestamp);
         
         return fileInfo;
     }
