@@ -100,7 +100,7 @@ public class EditorWindow extends JFrame implements Observer
      */
     private void initWindowListeners()
     {
-        // Window close listener
+        // Window close listener (X button on window)
         addWindowListener(new WindowAdapter()
         {
             @Override
@@ -450,7 +450,6 @@ public class EditorWindow extends JFrame implements Observer
                 
                 Page p = (Page)c;
                 p.loadPage();
-                Logger.debug("Page refreshed: " + p.getPageTitle());
             }
         });
     }
@@ -490,8 +489,7 @@ public class EditorWindow extends JFrame implements Observer
         
         // Place status labels on status panel
         Box box = Box.createHorizontalBox();
-        box.add(Box.createHorizontalStrut(75));
-        box.add(Box.createHorizontalStrut(5));
+        box.setOpaque(true);
         box.add(new JSeparator(SwingConstants.VERTICAL));
         box.add(Box.createHorizontalStrut(5));
         box.add(modificationStatusLabel);
@@ -508,7 +506,9 @@ public class EditorWindow extends JFrame implements Observer
     }
     
     /*
-     * Marks the frame as an observer to all pages.
+     * Marks the frame as an observer to all pages. This allows the frame to
+     * serve as an action listener for event notifications emitted by the pages
+     * on the tabbed pane.
      */
     private void initObservers()
     {
@@ -519,10 +519,12 @@ public class EditorWindow extends JFrame implements Observer
     
     /*
      * Marks certain menu items enabled or disabled based on whether a file is
-     * loaded as well as refreshes the save slot menu items.
+     * loaded, and also refreshes the save slot menu items.
      */
     private void refreshMenus()
     {
+        /* Must be run in an "invokeLater()" thread since the GUI is updated and
+           the method can be invoked at any time during the program's life */
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
@@ -539,11 +541,13 @@ public class EditorWindow extends JFrame implements Observer
         refreshSlotMenus();
     }
     
-    /**
+    /*
      * Re-loads the save slot menu items.
      */
     private void refreshSlotMenus()
     {
+        /* Must be run in an "invokeLater()" thread since the GUI is updated and
+           the method can be invoked at any time during the program's life */
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
@@ -554,8 +558,10 @@ public class EditorWindow extends JFrame implements Observer
                 saveSlotMenu.removeAll();
                 
                 // Generate new items by reading save dir
-                JMenuItem[] load = generateSlotMenuItems(SlotMenuItemAction.LOAD);
-                JMenuItem[] save = generateSlotMenuItems(SlotMenuItemAction.SAVE);
+                JMenuItem[] load
+                        = generateSlotMenuItems(SlotMenuItemAction.LOAD);
+                JMenuItem[] save
+                        = generateSlotMenuItems(SlotMenuItemAction.SAVE);
                 
                 // Populate menus with new items
                 for (JMenuItem item : load) {
@@ -568,7 +574,12 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    private JMenuItem[] generateSlotMenuItems(final SlotMenuItemAction itemAction)
+    /*
+     * Creates an array of JMenuItems each representing a save slot. The menu
+     * item text shows the slot index and the save file name. If the slot is not
+     * readable, the menu item will be disabled.
+     */
+    private JMenuItem[] generateSlotMenuItems(final SlotMenuItemAction action)
     {
         PCSaveSlot[] slots = PCSaveSlot.getSaveSlots();
         JMenuItem[] slotMenuItems = new JMenuItem[slots.length];
@@ -589,14 +600,16 @@ public class EditorWindow extends JFrame implements Observer
                 slot.refresh();
             } catch (IOException ex) {
                 Logger.stackTrace(ex);
-                slotMenuItem.setText((i + 1) + ". (error reading file - check GTA3 save dir)");
+                slotMenuItem.setText((i + 1)
+                        + ". (error reading file - check GTA3 save dir)");
                 slotMenuItem.setEnabled(false);
                 continue;
             }
             
             // Set menu item text and availability based on slot status
             if (!slot.isUsable()) {
-                slotMenuItem.setText((i + 1) + ". (slot is not usable - check file)");
+                slotMenuItem.setText((i + 1)
+                        + ". (slot is not usable - check file)");
                 slotMenuItem.setEnabled(false);
             } else if (slot.isEmpty()) {
                 slotMenuItem.setText((i + 1) + ". (slot is empty)");
@@ -606,20 +619,21 @@ public class EditorWindow extends JFrame implements Observer
             }
             
             // Set keystrokes based on menu item action
-            if (itemAction == SlotMenuItemAction.LOAD) {
+            if (action == SlotMenuItemAction.LOAD) {
                 // CTRL + <slot_index>
                 slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                         KeyEvent.VK_1 + i, InputEvent.CTRL_DOWN_MASK));
-            } else if (itemAction == SlotMenuItemAction.SAVE) {
+            } else if (action == SlotMenuItemAction.SAVE) {
                 // CTRL + SHIFT + <slot_index>
                 slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                         KeyEvent.VK_1 + i,
-                        InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+                        InputEvent.CTRL_DOWN_MASK
+                                | InputEvent.SHIFT_DOWN_MASK));
             }
             
             // Define menu item action
             final Frame dialogParent = this;
-            if (itemAction == SlotMenuItemAction.LOAD) {
+            if (action == SlotMenuItemAction.LOAD) {
                 slotMenuItem.addActionListener(new ActionListener()
                 {
                     @Override
@@ -634,19 +648,20 @@ public class EditorWindow extends JFrame implements Observer
                         loadFile(f);
                     }
                 });
-            } else if (itemAction == SlotMenuItemAction.SAVE) {
+            } else if (action == SlotMenuItemAction.SAVE) {
                 slotMenuItem.addActionListener(new ActionListener()
                 {
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
+                        // TODO: clean up
                         File f = slot.getFile();
                         if (!SaveFile.isFileLoaded()) {
                             return;
                         }
-                        File currentlyLoadedFile = SaveFile.getCurrentSaveFile().getSourceFile();
-                        if (!currentlyLoadedFile.getAbsolutePath().equals(f.getAbsolutePath())
-                                && f.exists()) {
+                        File currentSaveFile
+                                = SaveFile.getCurrentSaveFile().getSourceFile();
+                        if (!currentSaveFile.getAbsolutePath().equals(f.getAbsolutePath()) && f.exists()) {
                             int option = JOptionPane.showOptionDialog(dialogParent,
                                     GUIUtils.formatHTMLString("Are you sure you want to overwrite \"" + f.getName() + "\"?"),
                                     "Comfirm Overwrite",
@@ -668,8 +683,15 @@ public class EditorWindow extends JFrame implements Observer
         return slotMenuItems;
     }
     
+    /*
+     * Re-loads the pages on the tabbed pane. Different pages may be loaded
+     * depending on whether a file is loaded. Re-loading a page ensures the
+     * content on the page is up to date.
+     */
     private void refreshPages()
     {
+        /* Must be run in an "invokeLater()" thread since the GUI is updated and
+           the method can be invoked at any time during the program's life */
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
@@ -677,10 +699,14 @@ public class EditorWindow extends JFrame implements Observer
             {
                 List<Component> addedComponents = new ArrayList<>();
                 Component selectedComponent = tabbedPane.getSelectedComponent();
-                boolean addPage;
+                
                 tabbedPane.removeAll();
+                
+                boolean addPage;
                 for (Page p : pages) {
                     addPage = false;
+                    
+                    // Determine whether page should be added to the tabbed pane
                     switch (p.getVisibility()) {
                         case ALWAYS_VISIBLE:
                             addPage = true;
@@ -696,6 +722,8 @@ public class EditorWindow extends JFrame implements Observer
                             }
                             break;
                     }
+                    
+                    // Load the page and add it to the tabbed pane
                     if (addPage) {
                         p.loadPage();
                         tabbedPane.addTab(p.getPageTitle(), p);
@@ -703,6 +731,8 @@ public class EditorWindow extends JFrame implements Observer
                     }
                 }
                 
+                /* Re-select the previously-selected component if it exists in
+                   the tabbed pane and a save file is loaded */
                 if (selectedComponent != null && SaveFile.isFileLoaded()) {
                     if (addedComponents.contains(selectedComponent)) {
                         tabbedPane.setSelectedComponent(selectedComponent);
@@ -714,13 +744,16 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
+    /*
+     * Closes the frame. If a file is open and has unsaved changes, the user
+     * will be prompted to save them.
+     */
     private void closeFrame()
     {   
-        if ((SaveFile.isFileLoaded() && promptSaveChanges()) || !SaveFile.isFileLoaded()) {
+        if ((SaveFile.isFileLoaded() && promptSaveChanges())
+                || !SaveFile.isFileLoaded()) {
             Logger.info("Closing user interface...");
             dispose();
-        } else {
-            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);   // Prevents window from closing
         }
     }
     
