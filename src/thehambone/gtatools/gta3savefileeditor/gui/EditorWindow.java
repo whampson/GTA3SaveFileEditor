@@ -82,6 +82,9 @@ public class EditorWindow extends JFrame implements Observer
     private JLabel platformStatusLabel;
     private boolean changesMade;
     
+    /**
+     * Creates a new {@code EditorWindow} instance.
+     */
     public EditorWindow()
     {
         initWindowListeners();
@@ -91,11 +94,11 @@ public class EditorWindow extends JFrame implements Observer
         initObservers();
         refreshMenus();
         refreshPages();
-        changesMade = false;
+        setChangesMade(false);
         setStatusMessage("Welcome to the GTA III Save File Editor!");
     }
     
-    /*
+    /**
      * Sets up the window close and window focus listeners for the frame.
      */
     private void initWindowListeners()
@@ -118,12 +121,12 @@ public class EditorWindow extends JFrame implements Observer
             {
                 // Refresh save slots when focus gained
                 refreshSlotMenus();
-                Logger.debug("Slots refreshed");
+                Logger.debug("Window focus gained - slots refreshed");
             }
         });
     }
     
-    /*
+    /**
      * Prepares the menu bar with all of its submenus.
      */
     private void initMenuBar()
@@ -139,7 +142,7 @@ public class EditorWindow extends JFrame implements Observer
         setJMenuBar(menuBar);
     }
     
-    /*
+    /**
      * Sets up the "File" menu with all of its submenus and menu item actions.
      */
     private void initFileMenu(JMenuBar menuBar)
@@ -302,7 +305,7 @@ public class EditorWindow extends JFrame implements Observer
                 try {
                     SaveFile.load(SaveFile.getCurrentSaveFile().getSourceFile());
                     changesMade = false;
-                    updateFrameTitle();
+                    updateFrameTitleAndModificationStatus();
                     // TODO: prompt save as
                 } catch (IOException ex) {
                     Logger.stackTrace(ex);
@@ -336,7 +339,7 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    /*
+    /**
      * Sets up the "Debug" menu and defines its menu item actions. 
      */
     private void initDebugMenu(JMenuBar menuBar)
@@ -368,7 +371,7 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    /*
+    /**
      * Sets up the "Help" menu and defines its menu item actions. 
      */
     private void initHelpMenu(JMenuBar menuBar)
@@ -427,7 +430,7 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    /*
+    /**
      * Defines the tabbed pane and initializes the tab change listener.
      */
     private void initTabbedPane()
@@ -454,7 +457,7 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    /*
+    /**
      * Sets up the main panel and status panel
      */
     private void initPanels()
@@ -505,7 +508,7 @@ public class EditorWindow extends JFrame implements Observer
         mainPanel.add(statusPanel, BorderLayout.SOUTH);
     }
     
-    /*
+    /**
      * Marks the frame as an observer to all pages. This allows the frame to
      * serve as an action listener for event notifications emitted by the pages
      * on the tabbed pane.
@@ -517,7 +520,7 @@ public class EditorWindow extends JFrame implements Observer
         }
     }
     
-    /*
+    /**
      * Marks certain menu items enabled or disabled based on whether a file is
      * loaded, and also refreshes the save slot menu items.
      */
@@ -541,7 +544,7 @@ public class EditorWindow extends JFrame implements Observer
         refreshSlotMenus();
     }
     
-    /*
+    /**
      * Re-loads the save slot menu items.
      */
     private void refreshSlotMenus()
@@ -574,7 +577,7 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    /*
+    /**
      * Creates an array of JMenuItems each representing a save slot. The menu
      * item text shows the slot index and the save file name. If the slot is not
      * readable, the menu item will be disabled.
@@ -683,7 +686,7 @@ public class EditorWindow extends JFrame implements Observer
         return slotMenuItems;
     }
     
-    /*
+    /**
      * Re-loads the pages on the tabbed pane. Different pages may be loaded
      * depending on whether a file is loaded. Re-loading a page ensures the
      * content on the page is up to date.
@@ -744,7 +747,7 @@ public class EditorWindow extends JFrame implements Observer
         });
     }
     
-    /*
+    /**
      * Closes the frame. If a file is open and has unsaved changes, the user
      * will be prompted to save them.
      */
@@ -757,77 +760,188 @@ public class EditorWindow extends JFrame implements Observer
         }
     }
     
-    private void updateFrameTitle()
+    /**
+     * Updates the frame title and modification status message based on whether
+     * changes have been made to the current file. If changes have been made, an
+     * asterisk (*) will be prepended to the frame title and the modification
+     * status message will read "Modified."
+     */
+    private void updateFrameTitleAndModificationStatus()
     {
-        StringBuilder titleBuilder = new StringBuilder();
+        final StringBuilder titleBuilder = new StringBuilder();
+        final String modStatusText;
+        final String modStatusToolTip;
+        
         if (changesMade) {
             titleBuilder.append("*");
-            modificationStatusLabel.setText("Modified");
-            modificationStatusLabel.setToolTipText("The file has unsaved changes.");
+            modStatusText = "Modified";
+            modStatusToolTip = "The file has unsaved changes.";
         } else {
-            modificationStatusLabel.setText("");
-            modificationStatusLabel.setToolTipText("");
+            modStatusText = "";
+            modStatusToolTip = null;
         }
+        
         if (SaveFile.isFileLoaded()) {
-            titleBuilder.append(SaveFile.getCurrentSaveFile().getSourceFile()).append(" - ");
+            File currentFile = SaveFile.getCurrentSaveFile().getSourceFile();
+            titleBuilder.append(currentFile).append(" - ");
         }
-        titleBuilder.append(String.format("%s %s", Main.PROGRAM_TITLE, Main.PROGRAM_VERSION));
-        setTitle(titleBuilder.toString());
+        
+        titleBuilder.append(String.format("%s %s",
+                Main.PROGRAM_TITLE, Main.PROGRAM_VERSION));
+        
+        
+        /* Must be run in an "invokeLater()" thread since the GUI is updated and
+           the method can be invoked at any time during the program's life */
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setTitle(titleBuilder.toString());
+                modificationStatusLabel.setText(modStatusText);
+                modificationStatusLabel.setToolTipText(modStatusToolTip);
+            }
+        });
     }
     
+    /**
+     * Updates the platform status label in the status panel.
+     */
+    private void updatePlatformStatus()
+    {
+        final String platStatusText;
+        final String platStatusToolTip;
+        
+        if (SaveFile.isFileLoaded()) {
+            SaveFile currentSaveFile = SaveFile.getCurrentSaveFile();
+            SaveFile.Platform p = currentSaveFile.getPlatform();
+            
+            platStatusText = p.getFriendlyName();
+            platStatusToolTip = String.format("This is %s %s save file.",
+                    p != SaveFile.Platform.PC && p != SaveFile.Platform.PS2
+                            ? "an"      // Because grammar matters ;)
+                            : "a",
+                    p.getFriendlyName());
+        } else {
+            platStatusText = "";
+            platStatusToolTip = null;
+        }
+        
+        /* Must be run in an "invokeLater()" thread since the GUI is updated and
+           the method can be invoked at any time during the program's life */
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                platformStatusLabel.setText(platStatusText);
+                platformStatusLabel.setToolTipText(platStatusToolTip);
+            }
+        });
+    }
+    
+    /**
+     * Sets the status message. The status message appears in the bottom left
+     * of the window.
+     */
     private void setStatusMessage(final String s)
     {
+        /* Must be run in an "invokeLater()" thread since the GUI is updated and
+           the method can be invoked at any time during the program's life */
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
             public void run()
             {
                 statusMessageLabel.setText(s);
+                statusMessageLabel.setToolTipText(
+                        s == null || s.isEmpty() ? null : s);
             }
         });
     }
     
-    private void closeFile()
+    /**
+     * Sets the "changes made" flag and updates the GUI to reflect the status of
+     * the "changes made" flag.
+     */
+    private void setChangesMade(boolean changesMade)
     {
-        Logger.info("Closing file...");
-        File f = SaveFile.getCurrentSaveFile().getSourceFile();
-        SaveFile.close();
-        Logger.info("Successfully closed file: %s\n", f);
-        setStatusMessage(String.format("Closed file: %s", f));
-        refreshMenus();
-        refreshPages();
-        changesMade = false;
-        updateFrameTitle();
+        this.changesMade = changesMade;
+        updateFrameTitleAndModificationStatus();
     }
     
+    /**
+     * Closes the current file and closes all tabs related to file editing.
+     */
+    private void closeFile()
+    {
+        File f = SaveFile.getCurrentSaveFile().getSourceFile();
+        SaveFile.close();
+        
+        String message = "Closed file: " + f;
+        Logger.info(message);
+        setStatusMessage(message);
+        
+        refreshMenus();
+        refreshPages();
+        setChangesMade(false);
+        updatePlatformStatus();
+    }
+    
+    /**
+     * Loads a file and opens all tabs related to file editing.
+     * @param f 
+     */
     private void loadFile(File f)
     {
+        Logger.info("Loading file...");
+        
+        // Detect platform
+        SaveFile.Platform platform;
         try {
-            Logger.info("Loading file...");
-            SaveFile.load(f);
-            Logger.info("Successfully loaded file: %s\n", f);
-            setStatusMessage(String.format("Loaded file: %s", f));
-            JOptionPane.showMessageDialog(this, "File loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            refreshMenus();
-            refreshPages();
-            changesMade = false;
-            updateFrameTitle();
-            SaveFile.Platform p = SaveFile.getCurrentSaveFile().getPlatform();
-            platformStatusLabel.setText(p.getFriendlyName());
-            platformStatusLabel.setToolTipText(String.format("This is %s %s save file.",
-                    p != SaveFile.Platform.PC && p != SaveFile.Platform.PS2 ? "an" : "a",
-                    p.getFriendlyName()));
+            platform = SaveFile.getPlatform(f);
+            Logger.debug("Detected platform: " + platform);
+        } catch (IOException ex) {
+            String errMsg = "An error occured while loading the file.";
+            Logger.error("%s [%s: %s]\n", errMsg,
+                    ex.getClass().getName(), ex.getMessage());
+            Logger.stackTrace(ex);
+            showErrorMessage(errMsg, "Error Loading File", ex);
+            return;
+        }
+        
+        // Show error message if file type not supported
+        if (!platform.isSupported()) {
+            String msg = "This file originates from a gaming platform which "
+                    + "is not currently supported by this editor. "
+                    + "(Platform: " + platform.getFriendlyName() + ")";
+            Logger.info(msg);
+            showErrorMessage(msg, "Platform Not Supported", null);
+            return;
+        }
+        
+        // Load file
+        try {
+            SaveFile.load(f, platform);
         } catch (IOException ex) {
             String errMsg = "An error occured while loading the file.";
             Logger.error(errMsg);
             Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Error Loading File", ex);
-        } catch (UnsupportedPlatformException ex) {
-            String errMsg = "This save file originates from a platform which is not currently supported by this editor.";
-            Logger.error(errMsg);
-            Logger.stackTrace(ex);
-            showErrorMessage(errMsg, "Unsupported Platform", ex);
+            return;
         }
+        
+        String message = "Loaded file: " + f;
+        Logger.info(message);
+        setStatusMessage(message);
+        GUIUtils.showInformationMessage(this,
+                "File loaded successfully!", "Success");
+        
+        // Update GUI
+        refreshMenus();
+        refreshPages();
+        setChangesMade(false);
+        updatePlatformStatus();
     }
     
     private void saveFile(File f)
@@ -835,10 +949,9 @@ public class EditorWindow extends JFrame implements Observer
         try {
             Logger.info("Saving file...");
             SaveFile.getCurrentSaveFile().save(f);
-            changesMade = false;
+            setChangesMade(false);
             Logger.info("Successfully saved file: %s\n", f);
             setStatusMessage(String.format("Saved file: %s", f));
-            updateFrameTitle();
             refreshSlotMenus();
 //            pages[1].loadPage();
         } catch (IOException ex) {
@@ -932,7 +1045,7 @@ public class EditorWindow extends JFrame implements Observer
             case VARIABLE_CHANGED:
                 if (!changesMade) {
                     changesMade = true;
-                    updateFrameTitle();
+                    updateFrameTitleAndModificationStatus();
                 }
                 break;
             case FILE_LOAD:
