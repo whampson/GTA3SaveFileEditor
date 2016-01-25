@@ -30,16 +30,20 @@ public class DataBuffer
      * @param size the size in bytes of the new buffer
      * @throws IllegalArgumentException if the buffer size is negative
      */
-    public DataBuffer(int size)
+    public DataBuffer(int size) throws IOException
     {
         if (size < 0) {
             throw new IllegalArgumentException(
                     "buffer size cannot be negative");
         }
         
-        buf = new byte[size];
-        offset = 0;
-        mark = 0;
+        try {
+            buf = new byte[size];
+            offset = 0;
+            mark = 0;
+        } catch (OutOfMemoryError ex) {
+            throw new IOException("buffer is too large", ex);
+        }
     }
     
     /**
