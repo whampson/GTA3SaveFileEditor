@@ -1,7 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarBoolean;
@@ -53,10 +53,10 @@ public class BlockSCMData extends Block
     protected void loadAndroid(DataBuffer buf)
     {
         pOnAMissionFlag.load(buf, offset + 0x00);
-        aContactInfo.load(buf, offset + 0x04, SaveFileNew.Platform.ANDROID);
-        aBuildingSwap.load(buf, offset + 0x188, SaveFileNew.Platform.ANDROID);
+        aContactInfo.load(buf, offset + 0x04, SaveFile.Platform.ANDROID);
+        aBuildingSwap.load(buf, offset + 0x188, SaveFile.Platform.ANDROID);
         aInvisibilitySetting.load(buf, offset + 0x318,
-                SaveFileNew.Platform.ANDROID);
+                SaveFile.Platform.ANDROID);
         bIsAlreadyRunningAMissionScript.load(buf, offset + 0x3B8);
         nMainScriptSize.load(buf, offset + 0x3BC);
         nLargestMissionScriptSize.load(buf, offset + 0x3C0);
@@ -67,10 +67,10 @@ public class BlockSCMData extends Block
     protected void loadIOS(DataBuffer buf)
     {
         pOnAMissionFlag.load(buf, offset + 0x00);
-        aContactInfo.load(buf, offset + 0x04, SaveFileNew.Platform.IOS);
-        aBuildingSwap.load(buf, offset + 0x188, SaveFileNew.Platform.IOS);
+        aContactInfo.load(buf, offset + 0x04, SaveFile.Platform.IOS);
+        aBuildingSwap.load(buf, offset + 0x188, SaveFile.Platform.IOS);
         aInvisibilitySetting.load(buf, offset + 0x318,
-                SaveFileNew.Platform.IOS);
+                SaveFile.Platform.IOS);
         bIsAlreadyRunningAMissionScript.load(buf, offset + 0x3B8);
         nMainScriptSize.load(buf, offset + 0x3BC);
         nLargestMissionScriptSize.load(buf, offset + 0x3C0);
@@ -81,9 +81,9 @@ public class BlockSCMData extends Block
     protected void loadPC(DataBuffer buf)
     {
         pOnAMissionFlag.load(buf, offset + 0x00);
-        aContactInfo.load(buf, offset + 0x04, SaveFileNew.Platform.PC);
-        aBuildingSwap.load(buf, offset + 0x188, SaveFileNew.Platform.PC);
-        aInvisibilitySetting.load(buf, offset + 0x318, SaveFileNew.Platform.PC);
+        aContactInfo.load(buf, offset + 0x04, SaveFile.Platform.PC);
+        aBuildingSwap.load(buf, offset + 0x188, SaveFile.Platform.PC);
+        aInvisibilitySetting.load(buf, offset + 0x318, SaveFile.Platform.PC);
         bIsAlreadyRunningAMissionScript.load(buf, offset + 0x3B8);
         nMainScriptSize.load(buf, offset + 0x3BC);
         nLargestMissionScriptSize.load(buf, offset + 0x3C0);

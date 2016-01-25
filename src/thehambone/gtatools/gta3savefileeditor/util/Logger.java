@@ -63,9 +63,9 @@ public final class Logger
      * 
      * @param message the message to be written to the log
      */
-    public static void debug(String message)
+    public static void debug(Object message)
     {
-        debug("%s\n", message);
+        debug("%s\n", message == null ? "null" : message.toString());
     }
     
     /**
@@ -84,9 +84,9 @@ public final class Logger
      * 
      * @param message the message to be written to the log
      */
-    public static void info(String message)
+    public static void info(Object message)
     {
-        info("%s\n", message);
+        info("%s\n", message == null ? "null" : message.toString());
     }
     
     /**
@@ -105,9 +105,9 @@ public final class Logger
      * 
      * @param message the message to be written to the log
      */
-    public static void warn(String message)
+    public static void warn(Object message)
     {
-        warn("%s\n", message);
+        warn("%s\n", message == null ? "null" : message.toString());
     }
     
     /**
@@ -126,9 +126,9 @@ public final class Logger
      * 
      * @param message the message to be written to the log
      */
-    public static void error(String message)
+    public static void error(Object message)
     {
-        error("%s\n", message);
+        error("%s\n", message == null ? "null" : message.toString());
     }
     
     /**
@@ -147,9 +147,9 @@ public final class Logger
      * 
      * @param message the message to be written to the log
      */
-    public static void fatal(String message)
+    public static void fatal(Object message)
     {
-        fatal("%s\n", message);
+        fatal("%s\n", message == null ? "null" : message.toString());
     }
     
     /**

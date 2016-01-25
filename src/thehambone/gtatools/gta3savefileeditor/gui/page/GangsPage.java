@@ -4,7 +4,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.Gang;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.PedType;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
@@ -110,8 +110,8 @@ public class GangsPage extends Page
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
-        aGang = SaveFileNew.getCurrentSaveFile().gangs.aGang;
-        aPedType = SaveFileNew.getCurrentSaveFile().pedTypes.aPedType;
+        aGang = SaveFile.getCurrentSaveFile().gangs.aGang;
+        aPedType = SaveFile.getCurrentSaveFile().pedTypes.aPedType;
         
         gangComboBox.setSelectedIndex(-1);
         gangComboBox.setSelectedIndex(0);

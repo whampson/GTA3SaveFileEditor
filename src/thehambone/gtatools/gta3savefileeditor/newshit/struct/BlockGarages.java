@@ -2,7 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarBoolean32;
@@ -28,7 +28,7 @@ public class BlockGarages extends Block
         super("Garages", blockSize);
     }
     
-    private void load(DataBuffer buf, SaveFileNew.Platform platform)
+    private void load(DataBuffer buf, SaveFile.Platform platform)
     {
         bFreeBombs.load(buf, offset + 0x08);
         bFreeResprays.load(buf, offset + 0x0C);
@@ -56,19 +56,19 @@ public class BlockGarages extends Block
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.ANDROID);
+        load(buf, SaveFile.Platform.ANDROID);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.IOS);
+        load(buf, SaveFile.Platform.IOS);
     }
     
     @Override
     protected void loadPC(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.PC);
+        load(buf, SaveFile.Platform.PC);
     }
     
     @Override
@@ -80,6 +80,6 @@ public class BlockGarages extends Block
     @Override
     protected void loadXbox(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.XBOX);
+        load(buf, SaveFile.Platform.XBOX);
     }
 }

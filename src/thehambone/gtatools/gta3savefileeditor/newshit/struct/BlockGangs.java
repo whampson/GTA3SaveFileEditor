@@ -2,7 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 
@@ -20,7 +20,7 @@ public class BlockGangs extends Block
         super("Gangs", size);
     }
     
-    public void load(DataBuffer buf, SaveFileNew.Platform platform)
+    public void load(DataBuffer buf, SaveFile.Platform platform)
     {
         aGang.load(buf, offset + 0x0C, platform);
     }
@@ -42,19 +42,19 @@ public class BlockGangs extends Block
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.ANDROID);
+        load(buf, SaveFile.Platform.ANDROID);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.IOS);
+        load(buf, SaveFile.Platform.IOS);
     }
     
     @Override
     protected void loadPC(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.PC);
+        load(buf, SaveFile.Platform.PC);
     }
     
     @Override

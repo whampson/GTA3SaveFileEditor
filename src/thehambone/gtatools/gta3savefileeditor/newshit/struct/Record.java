@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnspecifiedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 
@@ -118,7 +118,7 @@ public abstract class Record implements DataStructure
     }
     
     @Override
-    public void load(DataBuffer buf, int offset, SaveFileNew.Platform platform)
+    public void load(DataBuffer buf, int offset, SaveFile.Platform platform)
     {
         this.offset = offset;
         buf.seek(offset);

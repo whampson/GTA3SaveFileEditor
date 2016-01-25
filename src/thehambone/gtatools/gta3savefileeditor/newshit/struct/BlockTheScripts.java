@@ -1,7 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarDWORD;
@@ -49,12 +49,12 @@ public class BlockTheScripts extends Block
         
         aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue()
                 / aScriptVariable.getSizeOfElement());
-        aScriptVariable.load(buf, offset + 0x0C, SaveFileNew.Platform.ANDROID);
+        aScriptVariable.load(buf, offset + 0x0C, SaveFile.Platform.ANDROID);
         
         buf.seek(offset + nScriptVariableSpaceSize.getValue() + 0x0C);
         scmState.setSize(buf.readInt());
         scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10,
-                SaveFileNew.Platform.ANDROID);
+                SaveFile.Platform.ANDROID);
         
         nNumberOfRunningScripts.load(buf,
                 offset + nScriptVariableSpaceSize.getValue()
@@ -63,7 +63,7 @@ public class BlockTheScripts extends Block
         aRunningScript.setElementCount(nNumberOfRunningScripts.getValue());
         aRunningScript.load(buf,
                 offset + nScriptVariableSpaceSize.getValue()+ scmState.getSize()
-                        + 0x14, SaveFileNew.Platform.ANDROID);
+                        + 0x14, SaveFile.Platform.ANDROID);
     }
     
     @Override
@@ -73,12 +73,12 @@ public class BlockTheScripts extends Block
         
         aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue()
                 / aScriptVariable.getSizeOfElement());
-        aScriptVariable.load(buf, offset + 0x0C, SaveFileNew.Platform.IOS);
+        aScriptVariable.load(buf, offset + 0x0C, SaveFile.Platform.IOS);
         
         buf.seek(offset + nScriptVariableSpaceSize.getValue() + 0x0C);
         scmState.setSize(buf.readInt());
         scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10,
-                SaveFileNew.Platform.IOS);
+                SaveFile.Platform.IOS);
         
         nNumberOfRunningScripts.load(buf,
                 offset + nScriptVariableSpaceSize.getValue()
@@ -87,7 +87,7 @@ public class BlockTheScripts extends Block
         aRunningScript.setElementCount(nNumberOfRunningScripts.getValue());
         aRunningScript.load(buf,
                 offset + nScriptVariableSpaceSize.getValue()+ scmState.getSize()
-                        + 0x14, SaveFileNew.Platform.IOS);
+                        + 0x14, SaveFile.Platform.IOS);
     }
     
     @Override
@@ -97,12 +97,12 @@ public class BlockTheScripts extends Block
         
         aScriptVariable.setElementCount(nScriptVariableSpaceSize.getValue()
                 / aScriptVariable.getSizeOfElement());
-        aScriptVariable.load(buf, offset + 0x0C, SaveFileNew.Platform.PC);
+        aScriptVariable.load(buf, offset + 0x0C, SaveFile.Platform.PC);
         
         buf.seek(offset + nScriptVariableSpaceSize.getValue() + 0x0C);
         scmState.setSize(buf.readInt());
         scmState.load(buf, offset + nScriptVariableSpaceSize.getValue() + 0x10,
-                SaveFileNew.Platform.PC);
+                SaveFile.Platform.PC);
         
         nNumberOfRunningScripts.load(buf,
                 offset + nScriptVariableSpaceSize.getValue()
@@ -111,7 +111,7 @@ public class BlockTheScripts extends Block
         aRunningScript.setElementCount(nNumberOfRunningScripts.getValue());
         aRunningScript.load(buf,
                 offset + nScriptVariableSpaceSize.getValue()+ scmState.getSize()
-                        + 0x14, SaveFileNew.Platform.PC);
+                        + 0x14, SaveFile.Platform.PC);
     }
     
     @Override

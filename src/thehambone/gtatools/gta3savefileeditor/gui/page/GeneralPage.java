@@ -12,7 +12,7 @@ import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXTSelectorDialog;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockSimpleVars;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.Gang;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.PedType;
@@ -265,7 +265,7 @@ public class GeneralPage extends Page
     
     private void detectPurpleNinesGlitch()
     {
-        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        SaveFile saveFile = SaveFile.getCurrentSaveFile();
         
         // Get Hoods gang data
         Gang hoods = saveFile.gangs.aGang.getElementAt(6);
@@ -282,7 +282,7 @@ public class GeneralPage extends Page
     
     private void fixPurpleNinesGlitch()
     {
-        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        SaveFile saveFile = SaveFile.getCurrentSaveFile();
         
         Gang hoods = saveFile.gangs.aGang.getElementAt(6);
         hoods.nPedModelOverrideIndex.setValue((byte)-1);
@@ -296,7 +296,7 @@ public class GeneralPage extends Page
     
     private void detectHostilePeds()
     {
-        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        SaveFile saveFile = SaveFile.getCurrentSaveFile();
         VarArray<PedType> aPedType = saveFile.pedTypes.aPedType;
         
         // Get CIVMALE data
@@ -323,7 +323,7 @@ public class GeneralPage extends Page
     
     private void fixHostilePeds()
     {
-        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        SaveFile saveFile = SaveFile.getCurrentSaveFile();
         VarArray<PedType> aPedType = saveFile.pedTypes.aPedType;
         GameConstants.PedType pedTypes[] = GameConstants.PedType.values();
         
@@ -468,13 +468,13 @@ public class GeneralPage extends Page
         // Get most up-to-date GXT table
         gxt = GXT.getGXTTable();
         
-        SaveFileNew saveFile = SaveFileNew.getCurrentSaveFile();
+        SaveFile saveFile = SaveFile.getCurrentSaveFile();
         simp = saveFile.simpleVars;
         
-        boolean isPC = (saveFile.getPlatform() == SaveFileNew.Platform.PC);
+        boolean isPC = (saveFile.getPlatform() == SaveFile.Platform.PC);
         boolean isMobile
-                = (saveFile.getPlatform() == SaveFileNew.Platform.ANDROID)
-                        || (saveFile.getPlatform() == SaveFileNew.Platform.IOS);
+                = (saveFile.getPlatform() == SaveFile.Platform.ANDROID)
+                        || (saveFile.getPlatform() == SaveFile.Platform.IOS);
         
         // Enable or disable timestamp components based on platform
         for (JComponent comp : timestampComponents) {

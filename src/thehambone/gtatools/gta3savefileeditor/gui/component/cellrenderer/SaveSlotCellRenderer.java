@@ -12,7 +12,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 
 /**
  * Renders a
- * {@link thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot} as
+ * {@link thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlotOLD} as
  * a JLabel, which can be used in lists.
  * 
  * @author thehambone
@@ -22,7 +22,9 @@ import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 public class SaveSlotCellRenderer implements ListCellRenderer<PCSaveSlot>
 {
     @Override
-    public Component getListCellRendererComponent(JList<? extends PCSaveSlot> list, PCSaveSlot value, int index, boolean isSelected, boolean cellHasFocus)
+    public Component getListCellRendererComponent(
+            JList<? extends PCSaveSlot> list, PCSaveSlot value, int index,
+            boolean isSelected, boolean cellHasFocus)
     {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -33,17 +35,15 @@ public class SaveSlotCellRenderer implements ListCellRenderer<PCSaveSlot>
         titleLabel.setFont(list.getFont());
         timestampLabel.setFont(list.getFont());
         
-        if (!value.isEmpty()) {
-            if (value.getSaveTitle().isEmpty()) {
-                titleLabel.setText("Slot " + value.getSlotNumber() + " is corrupt");
-                titleLabel.setForeground(Color.gray);
-            } else {
-                titleLabel.setText(value.getSaveTitle());
-                timestampLabel.setText(value.getSaveTimeStampString());
-            }
-        } else {
+        if (!value.isUsable()) {
+            titleLabel.setText("Slot is not usable");
+            titleLabel.setForeground(Color.gray);
+        } else if (value.isEmpty()) {
             titleLabel.setText("Slot " + value.getSlotNumber() + " is free");
             titleLabel.setForeground(Color.gray);
+        } else {
+            titleLabel.setText(value.getSaveName());
+            timestampLabel.setText(value.getSaveTimestamp());
         }
         
         panel.add(titleLabel, BorderLayout.WEST);

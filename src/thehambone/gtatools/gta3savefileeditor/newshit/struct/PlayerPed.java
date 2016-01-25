@@ -2,7 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarString8;
@@ -38,7 +38,7 @@ public class PlayerPed extends Record
     {
         this.size = 0x0644;
         
-        cPlayerPed.load(buf, offset + 0x0A, SaveFileNew.Platform.ANDROID);
+        cPlayerPed.load(buf, offset + 0x0A, SaveFile.Platform.ANDROID);
         nMaxWantedLevel.load(buf, offset + 0x0622);
         nMaxChaosLevel.load(buf, offset + 0x0626);
         szModelName.load(buf, offset + 0x062A);
@@ -49,7 +49,7 @@ public class PlayerPed extends Record
     {
         this.size = 0x0640;
         
-        cPlayerPed.load(buf, offset + 0x0A, SaveFileNew.Platform.IOS);
+        cPlayerPed.load(buf, offset + 0x0A, SaveFile.Platform.IOS);
         nMaxWantedLevel.load(buf, offset + 0x061E);
         nMaxChaosLevel.load(buf, offset + 0x0622);
         szModelName.load(buf, offset + 0x0626);
@@ -60,7 +60,7 @@ public class PlayerPed extends Record
     {
         this.size = 0x061C;
         
-        cPlayerPed.load(buf, offset + 0x0A, SaveFileNew.Platform.PC);
+        cPlayerPed.load(buf, offset + 0x0A, SaveFile.Platform.PC);
         nMaxWantedLevel.load(buf, offset + 0x05FA);
         nMaxChaosLevel.load(buf, offset + 0x05FE);
         szModelName.load(buf, offset + 0x0602);

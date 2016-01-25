@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -18,6 +19,7 @@ import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -101,18 +103,19 @@ public final class Main
     {
         /* TODO:
          * -cmd options: --log-to-file
-         * -merge new data handling code
-         * -Record size should be determined by size of members
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related? (IDE only?)
          * -BUG: Mac OS X crash when using "Save Slot" feature
          * -Game constants (ObjectType, WeatherType, etc.)
+         * -Set combobox index to -1 when value out of range
          * -Remove Ctrl+Q shortcut
          * -Update status bar with platform info and notifications like "All
          *  changes saved".
          * -Bomb armed checkbox
-         * -F5: Refresh current file
-         * -Shift + F5: Refresh slots
+         * -WElcome page browse button page event
+         * -Check if file changed on focus gained; prompt to reload file or
+         *  ignore
+         * -Tweak about page text
          * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
          * -Documentation
@@ -406,7 +409,7 @@ public final class Main
                 EditorWindow frame = new EditorWindow();
                 frame.setTitle(PROGRAM_TITLE + " " + PROGRAM_VERSION);
                 frame.setIconImage(icon);
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 frame.setSize(630, 515);
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);

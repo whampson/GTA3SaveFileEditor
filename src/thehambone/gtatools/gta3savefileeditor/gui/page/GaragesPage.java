@@ -20,7 +20,7 @@ import javax.swing.event.ListSelectionListener;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.gui.CarColorSelectorDialog;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.StoredCarListCellRenderer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.SaveCarGarageSlot;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.StoredCar;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
@@ -323,7 +323,7 @@ public class GaragesPage extends Page
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
         aSaveGarageSlot
-                = SaveFileNew.getCurrentSaveFile().garages.aSaveCarGarageSlot;
+                = SaveFile.getCurrentSaveFile().garages.aSaveCarGarageSlot;
         
         safehouseComboBox.setSelectedIndex(-1);
         safehouseComboBox.setSelectedIndex(0);

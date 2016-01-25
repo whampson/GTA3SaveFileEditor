@@ -2,7 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarFloat;
@@ -39,10 +39,10 @@ public class CPlayerPed extends Record
     {
         this.size = 0x0618;
         
-        vPosition.load(buf, offset + 0x34, SaveFileNew.Platform.ANDROID);
+        vPosition.load(buf, offset + 0x34, SaveFile.Platform.ANDROID);
         fHealth.load(buf, offset + 0x2C8);
         fArmor.load(buf, offset + 0x02CC);
-        aWeaponSlot.load(buf, offset + 0x0364, SaveFileNew.Platform.ANDROID);
+        aWeaponSlot.load(buf, offset + 0x0364, SaveFile.Platform.ANDROID);
     }
     
     @Override
@@ -50,10 +50,10 @@ public class CPlayerPed extends Record
     {
         this.size = 0x0614;
         
-        vPosition.load(buf, offset + 0x34, SaveFileNew.Platform.IOS);
+        vPosition.load(buf, offset + 0x34, SaveFile.Platform.IOS);
         fHealth.load(buf, offset + 0x2C4);
         fArmor.load(buf, offset + 0x02C8);
-        aWeaponSlot.load(buf, offset + 0x0350, SaveFileNew.Platform.IOS);
+        aWeaponSlot.load(buf, offset + 0x0350, SaveFile.Platform.IOS);
     }
     
     @Override
@@ -61,10 +61,10 @@ public class CPlayerPed extends Record
     {
         this.size = 0x05F0;
         
-        vPosition.load(buf, offset + 0x34, SaveFileNew.Platform.PC);
+        vPosition.load(buf, offset + 0x34, SaveFile.Platform.PC);
         fHealth.load(buf, offset + 0x2C0);
         fArmor.load(buf, offset + 0x02C4);
-        aWeaponSlot.load(buf, offset + 0x035C, SaveFileNew.Platform.PC);
+        aWeaponSlot.load(buf, offset + 0x035C, SaveFile.Platform.PC);
     }
     
     @Override

@@ -17,10 +17,11 @@ import thehambone.gtatools.gta3savefileeditor.game.Game;
 public class Settings
 {
     public static final String SETTINGS_FILE_PATH = "./editor.properties";
+    public static final String KEY_GTA3_USER_FILES = "gta3.user.files";
     
     private static final Properties DEFAULTS = new Properties();
     static {
-        DEFAULTS.put("gta3.save.dir", Game.getGameUserDirectoryPath());
+        DEFAULTS.put(KEY_GTA3_USER_FILES, Game.getGameUserDirectoryPath());
         DEFAULTS.put("make.backups", "true");
         DEFAULTS.put("update.timestamp", "true");
     }

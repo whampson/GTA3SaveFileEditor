@@ -1,28 +1,26 @@
+
 package thehambone.gtatools.gta3savefileeditor.savefile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import thehambone.gtatools.gta3savefileeditor.Settings;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
- * A PCSaveSlot represents one of the eight save slots for the PC version of
- * GTA III. PCSaveSlots can be used to get the title and timestamp of a save
- * file without having to load the entire file.
- * 
- * File detection is a still a little iffy; files can be found, but not are
- * verified for validity.
- * 
+ * Created on Jan 24, 2016.
+ *
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 05, 2015
- * @deprecated 
  */
 public class PCSaveSlot
 {
-    private static final PCSaveSlot[] pcSaveSlots = new PCSaveSlot[] {
+    private static final Pattern PC_FILE_NAME_PATTERN
+            = Pattern.compile("^GTA3sf([0-9]).b$", Pattern.CASE_INSENSITIVE);
+    
+    private static final String PC_FILE_NAME_FORMAT = "GTA3sf#.b";
+    
+    private static final PCSaveSlot[] DEFINED_SAVE_SLOTS = new PCSaveSlot[] {
         new PCSaveSlot(1),
         new PCSaveSlot(2),
         new PCSaveSlot(3),
@@ -35,62 +33,30 @@ public class PCSaveSlot
     
     public static PCSaveSlot[] getSaveSlots()
     {
-        return pcSaveSlots;
-    }
-    
-    public static File getSaveFileForSlot(int slotNumber) throws FileNotFoundException
-    {
-        File gta3SaveDir = new File(Settings.get("gta3.save.dir"));
-        String[] fileNames = gta3SaveDir.list();
-        if (fileNames == null || fileNames.length == 0) {
-            return null;
-        }
-        for (String fileName : fileNames) {
-            if (!fileName.matches(PCSaveFile.FILE_NAME_REGEX)) {
-                continue;
-            }
-            Matcher m = Pattern.compile(PCSaveFile.FILE_NAME_REGEX, Pattern.CASE_INSENSITIVE).matcher(fileName);
-            int fileSlotNumber = -1;
-            
-            // Get second number in file name
-            if (m.find()) {
-                fileSlotNumber = Integer.parseInt(m.group(1));
-                if (fileSlotNumber == slotNumber) {
-                    return new File(gta3SaveDir.getAbsolutePath() + File.separator + fileName);
-                }
-            }
-        }
-        StringBuilder pathBuilder = new StringBuilder();
-        pathBuilder.append(gta3SaveDir.getAbsolutePath())
-                .append(File.separator)
-                .append(PCSaveFile.FILE_NAME_SIMPLE_FORMAT.replace("#", Integer.toString(slotNumber)));
-        return new File(pathBuilder.toString());
+        return DEFINED_SAVE_SLOTS;
     }
     
     private final int slotNumber;
-    
-    private File saveFile;
-    private boolean isEmpty;
-    private String saveTitle;
-    private String saveTimestampString;
+    private File file;
+    private String saveName;
+    private String saveTimestamp;
     
     public PCSaveSlot(int slotNumber)
     {
         this.slotNumber = slotNumber;
-        saveFile = null;
-        isEmpty = true;
-        saveTitle = "";
-        saveTimestampString = "";
+        file = null;
+        saveName = "";
+        saveTimestamp = "";
     }
     
-    public File getSaveFile()
+    public boolean isUsable()
     {
-        return saveFile;
+        return file != null;
     }
     
     public boolean isEmpty()
     {
-        return isEmpty;
+        return isUsable() && !file.exists();
     }
     
     public int getSlotNumber()
@@ -98,53 +64,142 @@ public class PCSaveSlot
         return slotNumber;
     }
     
-    public String getSaveTitle()
+    public File getFile()
     {
-        return saveTitle;
+        return file;
     }
     
-    public String getSaveTimeStampString()
+    public String getSaveName()
     {
-        return saveTimestampString;
+        return saveName;
     }
     
-    public void load() throws IOException, UnsupportedPlatformException
+    public String getSaveTimestamp()
     {
-        if (isEmpty) {
-            throw new IOException("slot is empty");
-        }
-        saveFile = getSaveFileForSlot(slotNumber);
-        SaveFile.loadFile(saveFile);
-    }
-    
-    public void save() throws IOException
-    {
-        if (SaveFile.isFileLoaded()) {
-            saveFile = getSaveFileForSlot(slotNumber);
-            SaveFile.getCurrentlyLoadedFile().save(saveFile);
-        }
-    }
-    
-    public void delete() throws IOException
-    {
-        saveFile = getSaveFileForSlot(slotNumber);
-        if (saveFile.exists()) {
-            saveFile.delete();
-        }
+        return saveTimestamp;
     }
     
     public void refresh() throws IOException
     {
-        saveFile = getSaveFileForSlot(slotNumber);
-        if (saveFile == null || !saveFile.exists()) {
-            isEmpty = true;
-            saveTitle = "";
-            saveTimestampString = "";
+        // Get GTA3 User Files location from program settings file
+        File gta3SaveDir = new File(Settings.get(Settings.KEY_GTA3_USER_FILES));
+        
+        // Check whether the GTA3 User Files location is valid
+        if (!gta3SaveDir.exists()) {
+            file = null;
+            saveName = "";
+            saveTimestamp = "";
+            String message = "Cannot find GTA 3 save file directory! "
+                    + "(" + gta3SaveDir + ")";
+            Logger.warn(message);
+            throw new IOException(message);
+        } else if (!gta3SaveDir.isDirectory()) {
+            file = null;
+            saveName = "";
+            saveTimestamp = "";
+            String message = "The selected GTA 3 save file folder is not a "
+                    + "directory! (" + gta3SaveDir + ")";
+            Logger.warn(message);
+            throw new IOException(message);
+        }
+        
+        // Get all filenames in GTA3 User Files folder
+        String[] fileNames = gta3SaveDir.list();
+        
+        /* If folder is empty, mark this slot as empty by generating a blank
+           file object */
+        if (fileNames.length == 0) {
+            file = new File(generateFileName());
+            saveName = "";
+            saveTimestamp = "";
             return;
         }
-        isEmpty = false;
-        String[] saveFileInfo = PCSaveFile.getSaveFileInfo(saveFile);
-        saveTitle = saveFileInfo[0];
-        saveTimestampString = saveFileInfo[1];
+        
+        // Iterate over all filenames in the directory
+        File f = null;
+        boolean fileFound = false;
+        boolean fileValid = false;
+        for (String fileName : fileNames) {
+            int foundSlotNumber;
+            fileFound = false;
+            fileValid = false;
+            Matcher m = PC_FILE_NAME_PATTERN.matcher(fileName);
+            
+            // Skip if filename doesn't match GTA III save file name format
+            if (!m.find()) {
+                continue;
+            }
+            
+            // We've got a match! Attempt to extract slot number from name
+            try {
+                foundSlotNumber = Integer.parseInt(m.group(1));
+            } catch (NumberFormatException ex) {
+                Logger.stackTrace(ex);
+                continue;
+            }
+            
+            /* Does the extracted number match the number of this slot? If not,
+               skip this file */
+            if (foundSlotNumber != slotNumber) {
+                continue;
+            }
+            
+            // The file name matches! Create a new File object from the filename
+            f = new File(gta3SaveDir.getAbsolutePath()
+                    + File.separator + fileName);
+            fileFound = true;
+            
+            // Check whether the file is a valid GTA III PC save file
+            try {
+                SaveFile.Platform platform = SaveFile.getPlatform(f);
+                if (platform == SaveFile.Platform.PC) {
+                    // We've found a valid PC save file! End the loop
+                    file = f;
+                    fileValid = true;
+                } else {
+                    // The file is valid, but it's not a PC save file
+                    // Mark slot as unusable to avoid accidental overwrite
+                    file = null;
+                    saveName = "";
+                    saveTimestamp = "";
+                }
+            } catch (IOException ex) {
+                // Not a valid save file
+                // Mark slot as unusable to avoid accidental overwrite
+                file = null;
+                saveName = "";
+                saveTimestamp = "";
+            }
+            
+            /* A file has been found, valid or not, so end the loop. No need to
+               continue searching. */
+            break;
+        }
+        
+        // No file was found
+        // Mark this slot as empty by generating a blank file object
+        if (!fileFound) {
+            file = new File(generateFileName());
+            saveName = "";
+            saveTimestamp = "";
+            return;
+        }
+        
+        // Extract information from file
+        if (fileValid) {
+            SaveFile sf = new SaveFile(file, SaveFile.Platform.PC);
+            String[] fileInfo = sf.getFileInfo();
+            saveName = fileInfo[0];
+            saveTimestamp = fileInfo[1];
+        }
+    }
+    
+    /*
+     * Generates the filename for a GTA III save file for this slot
+     */
+    private String generateFileName()
+    {
+        // GTA3sf<SLOT#>.b
+        return PC_FILE_NAME_FORMAT.replace("#", Integer.toString(slotNumber));
     }
 }

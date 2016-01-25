@@ -1,7 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnspecifiedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 
@@ -53,7 +53,7 @@ public interface DataStructure
      * @throws UnsupportedPlatformException if the specified platform is not
      *                                      supported
      */
-    public void load(DataBuffer buf, int offset, SaveFileNew.Platform platform);
+    public void load(DataBuffer buf, int offset, SaveFile.Platform platform);
     
     /**
      * Checks whether data has been loaded into this data structure.

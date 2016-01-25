@@ -2,14 +2,16 @@ package thehambone.gtatools.gta3savefileeditor.gui.page;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -17,9 +19,10 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
-import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.SaveSlotCellRenderer;
+import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -35,21 +38,8 @@ public class WelcomePage extends Page
     {
         super("Welcome", Visibility.VISIBLE_WHEN_FILE_NOT_LOADED_ONLY);
         initComponents();
-        initKeyListener();
         initListSelectionListener();
         initMouseListener();
-    }
-    
-    private void initKeyListener()
-    {
-        registerKeyboardAction(new AbstractAction()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                refresh();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
     
     private void initListSelectionListener()
@@ -63,8 +53,9 @@ public class WelcomePage extends Page
                 if (saveSlot == null) {
                     return;
                 }
-                loadButton.setEnabled(!saveSlot.isEmpty());
-                deleteButton.setEnabled(!saveSlot.isEmpty());
+                
+                loadButton.setEnabled(saveSlot.isUsable());
+                deleteButton.setEnabled(saveSlot.isUsable());
             }
         });
     }
@@ -104,8 +95,8 @@ public class WelcomePage extends Page
     private void loadSelectedSlot()
     {
         PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
-        File f = saveSlot.getSaveFile();
-        if (saveSlot.isEmpty()) {
+        File f = saveSlot.getFile();
+        if (saveSlot.isUsable()) {
             return;
         }
         notifyObservers(Event.FILE_LOAD, f);
@@ -114,8 +105,8 @@ public class WelcomePage extends Page
     private void deleteSelectedSlot()
     {
         PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
-        File f = saveSlot.getSaveFile();
-        if (saveSlot.isEmpty()) {
+        File f = saveSlot.getFile();
+        if (saveSlot.isUsable()) {
             return;
         }
         notifyObservers(Event.FILE_DELETE, f);
@@ -143,6 +134,7 @@ public class WelcomePage extends Page
             Logger.stackTrace(ex);
         }
         imageLabel.setText("");
+        refresh();
         populateSlotList();
     }
 

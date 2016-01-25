@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
-import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observable;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;

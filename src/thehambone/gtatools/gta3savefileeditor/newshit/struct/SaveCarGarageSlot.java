@@ -2,7 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 
@@ -20,7 +20,7 @@ public class SaveCarGarageSlot extends Record
         super(0x78);
     }
     
-    private void load(DataBuffer buf, SaveFileNew.Platform platform)
+    private void load(DataBuffer buf, SaveFile.Platform platform)
     {
         aStoredCar.load(buf, offset + 0x00, platform);
     }
@@ -36,19 +36,19 @@ public class SaveCarGarageSlot extends Record
     @Override
     protected void loadAndroid(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.ANDROID);
+        load(buf, SaveFile.Platform.ANDROID);
     }
     
     @Override
     protected void loadIOS(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.IOS);
+        load(buf, SaveFile.Platform.IOS);
     }
     
     @Override
     protected void loadPC(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.PC);
+        load(buf, SaveFile.Platform.PC);
     }
     
     @Override
@@ -60,6 +60,6 @@ public class SaveCarGarageSlot extends Record
     @Override
     protected void loadXbox(DataBuffer buf)
     {
-        load(buf, SaveFileNew.Platform.XBOX);
+        load(buf, SaveFile.Platform.XBOX);
     }
 }

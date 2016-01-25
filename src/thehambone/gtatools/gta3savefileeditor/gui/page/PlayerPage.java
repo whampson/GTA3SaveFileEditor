@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGarages;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.PlayerPed;
@@ -181,9 +181,9 @@ public class PlayerPage extends Page
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
-        garages = SaveFileNew.getCurrentSaveFile().garages;
-        player = SaveFileNew.getCurrentSaveFile().playerInfo;
-        playerped = SaveFileNew.getCurrentSaveFile()
+        garages = SaveFile.getCurrentSaveFile().garages;
+        player = SaveFile.getCurrentSaveFile().playerInfo;
+        playerped = SaveFile.getCurrentSaveFile()
                 .playerPeds.aPlayerPed.getElementAt(0);
         aWeaponSlot = playerped.cPlayerPed.aWeaponSlot;
         

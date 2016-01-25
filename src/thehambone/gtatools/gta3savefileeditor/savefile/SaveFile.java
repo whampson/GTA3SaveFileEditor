@@ -2,150 +2,432 @@ package thehambone.gtatools.gta3savefileeditor.savefile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
-import thehambone.gtatools.gta3savefileeditor.Settings;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.Align;
-import thehambone.gtatools.gta3savefileeditor.savefile.struct.Block;
-import thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
+import thehambone.gtatools.gta3savefileeditor.newshit.Checksum;
+import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
+import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGangs;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGarages;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPedTypes;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerPeds;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockSimpleVars;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarString;
+import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarString16;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
- * A generic save file created by the GTA III executable.
+ * This class represents a Grand Theft Auto III save file.
+ * <p>
+ * A save file is used to store the current state of a game so it can be resumed
+ * at a later time. In the case of Grand Theft Auto III, the save file is a
+ * complex binary file that is divided into many chunks, or blocks, where each 
+ * block contains data pertaining to a particular part of the game. This class
+ * is responsible for reading data from and writing data to the save file, as
+ * well as maintaining information about which gaming platform the save file
+ * originated from.
+ * <p>
+ * This class follows the singleton pattern, meaning only one instance can exist
+ * at a time.
+ * <p>
+ * Created on Sep 17, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, February 06, 2015
- * @deprecated 
  */
-public abstract class SaveFile
+public class SaveFile
 {
-    private static SaveFile currentlyLoadedFile;
+    // Singleton object instance
+    private static SaveFile currentSaveFile;
     
-    public static boolean isFileLoaded()
+    public static Platform getPlatform(File src) throws IOException
     {
-        return currentlyLoadedFile != null;
-    }
-    
-    public static SaveFile getCurrentlyLoadedFile()
-    {
-        return currentlyLoadedFile;
+        SaveFile temp = new SaveFile(src);
+        return temp.getPlatform();
     }
     
     /**
-     * Loads a file and parses it as a GTA III save file. The platform from
-     * which the file originated is detected automatically and the file is
-     * loaded based on that platform. (not yet implemented)
+     * Loads data from the save file located at the path provided and returns a
+     * new {@code SaveFile} object containing the loaded data.
      * 
-     * @param saveFile the file to load
-     * @return a SaveFile object holding the loaded data
-     * @throws IOException if an I/O error occurs
-     * @throws UnsupportedPlatformException if the platform from which the file
-     *         originated is not supported
+     * @param srcPath the path of the file to be loaded
+     * @return a new {@code SaveFile} object containing the loaded data
+     * @throws IOException if the file loaded is not a valid GTA III save file
+     *                     or if an I/O error occurs
+     * @throws UnsupportedPlatformException if the file originated from a gaming
+     *                                      platform that is not supported
      */
-    public static SaveFile loadFile(File saveFile) throws IOException, UnsupportedPlatformException
+    public static SaveFile load(String srcPath) throws IOException
     {
-        String makeBackupsProperty = Settings.get("make.backups");
-        if (makeBackupsProperty != null && Boolean.parseBoolean(makeBackupsProperty)) {
-            File backupFile = new File(saveFile.getAbsolutePath() + ".bak");
-            Logger.debug("Backing up %s to %s...\n", saveFile, backupFile);
-            IO.copyFile(saveFile, backupFile);
-        }
-        
-        // todo: develop a way to identify platform origin
-        
-        // For now, loadFile a PC gamesave by default
-        PCSaveFile pcSaveFile = new PCSaveFile(new VariableDefinitions());
-        Logger.debug("Reading data from file: %s...\n", saveFile.getAbsolutePath());
-        int bytesRead = pcSaveFile.load(saveFile);
-        Logger.debug("Finished reading file. Bytes read: 0x%04x\n", bytesRead);
-        currentlyLoadedFile = pcSaveFile;
-        return pcSaveFile;
+        return load(new File(srcPath));
     }
     
-    public static void closeFile()
+    /**
+     * Loads data from the save file represented by the {@code File} object
+     * provided and returns a new {@code SaveFile} object containing the loaded
+     * data.
+     * 
+     * @param src a {@code File} object representing the file to be loaded
+     * @return a new {@code SaveFile} object containing the loaded data
+     * @throws IOException if the file loaded is not a valid GTA III save file
+     *                     or if an I/O error occurs
+     * @throws UnsupportedPlatformException if the file originated from a gaming
+     *                                      platform that is not supported
+     */
+    public static SaveFile load(File src) throws IOException
     {
-        currentlyLoadedFile = null;
+        currentSaveFile = new SaveFile(src);
+        currentSaveFile.load();
+        return currentSaveFile;
     }
     
-    protected final Map<Integer, Align[]> unknownData = new HashMap<>();
-    protected final Map<Integer, Align> skippedData = new HashMap<>();
-    
-    protected final Platform platform;
-    protected final VariableDefinitions vars;
-    
-    protected File currentFile;
-
-    protected SaveFile(Platform platform, VariableDefinitions vars)
+    /**
+     * Loads data from the save file located at the path provided and returns a
+     * new {@code SaveFile} object containing the loaded data. Data is loaded
+     * according to the specified gaming platform.
+     * 
+     * @param srcPath the path of the file to be loaded
+     * @param platform the gaming platform that from which this save file was
+     *                 created
+     * @return a new {@code SaveFile} object containing the loaded data
+     * @throws IOException if the file loaded is not a valid GTA III save file
+     *                     or if an I/O error occurs
+     * @throws UnsupportedPlatformException if the file originated from a gaming
+     *                                      platform that is not supported
+     */
+    public static SaveFile load(String srcPath, Platform platform)
+            throws IOException
     {
+        return load(new File(srcPath), platform);
+    }
+    
+    /**
+     * Loads data from the save file represented by the {@code File} object
+     * provided and returns a new {@code SaveFile} object containing the loaded
+     * data.
+     * 
+     * @param src a {@code File} object representing the file to be loaded
+     * @param platform the gaming platform that from which this save file was
+     *                 created
+     * @return a new {@code SaveFile} object containing the loaded data
+     * @throws IOException if the file loaded is not a valid GTA III save file
+     *                     or if an I/O error occurs
+     * @throws UnsupportedPlatformException if the file originated from a gaming
+     *                                      platform that is not supported
+     */
+    public static SaveFile load(File src, Platform platform)
+            throws IOException
+    {
+        currentSaveFile = new SaveFile(src, platform);
+        currentSaveFile.load();
+        return currentSaveFile;
+    }
+    
+    /**
+     * Removes the current {@code SaveFile} instance.
+     */
+    public static void close()
+    {
+        currentSaveFile = null;
+    }
+    
+    /**
+     * Checks whether a save file is loaded.
+     * 
+     * @return {@code true} if a file is loaded, {@code false} if a file is not
+     *         loaded
+     */
+    public static boolean isFileLoaded()
+    {
+        return currentSaveFile != null;
+    }
+    
+    /**
+     * Gets the current {@code SaveFile} object instance.
+     * 
+     * @return the current {@code SaveFile} instance, {@code null} if a save
+     *         file is not loaded
+     */
+    public static SaveFile getCurrentSaveFile()
+    {
+        return currentSaveFile;
+    }
+    
+    /*
+     * Data block objects; keep these public so file data can be accessed from
+     * anywhere.
+     */
+    public BlockSimpleVars simpleVars;
+    public BlockPlayerPeds playerPeds;
+    public BlockGarages garages;
+    public BlockGangs gangs;
+    public BlockPlayerInfo playerInfo;
+    public BlockPedTypes pedTypes;
+    
+    private final DataBuffer buf;
+    private final Platform platform;
+    
+    private File src;
+    
+    // Don't allow instantiation outside of this package
+    protected SaveFile(File src) throws IOException
+    {
+        this.src = src;
+        buf = new DataBuffer(src);
+        this.platform = detectPlatform();
+    }
+    
+    // Don't allow instantiation outside of this package
+    protected SaveFile(File src, Platform platform) throws IOException
+    {
+        this.src = src;
+        buf = new DataBuffer(src);
         this.platform = platform;
-        this.vars = vars;
     }
     
+    /**
+     * Returns the {@code DataBuffer} object associated with this
+     * {@code SaveFile} instance. The {@code DataBuffer} contains the raw binary
+     * data of the save file and can be used to modify bytes directly.
+     * 
+     * @return the {@code DataBuffer} object associated with this
+     *         {@code SaveFile}
+     */
+    public DataBuffer getDataBuffer()
+    {
+        return buf;
+    }
+    
+    /**
+     * Gets the gaming platform from which this save file originated.
+     * 
+     * @return the platform associated with this save file.
+     */
     public Platform getPlatform()
     {
         return platform;
     }
     
-    public VariableDefinitions getVariables()
+    public File getSourceFile()
     {
-        return vars;
+        return src;
     }
     
-    public File getCurrentFile()
+    public String[] getFileInfo()
     {
-        return currentFile;
+        if (platform != Platform.PC) {
+            return new String[] { };
+        }
+        
+        Date timestamp;
+        String saveName;
+        String[] fileInfo = new String[2];
+        
+        VarString saveNameVar = new VarString16(24);
+        saveNameVar.load(buf, 0x04);
+        saveName = saveNameVar.getValue();
+        
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, buf.readShort());
+        cal.set(Calendar.MONTH, buf.readShort() - 1);
+        cal.set(Calendar.DAY_OF_WEEK, buf.readShort() + 1);
+        cal.set(Calendar.DAY_OF_MONTH, buf.readShort());
+        cal.set(Calendar.HOUR_OF_DAY, buf.readShort());
+        cal.set(Calendar.MINUTE, buf.readShort());
+        cal.set(Calendar.SECOND, buf.readShort());
+        cal.set(Calendar.MILLISECOND, buf.readShort());
+        timestamp = cal.getTime();
+        
+        String format = "dd MMM. yyyy HH:mm:ss";
+        fileInfo[0] = saveName;
+        fileInfo[1] = new SimpleDateFormat(format).format(timestamp);
+        
+        return fileInfo;
+    }
+    
+    public void save() throws IOException
+    {
+        save(src);
+    }
+    
+    public void save(File dest) throws IOException
+    {
+        /* Change source file so subsequent calls to save() will write to the
+           same file */
+        if (dest != src) {
+            src = dest;
+        }
+        
+        int checksum = Checksum.checksum32(buf.toArray(0, buf.getSize() - 4));
+        Logger.debug("File checksum: 0x%08x\n", checksum);
+        buf.seek(buf.getSize() - 4);
+        Logger.debug("Writing checksum to offset 0x%08x...\n", buf.getOffset());
+        buf.writeInt(checksum);        
+        
+        buf.writeFile(src);
+    }
+    
+    /*
+     * Loads block data.
+     */
+    private void load() throws UnsupportedPlatformException
+    {
+        int blockIndex;
+        int blockSize;
+        int offset;
+        
+        if (!platform.isSupported()) {
+            throw new UnsupportedPlatformException("platform not supported: "
+                    + platform);
+        }
+        
+        blockIndex = 0;
+        buf.seek(0);
+        while (buf.available() > 4) {
+            blockSize = buf.readInt();
+            offset = buf.getOffset();
+            switch (blockIndex++) {
+                case 0:
+                    Logger.debug("Loading block 0...");
+                    simpleVars = new BlockSimpleVars(blockSize);
+                    simpleVars.load(buf, offset, platform);
+                    break;
+                    
+                case 1:
+                    Logger.debug("Loading block 1...");
+                    playerPeds = new BlockPlayerPeds(blockSize);
+                    playerPeds.load(buf, offset, platform);
+                    break;
+                    
+                case 2:
+                    Logger.debug("Loading block 2...");
+                    garages = new BlockGarages(blockSize);
+                    garages.load(buf, offset, platform);
+                    break;
+                    
+                case 12:
+                    Logger.debug("Loading block 12...");
+                    gangs = new BlockGangs(blockSize);
+                    gangs.load(buf, offset, platform);
+                    break;
+                    
+                case 16:
+                    Logger.debug("Loading block 16...");
+                    playerInfo = new BlockPlayerInfo(blockSize);
+                    playerInfo.load(buf, offset, platform);
+                    break;
+                    
+                case 19:
+                    Logger.debug("Loading block 19...");
+                    pedTypes = new BlockPedTypes(blockSize);
+                    pedTypes.load(buf, offset, platform);
+                    break;
+            }
+            buf.seek(offset);
+            buf.skip(blockSize);
+        }
+    }
+    
+    /*
+     * Detects the gaming platform from which this file originated using the
+     * offset of the "SCR" block signature, the offset of the "201729" constant
+     * that appears in every save file, and the size of block 1 (PlayerPeds).
+     */
+    private Platform detectPlatform() throws IOException
+    {
+        // This value is present in block 0 of every save file.
+        // Its purpose is unknown.
+        int unknownConstant = 201729;
+        
+        int scrOffset;
+        int block1Size;
+        boolean isPCorXbox = false;
+        boolean isMobile = false;
+        Platform p = null;
+        
+        // Get offset of "SCR" block signature.
+        scrOffset = buf.searchFor(new byte[] {'S', 'C', 'R', '\0'});
+        if (scrOffset == -1) {
+            throw new IOException("invalid save file");
+        }
+        
+        // Determine platform by "SCR" offset and unknown constant offset.
+        if (scrOffset == 0xB8
+                && buf.readInt(0x34) == unknownConstant) {
+            isMobile = true;
+        } else if (scrOffset == 0xC4
+                && buf.readInt(0x44) == unknownConstant) {
+            isPCorXbox = true;
+        } else if (scrOffset == 0xB8
+                && buf.readInt(0x04) == unknownConstant) {
+            p = Platform.PS2;
+        }
+        
+        // Determine platform by size of block 1.
+        block1Size = buf.readInt(buf.readInt(0x00) + 0x04);
+        if (isMobile) {
+            if (block1Size == 0x064C) {
+                p = Platform.ANDROID;
+            } else if (block1Size == 0x0648) {
+                p = Platform.IOS;
+            }
+        } else if (isPCorXbox) {
+            if (block1Size == 0x0624) {
+                p = Platform.PC;
+            } else if (block1Size == 0x0628) {
+                p = Platform.XBOX;
+            }
+        }
+        
+        if (p == null) {
+            // TODO: rethink
+            throw new IOException("unable to detect platform origin");
+        } else {
+            // TODO: move this
+//            Logger.debug("Detected platform: " + p);
+        }
+        
+        return p;
     }
     
     /**
-     * Loads the specified file. The blocks specified in the constructor are
-     * loaded recursively. Data values found in each block are stored to the 
-     * {@link thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions}
-     * object supplied in the constructor.
-     * 
-     * @param saveFile the file to load
-     * @return the number of bytes read
-     * @throws IOException if an I/O error occurs
-     */
-    public abstract int load(File saveFile) throws IOException;
-    
-    /**
-     * Writes the file buffer to a file. Values from the
-     * {@link thehambone.gtatools.gta3savefileeditor.savefile.variable.VariableDefinitions}
-     * object are written to a binary file. The file is formatted in the same
-     * way as a save file created by the GTA III executable. Files will differ
-     * slightly between platforms.
-     * 
-     * @param saveFile the file to write
-     * @return the number of bytes written
-     * @throws IOException if an I/O error occurs
-     */
-    public abstract int save(File saveFile) throws IOException;
-    
-    protected abstract Block[] generateFileStructure();
-    
-    /**
-     * Platform definitions.
+     * Constants representing the possible gaming platforms from which a save
+     * file can originate.
      */
     public static enum Platform
     {
-        ANDROID(false),
-        iOS(false),
-        PC(true),
-        PS2(false),
-        XBOX(false);
+        ANDROID(true, "Android"),
+        IOS(true, "iOS"),
+        PC(true, "PC"),
+        PS2(false, "PS2"),
+        XBOX(false, "Xbox");
         
         private final boolean isSupported;
+        private final String friendlyName;
         
-        private Platform(boolean isSupported)
+        private Platform(boolean isSupported, String friendlyName)
         {
             this.isSupported = isSupported;
+            this.friendlyName = friendlyName;
         }
         
+        /**
+         * Checks whether the platform is supported.
+         * 
+         * @return {@code true} if the platform is supported, {@code false}
+         *         otherwise
+         */
         public boolean isSupported()
         {
             return isSupported;
+        }
+        
+        public String getFriendlyName()
+        {
+            return friendlyName;
         }
     }
 }

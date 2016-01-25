@@ -2,7 +2,7 @@ package thehambone.gtatools.gta3savefileeditor.newshit.struct.var;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.Checksum;
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.DataStructure;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnspecifiedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
@@ -24,7 +24,7 @@ public abstract class Variable<T> implements DataStructure
     protected int crc;
     protected boolean isLoaded;
     protected DataBuffer buf;
-    protected SaveFileNew.Platform platform;
+    protected SaveFile.Platform platform;
     
     /**
      * Creates a new {@code Variable} with the specified size.
@@ -173,7 +173,7 @@ public abstract class Variable<T> implements DataStructure
     }
     
     @Override
-    public void load(DataBuffer buf, int offset, SaveFileNew.Platform platform)
+    public void load(DataBuffer buf, int offset, SaveFile.Platform platform)
     {
         this.buf = buf;
         this.offset = offset;

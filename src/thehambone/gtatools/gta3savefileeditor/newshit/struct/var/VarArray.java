@@ -2,7 +2,7 @@ package thehambone.gtatools.gta3savefileeditor.newshit.struct.var;
 
 import java.util.Iterator;
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.DataStructure;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -143,7 +143,7 @@ public class VarArray<T extends DataStructure>
     public void setValue(T value)
     {
         if (elementTypeClass.isAssignableFrom(Variable.class)) {
-            ((Variable)getElementAt(0)).setValue(value);
+            ((Variable<T>)getElementAt(0)).setValue(value);
         } else {
             throw new UnsupportedOperationException(
                     "the type of this array is not of type Variable");
@@ -162,7 +162,7 @@ public class VarArray<T extends DataStructure>
     }
     
     @Override
-    public void load(DataBuffer buf, int offset, SaveFileNew.Platform platform)
+    public void load(DataBuffer buf, int offset, SaveFile.Platform platform)
     {
         super.load(buf, offset, platform);
         

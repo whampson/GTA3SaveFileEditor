@@ -2,7 +2,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarInt;
@@ -43,7 +43,7 @@ public class BlockPlayerPeds extends Block
         nNumberOfPlayerPeds.load(buf, offset + 0x04);
         
         aPlayerPed.setElementCount(nNumberOfPlayerPeds.getValue());
-        aPlayerPed.load(buf, offset + 0x08, SaveFileNew.Platform.ANDROID);
+        aPlayerPed.load(buf, offset + 0x08, SaveFile.Platform.ANDROID);
     }
     
     @Override
@@ -52,7 +52,7 @@ public class BlockPlayerPeds extends Block
         nNumberOfPlayerPeds.load(buf, offset + 0x04);
         
         aPlayerPed.setElementCount(nNumberOfPlayerPeds.getValue());
-        aPlayerPed.load(buf, offset + 0x08, SaveFileNew.Platform.IOS);
+        aPlayerPed.load(buf, offset + 0x08, SaveFile.Platform.IOS);
     }
     
     @Override
@@ -61,7 +61,7 @@ public class BlockPlayerPeds extends Block
         nNumberOfPlayerPeds.load(buf, offset + 0x04);
         
         aPlayerPed.setElementCount(nNumberOfPlayerPeds.getValue());
-        aPlayerPed.load(buf, offset + 0x08, SaveFileNew.Platform.PC);
+        aPlayerPed.load(buf, offset + 0x08, SaveFile.Platform.PC);
     }
     
     @Override

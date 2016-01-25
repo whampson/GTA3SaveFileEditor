@@ -1,7 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.newshit.struct;
 
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarByte;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarFloat;
@@ -62,7 +62,7 @@ public class BlockSimpleVars extends Block
     {
         szSaveName.load(buf, offset + 0x00);
         nCurrentLevel.load(buf, offset + 0x34);
-        vCameraPosition.load(buf, offset + 0x38, SaveFileNew.Platform.ANDROID);
+        vCameraPosition.load(buf, offset + 0x38, SaveFile.Platform.ANDROID);
         nGameMinuteLengthMillis.load(buf, offset + 0x44);
         nLastClockTick.load(buf, offset + 0x48);
         nGameHours.load(buf, offset + 0x4C);
@@ -76,7 +76,7 @@ public class BlockSimpleVars extends Block
         
         buf.seek(offset + 0xB0);
         theScripts.setSize(buf.readInt());
-        theScripts.load(buf, offset + 0xB4, SaveFileNew.Platform.ANDROID);
+        theScripts.load(buf, offset + 0xB4, SaveFile.Platform.ANDROID);
     }
     
     @Override
@@ -84,7 +84,7 @@ public class BlockSimpleVars extends Block
     {
         szSaveName.load(buf, offset + 0x00);
         nCurrentLevel.load(buf, offset + 0x34);
-        vCameraPosition.load(buf, offset + 0x38, SaveFileNew.Platform.IOS);
+        vCameraPosition.load(buf, offset + 0x38, SaveFile.Platform.IOS);
         nGameMinuteLengthMillis.load(buf, offset + 0x44);
         nLastClockTick.load(buf, offset + 0x48);
         nGameHours.load(buf, offset + 0x4C);
@@ -98,16 +98,16 @@ public class BlockSimpleVars extends Block
         
         buf.seek(offset + 0xB0);
         theScripts.setSize(buf.readInt());
-        theScripts.load(buf, offset + 0xB4, SaveFileNew.Platform.IOS);
+        theScripts.load(buf, offset + 0xB4, SaveFile.Platform.IOS);
     }
     
     @Override
     protected void loadPC(DataBuffer buf)
     {
         szSaveName.load(buf, offset + 0x00);
-        timestamp.load(buf, offset + 0x30, SaveFileNew.Platform.PC);
+        timestamp.load(buf, offset + 0x30, SaveFile.Platform.PC);
         nCurrentLevel.load(buf, offset + 0x44);
-        vCameraPosition.load(buf, offset + 0x48, SaveFileNew.Platform.PC);
+        vCameraPosition.load(buf, offset + 0x48, SaveFile.Platform.PC);
         nGameMinuteLengthMillis.load(buf, offset + 0x54);
         nLastClockTick.load(buf, offset + 0x58);
         nGameHours.load(buf, offset + 0x5C);
@@ -121,7 +121,7 @@ public class BlockSimpleVars extends Block
         
         buf.seek(offset + 0xBC);
         theScripts.setSize(buf.readInt());
-        theScripts.load(buf, offset + 0xC0, SaveFileNew.Platform.PC);
+        theScripts.load(buf, offset + 0xC0, SaveFile.Platform.PC);
     }
     
     @Override

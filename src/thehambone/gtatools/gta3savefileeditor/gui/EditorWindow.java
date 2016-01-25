@@ -2,13 +2,11 @@ package thehambone.gtatools.gta3savefileeditor.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -19,7 +17,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,18 +29,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import thehambone.gtatools.gta3savefileeditor.Main;
-import thehambone.gtatools.gta3savefileeditor.gui.component.VariableComponent;
-import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
-import thehambone.gtatools.gta3savefileeditor.gui.observe.Observable;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
-import thehambone.gtatools.gta3savefileeditor.gui.page.DebugPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.GangsPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.GaragesPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.GeneralPage;
@@ -48,16 +46,17 @@ import thehambone.gtatools.gta3savefileeditor.gui.page.OptionsPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.gui.page.PlayerPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.WelcomePage;
-import thehambone.gtatools.gta3savefileeditor.newshit.SaveFileNew;
+import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
+import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * The program's main window frame.
+ * <p>
+ * Created on Mar 24, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 24, 2015
  */
 public class EditorWindow extends JFrame implements Observer
 {
@@ -67,55 +66,41 @@ public class EditorWindow extends JFrame implements Observer
         new PlayerPage(),
         new GaragesPage(),
         new GangsPage(),
-        new OptionsPage(),
-        new DebugPage()
+        new OptionsPage()
     };
     
-    private JMenu slotLoadMenu;
-    private JMenu slotSaveMenu;
+    private JMenu loadSlotMenu;
+    private JMenu loadRecentMenu;
+    private JMenu saveSlotMenu;
     private JMenuItem saveMenuItem;
     private JMenuItem saveAsMenuItem;
     private JMenuItem closeFileMenuItem;
+    private JMenuItem refreshMenuItem;
     private JTabbedPane tabbedPane;
-    private JLabel statusLabel;
-    private boolean changesMade = false;
+    private JLabel statusMessageLabel;
+    private JLabel modificationStatusLabel;
+    private JLabel platformStatusLabel;
+    private boolean changesMade;
     
     public EditorWindow()
     {
-        initComponents();
+        initWindowListeners();
+        initMenuBar();
+        initTabbedPane();
+        initPanels();
         initObservers();
         refreshMenus();
         refreshPages();
         changesMade = false;
-        setStatus("Welcome to the GTA III Save File Editor!");
+        setStatusMessage("Welcome to the GTA III Save File Editor!");
     }
     
-    private void initComponents()
-    {
-        initWindowListeners();
-        initMenus();
-        initPanels();
-        
-        // TODO: move this
-        tabbedPane.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                Component c = tabbedPane.getSelectedComponent();
-                if (c == null) {
-                    return;
-                }
-                
-                Page p = (Page)c;
-                p.loadPage();
-                Logger.debug("Page loaded");
-            }
-        });
-    }
-    
+    /*
+     * Sets up the window close and window focus listeners for the frame.
+     */
     private void initWindowListeners()
     {
+        // Window close listener
         addWindowListener(new WindowAdapter()
         {
             @Override
@@ -125,115 +110,177 @@ public class EditorWindow extends JFrame implements Observer
             }
         });
         
+        // Window focus listener
         addWindowFocusListener(new WindowAdapter()
         {
             @Override
             public void windowGainedFocus(WindowEvent evt)
             {
+                // Refresh save slots when focus gained
                 refreshSlotMenus();
                 Logger.debug("Slots refreshed");
             }
         });
     }
     
-    private void initMenus()
+    /*
+     * Prepares the menu bar with all of its submenus.
+     */
+    private void initMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
         
+        initFileMenu(menuBar);
+        if (Main.isDebugModeEnabled()) {
+            initDebugMenu(menuBar);
+        }
+        initHelpMenu(menuBar);
+        
+        setJMenuBar(menuBar);
+    }
+    
+    /*
+     * Sets up the "File" menu with all of its submenus and menu item actions.
+     */
+    private void initFileMenu(JMenuBar menuBar)
+    {
+        // Menu item definitions
         JMenu fileMenu = new JMenu("File");
-        JMenuItem loadMenuItem = new JMenuItem("Load...");
-        slotLoadMenu = new JMenu("Load Slot");
-        saveMenuItem = new JMenuItem("Save");
+        
+        JMenuItem loadMenuItem = new JMenuItem("Load File...");
+        loadSlotMenu = new JMenu("Load Slot");
+        loadRecentMenu = new JMenu("Load Recent");
+        
+        saveMenuItem  = new JMenuItem("Save");
         saveAsMenuItem = new JMenuItem("Save As...");
-        slotSaveMenu = new JMenu("Save Slot");
+        saveSlotMenu = new JMenu("Save Slot");
+        
         closeFileMenuItem = new JMenuItem("Close File");
-        JMenuItem refreshSlotsMenuItem = new JMenuItem("Refresh Slots");
+        
+        refreshMenuItem = new JMenuItem("Refresh");
+        JMenuItem refreshSlotsMenuItem = new JMenuItem("Refresh Save Slots");
+        
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         
-        JMenu helpMenu = new JMenu("Help");
-        JMenuItem checkForUpdatesMenuItem = new JMenuItem("Check for Updates");
-        JMenuItem aboutMenuItem = new JMenuItem("About");
-        
-        JMenu debugMenu = new JMenu("Debug");
-        JMenuItem causeRuntimeExceptionMenuItem = new JMenuItem("Cause RuntimeException");
-        
+        // Add menu items to File menu
         fileMenu.add(loadMenuItem);
-        fileMenu.add(slotLoadMenu);
+        fileMenu.add(loadSlotMenu);
+        fileMenu.add(loadRecentMenu);
         fileMenu.add(new JPopupMenu.Separator());
         fileMenu.add(saveMenuItem);
         fileMenu.add(saveAsMenuItem);
-        fileMenu.add(slotSaveMenu);
+        fileMenu.add(saveSlotMenu);
         fileMenu.add(new JPopupMenu.Separator());
         fileMenu.add(closeFileMenuItem);
         fileMenu.add(new JPopupMenu.Separator());
+        fileMenu.add(refreshMenuItem);
         fileMenu.add(refreshSlotsMenuItem);
         fileMenu.add(new JPopupMenu.Separator());
         fileMenu.add(exitMenuItem);
         
-        helpMenu.add(checkForUpdatesMenuItem);
-        helpMenu.add(new JPopupMenu.Separator());
-        helpMenu.add(aboutMenuItem);
-        
-        debugMenu.add(causeRuntimeExceptionMenuItem);
-        
+        // Add menu to menu bar
         menuBar.add(fileMenu);
-        menuBar.add(helpMenu);
-        if (Main.isDebugModeEnabled()) {
-            menuBar.add(debugMenu);
-        }
         
-        setJMenuBar(menuBar);
+        // Define keyboard mnemonics and keystrokes
+        fileMenu.setMnemonic(KeyEvent.VK_F);
         
+        loadMenuItem.setMnemonic(KeyEvent.VK_L);
+        loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+        loadSlotMenu.setMnemonic(KeyEvent.VK_O);
+        loadRecentMenu.setMnemonic(KeyEvent.VK_E);
+        
+        saveMenuItem.setMnemonic(KeyEvent.VK_S);
+        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+        saveAsMenuItem.setMnemonic(KeyEvent.VK_A);
+        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S,
+                KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        saveSlotMenu.setMnemonic(KeyEvent.VK_V);
+        
+        closeFileMenuItem.setMnemonic(KeyEvent.VK_C);
+        closeFileMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
+        
+        refreshMenuItem.setMnemonic(KeyEvent.VK_R);
+        refreshMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+        refreshSlotsMenuItem.setMnemonic(KeyEvent.VK_F);
+        refreshSlotsMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_F5, KeyEvent.SHIFT_DOWN_MASK));
+        
+        exitMenuItem.setMnemonic(KeyEvent.VK_X);
+        
+        // Define "Load" action
         loadMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (SaveFileNew.isFileLoaded()) {
+                if (SaveFile.isFileLoaded()) {
                     if (!promptSaveChanges()) {
                         return;
                     }
                 }
-                File f = promptForFile("Load");
+                
+                File f = promptForFile("Load File");
                 if (f != null) {
                     loadFile(f);
                 }
             }
         });
+        
+        // Define "Save" action
         saveMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (!SaveFileNew.isFileLoaded()) {
+                if (!SaveFile.isFileLoaded()) {
                     return;
                 }
                 
-                // TODO: change this
-                File f = SaveFileNew.getCurrentSaveFile().getSourceFile();
-                saveFile(f);
+                try {
+                    SaveFile.getCurrentSaveFile().save();
+                } catch (IOException ex) {
+                    Logger.stackTrace(ex);
+                    // TODO: show message
+                }
             }
         });
+        
+        // Define "Save As" action
         saveAsMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (!SaveFileNew.isFileLoaded()) {
+                if (!SaveFile.isFileLoaded()) {
                     return;
                 }
-                File f = promptForFile("Save");
-                if (f != null) {
-                    saveFile(f);
+                
+                File f = promptForFile("Save As");
+                if (f == null) {
+                    return;
+                }
+                
+                try {
+                    SaveFile.getCurrentSaveFile().save(f);
+                } catch (IOException ex) {
+                    Logger.stackTrace(ex);
+                    // TODO: show message
                 }
             }
         });
+        
+        // Define "Close File" action
         closeFileMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (SaveFileNew.isFileLoaded()) {
+                if (SaveFile.isFileLoaded()) {
                     if (!promptSaveChanges()) {
                         return;
                     }
@@ -241,15 +288,44 @@ public class EditorWindow extends JFrame implements Observer
                 }
             }
         });
+        
+        // Define "Refresh" action
+        refreshMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if (!SaveFile.isFileLoaded() || !promptSaveChanges()) {
+                    return;
+                }
+                
+                try {
+                    SaveFile.load(SaveFile.getCurrentSaveFile().getSourceFile());
+                    changesMade = false;
+                    updateFrameTitle();
+                    // TODO: prompt save as
+                } catch (IOException ex) {
+                    Logger.stackTrace(ex);
+                    // TODO: message
+                }
+                
+                refreshPages();
+                setStatusMessage("Current file has been re-loaded.");
+            }
+        });
+        
+        // Define "Refresh Slots" action
         refreshSlotsMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-               refreshSlotMenus();
-                setStatus("Save slots refreshed.");
+                refreshSlotMenus();
+                setStatusMessage("Save slots have been refreshed.");
             }
         });
+        
+        // Define "Exit" action
         exitMenuItem.addActionListener(new ActionListener()
         {
             @Override
@@ -258,69 +334,182 @@ public class EditorWindow extends JFrame implements Observer
                 closeFrame();
             }
         });
+    }
+    
+    /*
+     * Sets up the "Debug" menu and defines its menu item actions. 
+     */
+    private void initDebugMenu(JMenuBar menuBar)
+    {
+        // Menu item definitions
+        JMenu debugMenu = new JMenu("Debug");
+        JMenuItem runtimeExceptionMenuItem
+                = new JMenuItem("Cause RuntimeException");
+        
+        // Add menu items to Debug menu
+        debugMenu.add(runtimeExceptionMenuItem);
+        
+        // Add menu to menu bar
+        menuBar.add(debugMenu);
+        
+        // Set keyboard mnemonics
+        debugMenu.setMnemonic(KeyEvent.VK_D);
+        runtimeExceptionMenuItem.setMnemonic(KeyEvent.VK_R);
+        
+        // Define "Cause RuntimeException" action
+        runtimeExceptionMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                throw new RuntimeException(
+                        "This is a fake exception for testing purposes.");
+            }
+        });
+    }
+    
+    /*
+     * Sets up the "Help" menu and defines its menu item actions. 
+     */
+    private void initHelpMenu(JMenuBar menuBar)
+    {
+        // Menu item definitions
+        JMenu helpMenu = new JMenu("Help");
+        
+        JMenuItem checkForUpdatesMenuItem = new JMenuItem("Check for Updates");
+        JMenuItem aboutMenuItem = new JMenuItem("About");
+        
+        // Add menu items to Help menu
+        helpMenu.add(checkForUpdatesMenuItem);
+        helpMenu.add(new JPopupMenu.Separator());
+        helpMenu.add(aboutMenuItem);
+        
+        // Add menu to menu bar
+        menuBar.add(helpMenu);
+        
+        // Set keyboard mnemonics and keystrokes
+        helpMenu.setMnemonic(KeyEvent.VK_H);
+        
+        checkForUpdatesMenuItem.setMnemonic(KeyEvent.VK_U);
+        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
+        aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        
+        // Define "Check for Updates" action
         checkForUpdatesMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                // Open update URL in default Internet browser
                 try {
-                    Desktop.getDesktop().browse(new URI(Main.PROGRAM_UPDATE_URL));
-                } catch (URISyntaxException | IOException ex) {
-                    Logger.error("Failed to open URI.");
+                    URI uri = new URI(Main.PROGRAM_UPDATE_URL);
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException | URISyntaxException ex) {
                     Logger.stackTrace(ex);
+                    // TODO: message
                 }
             }
         });
-        final Frame parent = this;
+        
+        // Define "About" action
+        final Frame parentFrame = this;
         aboutMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                AboutDialog ad = new AboutDialog(parent);
+                // Show "About" dialog
+                AboutDialog ad = new AboutDialog(parentFrame);
                 ad.pack();
-                ad.setLocationRelativeTo(parent);
+                ad.setLocationRelativeTo(parentFrame);
                 ad.setVisible(true);
             }
         });
-        causeRuntimeExceptionMenuItem.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                throw new RuntimeException("This a fake exception.");   // For testing
-            }
-        });
-        
-        loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
-        closeFileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
-        refreshSlotsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
-        aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
     }
     
+    /*
+     * Defines the tabbed pane and initializes the tab change listener.
+     */
+    private void initTabbedPane()
+    {
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        
+        tabbedPane.addChangeListener(new ChangeListener()
+        {
+            @Override
+            public void stateChanged(ChangeEvent e)
+            {
+                /* Reload pages when they are switched to to ensure each
+                   component is up to date */
+                
+                Component c = tabbedPane.getSelectedComponent();
+                if (c == null) {
+                    return;
+                }
+                
+                Page p = (Page)c;
+                p.loadPage();
+                Logger.debug("Page refreshed: " + p.getPageTitle());
+            }
+        });
+    }
+    
+    /*
+     * Sets up the main panel and status panel
+     */
     private void initPanels()
     {
         setLayout(new BorderLayout());
         
+        // Background panel
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
-        tabbedPane = new JTabbedPane();
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        add(mainPanel);
         
+        // Panel at bottom of window for program status
         JPanel statusPanel = new JPanel(new BorderLayout());
-        statusLabel = new JLabel("<status>");
-        statusPanel.add(statusLabel, BorderLayout.CENTER);
         
+        // Set up status labels
+        Dimension statusLabelSize = new Dimension(50, 14);
+        
+        statusMessageLabel = new JLabel();
+        
+        modificationStatusLabel = new JLabel();
+        modificationStatusLabel.setMinimumSize(statusLabelSize);
+        modificationStatusLabel.setMaximumSize(statusLabelSize);
+        modificationStatusLabel.setPreferredSize(statusLabelSize);
+        modificationStatusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        platformStatusLabel = new JLabel();
+        platformStatusLabel.setMinimumSize(statusLabelSize);
+        platformStatusLabel.setMaximumSize(statusLabelSize);
+        platformStatusLabel.setPreferredSize(statusLabelSize);
+        platformStatusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        // Place status labels on status panel
+        Box box = Box.createHorizontalBox();
+        box.add(Box.createHorizontalStrut(75));
+        box.add(Box.createHorizontalStrut(5));
+        box.add(new JSeparator(SwingConstants.VERTICAL));
+        box.add(Box.createHorizontalStrut(5));
+        box.add(modificationStatusLabel);
+        box.add(Box.createHorizontalStrut(5));
+        box.add(new JSeparator(SwingConstants.VERTICAL));
+        box.add(Box.createHorizontalStrut(5));
+        box.add(platformStatusLabel);
+        statusPanel.add(box, BorderLayout.EAST);
+        statusPanel.add(statusMessageLabel, BorderLayout.WEST);
+        
+        // Place tabbed pane and status panel on main panel
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(statusPanel, BorderLayout.SOUTH);
-        
-        add(mainPanel);
     }
     
+    /*
+     * Marks the frame as an observer to all pages.
+     */
     private void initObservers()
     {
         for (Page p : pages) {
@@ -328,6 +517,10 @@ public class EditorWindow extends JFrame implements Observer
         }
     }
     
+    /*
+     * Marks certain menu items enabled or disabled based on whether a file is
+     * loaded as well as refreshes the save slot menu items.
+     */
     private void refreshMenus()
     {
         SwingUtilities.invokeLater(new Runnable()
@@ -335,15 +528,20 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void run()
             {
-                saveMenuItem.setEnabled(SaveFileNew.isFileLoaded());
-                saveAsMenuItem.setEnabled(SaveFileNew.isFileLoaded());
-                slotSaveMenu.setEnabled(SaveFileNew.isFileLoaded());
-                closeFileMenuItem.setEnabled(SaveFileNew.isFileLoaded());
+                saveMenuItem.setEnabled(SaveFile.isFileLoaded());
+                saveAsMenuItem.setEnabled(SaveFile.isFileLoaded());
+                saveSlotMenu.setEnabled(SaveFile.isFileLoaded());
+                closeFileMenuItem.setEnabled(SaveFile.isFileLoaded());
+                refreshMenuItem.setEnabled(SaveFile.isFileLoaded());
             }
         });
+        
         refreshSlotMenus();
     }
     
+    /**
+     * Re-loads the save slot menu items.
+     */
     private void refreshSlotMenus()
     {
         SwingUtilities.invokeLater(new Runnable()
@@ -351,15 +549,20 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void run()
             {
-                slotLoadMenu.removeAll();
-                slotSaveMenu.removeAll();
+                // Remove all items
+                loadSlotMenu.removeAll();
+                saveSlotMenu.removeAll();
+                
+                // Generate new items by reading save dir
                 JMenuItem[] load = generateSlotMenuItems(SlotMenuItemAction.LOAD);
                 JMenuItem[] save = generateSlotMenuItems(SlotMenuItemAction.SAVE);
+                
+                // Populate menus with new items
                 for (JMenuItem item : load) {
-                    slotLoadMenu.add(item);
+                    loadSlotMenu.add(item);
                 }
                 for (JMenuItem item : save) {
-                    slotSaveMenu.add(item);
+                    saveSlotMenu.add(item);
                 }
             }
         });
@@ -369,68 +572,99 @@ public class EditorWindow extends JFrame implements Observer
     {
         PCSaveSlot[] slots = PCSaveSlot.getSaveSlots();
         JMenuItem[] slotMenuItems = new JMenuItem[slots.length];
+        
         for (int i = 0; i < slots.length; i++) {
+            // Get save slot
             final PCSaveSlot slot = slots[i];
+            
+            // Make new menu item
             JMenuItem slotMenuItem = new JMenuItem();
             slotMenuItems[i] = slotMenuItem;
+            
+            // Set menu item mnemonic key equal to the slot index
+            slotMenuItem.setMnemonic(KeyEvent.VK_1 + i);
+            
+            // Refresh the slot
             try {
                 slot.refresh();
             } catch (IOException ex) {
-                slotMenuItem.setText((i + 1) + ". <slot is corrupt>");
+                Logger.stackTrace(ex);
+                slotMenuItem.setText((i + 1) + ". (error reading file - check GTA3 save dir)");
+                slotMenuItem.setEnabled(false);
                 continue;
             }
-            if (slot.isEmpty()) {
-                slotMenuItem.setText((i + 1) + ". <slot is empty>");
+            
+            // Set menu item text and availability based on slot status
+            if (!slot.isUsable()) {
+                slotMenuItem.setText((i + 1) + ". (slot is not usable - check file)");
+                slotMenuItem.setEnabled(false);
+            } else if (slot.isEmpty()) {
+                slotMenuItem.setText((i + 1) + ". (slot is empty)");
+                slotMenuItem.setEnabled(false);
             } else {
-                slotMenuItem.setText((i + 1) + ". " + slot.getSaveTitle());
+                slotMenuItem.setText((i + 1) + ". " + slot.getSaveName());
             }
+            
+            // Set keystrokes based on menu item action
             if (itemAction == SlotMenuItemAction.LOAD) {
-                slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(49 + i, InputEvent.CTRL_DOWN_MASK));
-            } else {
-                slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(49 + i, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+                // CTRL + <slot_index>
+                slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                        KeyEvent.VK_1 + i, InputEvent.CTRL_DOWN_MASK));
+            } else if (itemAction == SlotMenuItemAction.SAVE) {
+                // CTRL + SHIFT + <slot_index>
+                slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                        KeyEvent.VK_1 + i,
+                        InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
             }
-            slotMenuItem.setEnabled(!slot.isEmpty() || itemAction != SlotMenuItemAction.LOAD);
+            
+            // Define menu item action
             final Frame dialogParent = this;
-            slotMenuItem.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
+            if (itemAction == SlotMenuItemAction.LOAD) {
+                slotMenuItem.addActionListener(new ActionListener()
                 {
-                    File f = slot.getSaveFile();
-                    switch (itemAction) {
-                        case LOAD:
-                            if (SaveFileNew.isFileLoaded()) {
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        File f = slot.getFile();
+                        if (SaveFile.isFileLoaded()) {
                                 if (!promptSaveChanges()) {
-                                    return;
-                                }
+                                return;
                             }
-                            loadFile(f);
-                            break;
-                        case SAVE:
-                            if (!SaveFileNew.isFileLoaded()) {
-                                break;
-                            }
-                            File currentlyLoadedFile = SaveFileNew.getCurrentSaveFile().getSourceFile();
-                            if (!currentlyLoadedFile.getAbsolutePath().equals(f.getAbsolutePath())
-                                    && f.exists()) {
-                                int option = JOptionPane.showOptionDialog(dialogParent,
-                                        GUIUtils.formatHTMLString("Are you sure you want to overwrite \"" + f.getName() + "\"?"),
-                                        "Overwrite Confirmation",
-                                        JOptionPane.YES_NO_OPTION,
-                                        JOptionPane.QUESTION_MESSAGE,
-                                        null,
-                                        null,
-                                        null);
-                                if (option != JOptionPane.YES_OPTION) {
-                                    break;
-                                }
-                            }
-                            saveFile(f);
-                            break;
+                        }
+                        loadFile(f);
                     }
-                }
-            });
+                });
+            } else if (itemAction == SlotMenuItemAction.SAVE) {
+                slotMenuItem.addActionListener(new ActionListener()
+                {
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        File f = slot.getFile();
+                        if (!SaveFile.isFileLoaded()) {
+                            return;
+                        }
+                        File currentlyLoadedFile = SaveFile.getCurrentSaveFile().getSourceFile();
+                        if (!currentlyLoadedFile.getAbsolutePath().equals(f.getAbsolutePath())
+                                && f.exists()) {
+                            int option = JOptionPane.showOptionDialog(dialogParent,
+                                    GUIUtils.formatHTMLString("Are you sure you want to overwrite \"" + f.getName() + "\"?"),
+                                    "Comfirm Overwrite",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null,
+                                    null,
+                                    null);
+                            if (option != JOptionPane.YES_OPTION) {
+                                return;
+                            }
+                        }
+                        saveFile(f);
+                    }
+                });
+            }
         }
+        
         return slotMenuItems;
     }
     
@@ -441,24 +675,23 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void run()
             {
+                List<Component> addedComponents = new ArrayList<>();
+                Component selectedComponent = tabbedPane.getSelectedComponent();
                 boolean addPage;
                 tabbedPane.removeAll();
                 for (Page p : pages) {
                     addPage = false;
-                    if (p instanceof DebugPage && !Main.isDebugModeEnabled()) {
-                        continue;
-                    }
                     switch (p.getVisibility()) {
                         case ALWAYS_VISIBLE:
                             addPage = true;
                             break;
                         case VISIBLE_WHEN_FILE_LOADED_ONLY:
-                            if (SaveFileNew.isFileLoaded()) {
+                            if (SaveFile.isFileLoaded()) {
                                 addPage = true;
                             }
                             break;
                         case VISIBLE_WHEN_FILE_NOT_LOADED_ONLY:
-                            if (!SaveFileNew.isFileLoaded()) {
+                            if (!SaveFile.isFileLoaded()) {
                                 addPage = true;
                             }
                             break;
@@ -466,17 +699,24 @@ public class EditorWindow extends JFrame implements Observer
                     if (addPage) {
                         p.loadPage();
                         tabbedPane.addTab(p.getPageTitle(), p);
-                        pack();
+                        addedComponents.add(p);
                     }
                 }
+                
+                if (selectedComponent != null && SaveFile.isFileLoaded()) {
+                    if (addedComponents.contains(selectedComponent)) {
+                        tabbedPane.setSelectedComponent(selectedComponent);
+                    }
+                }
+                
+                pack();
             }
         });
-        pack();
     }
     
     private void closeFrame()
     {   
-        if ((SaveFileNew.isFileLoaded() && promptSaveChanges()) || !SaveFileNew.isFileLoaded()) {
+        if ((SaveFile.isFileLoaded() && promptSaveChanges()) || !SaveFile.isFileLoaded()) {
             Logger.info("Closing user interface...");
             dispose();
         } else {
@@ -489,22 +729,27 @@ public class EditorWindow extends JFrame implements Observer
         StringBuilder titleBuilder = new StringBuilder();
         if (changesMade) {
             titleBuilder.append("*");
+            modificationStatusLabel.setText("Modified");
+            modificationStatusLabel.setToolTipText("The file has unsaved changes.");
+        } else {
+            modificationStatusLabel.setText("");
+            modificationStatusLabel.setToolTipText("");
         }
-        if (SaveFileNew.isFileLoaded()) {
-            titleBuilder.append(SaveFileNew.getCurrentSaveFile().getSourceFile()).append(" - ");
+        if (SaveFile.isFileLoaded()) {
+            titleBuilder.append(SaveFile.getCurrentSaveFile().getSourceFile()).append(" - ");
         }
         titleBuilder.append(String.format("%s %s", Main.PROGRAM_TITLE, Main.PROGRAM_VERSION));
         setTitle(titleBuilder.toString());
     }
     
-    private void setStatus(final String s)
+    private void setStatusMessage(final String s)
     {
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
             public void run()
             {
-                statusLabel.setText(s);
+                statusMessageLabel.setText(s);
             }
         });
     }
@@ -512,10 +757,10 @@ public class EditorWindow extends JFrame implements Observer
     private void closeFile()
     {
         Logger.info("Closing file...");
-        File f = SaveFileNew.getCurrentSaveFile().getSourceFile();
-        SaveFileNew.close();
+        File f = SaveFile.getCurrentSaveFile().getSourceFile();
+        SaveFile.close();
         Logger.info("Successfully closed file: %s\n", f);
-        setStatus(String.format("Closed file: %s", f));
+        setStatusMessage(String.format("Closed file: %s", f));
         refreshMenus();
         refreshPages();
         changesMade = false;
@@ -526,14 +771,19 @@ public class EditorWindow extends JFrame implements Observer
     {
         try {
             Logger.info("Loading file...");
-            SaveFileNew.load(f);
+            SaveFile.load(f);
             Logger.info("Successfully loaded file: %s\n", f);
-            setStatus(String.format("Loaded file: %s", f));
+            setStatusMessage(String.format("Loaded file: %s", f));
             JOptionPane.showMessageDialog(this, "File loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             refreshMenus();
             refreshPages();
             changesMade = false;
             updateFrameTitle();
+            SaveFile.Platform p = SaveFile.getCurrentSaveFile().getPlatform();
+            platformStatusLabel.setText(p.getFriendlyName());
+            platformStatusLabel.setToolTipText(String.format("This is %s %s save file.",
+                    p != SaveFile.Platform.PC && p != SaveFile.Platform.PS2 ? "an" : "a",
+                    p.getFriendlyName()));
         } catch (IOException ex) {
             String errMsg = "An error occured while loading the file.";
             Logger.error(errMsg);
@@ -551,10 +801,10 @@ public class EditorWindow extends JFrame implements Observer
     {
         try {
             Logger.info("Saving file...");
-            SaveFileNew.getCurrentSaveFile().save(f);
+            SaveFile.getCurrentSaveFile().save(f);
             changesMade = false;
             Logger.info("Successfully saved file: %s\n", f);
-            setStatus(String.format("Saved file: %s", f));
+            setStatusMessage(String.format("Saved file: %s", f));
             updateFrameTitle();
             refreshSlotMenus();
 //            pages[1].loadPage();
@@ -581,7 +831,7 @@ public class EditorWindow extends JFrame implements Observer
         }
         f.delete();
         Logger.info("Deleted file: %s\n", f);
-        setStatus(String.format("Deleted file: %s", f));
+        setStatusMessage(String.format("Deleted file: %s", f));
         refreshSlotMenus();
     }
     
@@ -591,7 +841,7 @@ public class EditorWindow extends JFrame implements Observer
         fileChooser.setDialogTitle(dialogText);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("GTA III-era Save Files", "b"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("GTA III-era Save Files (*.b)", "b"));
         int option = fileChooser.showDialog(this, dialogText);
         if (option != JFileChooser.APPROVE_OPTION) {
             return null;
@@ -621,7 +871,7 @@ public class EditorWindow extends JFrame implements Observer
                 null,
                 null);
         if (option == JOptionPane.YES_OPTION) {
-            File f = SaveFileNew.getCurrentSaveFile().getSourceFile();
+            File f = SaveFile.getCurrentSaveFile().getSourceFile();
             saveFile(f);
         }
         return option == JOptionPane.YES_OPTION || option == JOptionPane.NO_OPTION;
@@ -670,20 +920,6 @@ public class EditorWindow extends JFrame implements Observer
                 refreshSlotMenus();
                 break;
         }
-    }
-    
-    public List<VariableComponent> getAllVariableComponents(Container parent)
-    {
-        List<VariableComponent> comps = new ArrayList<>();
-        for (Component c : parent.getComponents()) {
-            if (c instanceof Container) {
-                comps.addAll(getAllVariableComponents((Container)c));
-            }
-            if (c instanceof VariableComponent) {
-                comps.add((VariableComponent)c);
-            }
-        }
-        return comps;
     }
     
     private static enum SlotMenuItemAction
