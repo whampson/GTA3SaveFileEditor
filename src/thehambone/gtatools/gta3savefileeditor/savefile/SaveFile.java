@@ -364,6 +364,8 @@ public class SaveFile
         } else if (scrOffset == 0xB8
                 && buf.readInt(0x04) == unknownConstant) {
             p = Platform.PS2;
+        } else {
+            throw new IOException("invalid save file");
         }
         
         // Determine platform by size of block 1.
@@ -383,11 +385,7 @@ public class SaveFile
         }
         
         if (p == null) {
-            // TODO: rethink
-            throw new IOException("unable to detect platform origin");
-        } else {
-            // TODO: move this
-//            Logger.debug("Detected platform: " + p);
+            throw new IOException("invalid save file");
         }
         
         return p;
