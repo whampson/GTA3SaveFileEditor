@@ -518,6 +518,16 @@ public class EditorWindow extends JFrame implements Observer
      */
     private void refreshMenus()
     {
+        final boolean isFileLoaded = SaveFile.isFileLoaded();
+        final boolean isPC;
+        
+        if (isFileLoaded) {
+            SaveFile.Platform p = SaveFile.getCurrentSaveFile().getPlatform();
+            isPC = p == SaveFile.Platform.PC;
+        } else {
+            isPC = false;
+        }
+        
         /* Must be run in an "invokeLater()" thread since the GUI is updated and
            the method can be invoked at any time during the program's life */
         SwingUtilities.invokeLater(new Runnable()
@@ -525,11 +535,11 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void run()
             {
-                saveMenuItem.setEnabled(SaveFile.isFileLoaded());
-                saveAsMenuItem.setEnabled(SaveFile.isFileLoaded());
-                saveSlotMenu.setEnabled(SaveFile.isFileLoaded());
-                closeFileMenuItem.setEnabled(SaveFile.isFileLoaded());
-                refreshMenuItem.setEnabled(SaveFile.isFileLoaded());
+                saveMenuItem.setEnabled(isFileLoaded);
+                saveAsMenuItem.setEnabled(isFileLoaded);
+                saveSlotMenu.setEnabled(isFileLoaded && isPC);
+                closeFileMenuItem.setEnabled(isFileLoaded);
+                refreshMenuItem.setEnabled(isFileLoaded);
             }
         });
         
