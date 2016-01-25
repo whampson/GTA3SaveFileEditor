@@ -1,6 +1,5 @@
 package thehambone.gtatools.gta3savefileeditor.gui;
 
-import com.sun.scenario.Settings;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -18,7 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
@@ -39,6 +37,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import thehambone.gtatools.gta3savefileeditor.Main;
+import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
 import thehambone.gtatools.gta3savefileeditor.gui.page.GangsPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.GaragesPage;
@@ -48,7 +47,6 @@ import thehambone.gtatools.gta3savefileeditor.gui.page.Page;
 import thehambone.gtatools.gta3savefileeditor.gui.page.PlayerPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.WelcomePage;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
-import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -228,7 +226,7 @@ public class EditorWindow extends JFrame implements Observer
                     }
                 }
                 
-                File f = promptForFile("Load File", "Load");
+                File f = promptForFile("Load File", "Open");
                 if (f == null) {
                     return;
                 }
@@ -1026,8 +1024,12 @@ public class EditorWindow extends JFrame implements Observer
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
         
-//        File parentDir = Settings.get(Settings.KEY_LAST_SELECTED_FILE_PARENT_DIR);
-//        fileChooser.setSelectedFile(parentDir);
+        String parentDirPath
+                = Settings.get(Settings.KEY_LAST_FILE_SELECTED_PARENT_DIR);
+        
+        if (parentDirPath != null) {
+            fileChooser.setSelectedFile(new File(parentDirPath));
+        }
         
         fileChooser.setFileFilter(new FileNameExtensionFilter(
                 "GTA III-era Save Files (*.b)", "b"));
@@ -1037,7 +1039,11 @@ public class EditorWindow extends JFrame implements Observer
             return null;
         }
         
-        return fileChooser.getSelectedFile();
+        File f = fileChooser.getSelectedFile();
+        
+        Settings.set(Settings.KEY_LAST_FILE_SELECTED_PARENT_DIR,f.getAbsolutePath());
+        
+        return f;
     }
     
     /**
