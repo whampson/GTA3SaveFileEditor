@@ -26,7 +26,7 @@ public class Settings
     private static final Properties DEFAULTS = new Properties();
     static {
         DEFAULTS.put(KEY_GTA3_USER_FILES, Game.getGameUserDirectoryPath());
-        DEFAULTS.put(KEY_LAST_FILE_SELECTED_PARENT_DIR, null);
+        DEFAULTS.put(KEY_LAST_FILE_SELECTED_PARENT_DIR, "");
         DEFAULTS.put("make.backups", "true");
         DEFAULTS.put("update.timestamp", "true");
     }
