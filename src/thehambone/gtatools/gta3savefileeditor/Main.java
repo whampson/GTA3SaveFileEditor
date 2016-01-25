@@ -116,6 +116,7 @@ public final class Main
          * -Check if file changed on focus gained; prompt to reload file or
          *  ignore
          * -Tweak about page text
+         * -Drag files into editor to edit
          * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
          * -Documentation
