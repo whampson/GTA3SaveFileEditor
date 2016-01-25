@@ -946,15 +946,22 @@ public class EditorWindow extends JFrame implements Observer
         updatePlatformStatus();
     }
     
+    /**
+     * Saves the current file.
+     */
     private void saveFile()
     {
         saveFile(SaveFile.getCurrentSaveFile().getSourceFile());
     }
     
+    /**
+     * Saves the current file to the specified destination file.
+     */
     private void saveFile(File f)
     {
         Logger.info("Saving file...");
         
+        // Save the file
         try {
             SaveFile.getCurrentSaveFile().save(f);
         } catch (IOException ex) {
@@ -968,6 +975,7 @@ public class EditorWindow extends JFrame implements Observer
         String message = "Saved file: " + f;
         Logger.info(message);
         
+        // Update GUI
         setStatusMessage(message);
         setChangesMade(false);
         refreshSlotMenus();
