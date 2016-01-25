@@ -1,5 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.gui;
 
+import com.sun.scenario.Settings;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -227,7 +228,7 @@ public class EditorWindow extends JFrame implements Observer
                     }
                 }
                 
-                File f = promptForFile("Load File");
+                File f = promptForFile("Load File", "Load");
                 if (f == null) {
                     return;
                 }
@@ -260,7 +261,7 @@ public class EditorWindow extends JFrame implements Observer
                     return;
                 }
                 
-                File f = promptForFile("Save As");
+                File f = promptForFile("Save As", "Save");
                 if (f == null) {
                     return;
                 }
@@ -981,8 +982,14 @@ public class EditorWindow extends JFrame implements Observer
         refreshSlotMenus();
     }
     
+    /**
+     * Asks the user if they want to delete the specified file, then deletes the
+     * file if the user confirms.
+     * 
+     * @param f the file to delete
+     */
     private void deleteFile(File f)
-{
+    {
         int option = JOptionPane.showOptionDialog(this,
                 "Are you sure you want to delete \"" + f.getName() + "\"?",
                 "Confirm File Deletion",
@@ -991,26 +998,45 @@ public class EditorWindow extends JFrame implements Observer
                 null,
                 null,
                 null);
+        
         if (option != JOptionPane.YES_OPTION || !f.exists()) {
             return;
         }
+        
         f.delete();
-        Logger.info("Deleted file: %s\n", f);
-        setStatusMessage(String.format("Deleted file: %s", f));
+        
+        String message = "Deleted file: " + f;
+        Logger.info(message);
+        
+        setStatusMessage(message);
         refreshSlotMenus();
     }
     
-    private File promptForFile(String dialogText)
+    /**
+     * Prompts the user to choose a file from the filesystem.
+     * 
+     * @param title the FileChooser dialog title
+     * @param approveButtonText the text for the approve button
+     * @return the selected file, null if the the user cancelled
+     */
+    private File promptForFile(String title, String approveButtonText)
     {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle(dialogText);
+        fileChooser.setDialogTitle(title);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("GTA III-era Save Files (*.b)", "b"));
-        int option = fileChooser.showDialog(this, dialogText);
+        
+//        File parentDir = Settings.get(Settings.KEY_LAST_SELECTED_FILE_PARENT_DIR);
+//        fileChooser.setSelectedFile(parentDir);
+        
+        fileChooser.setFileFilter(new FileNameExtensionFilter(
+                "GTA III-era Save Files (*.b)", "b"));
+        
+        int option = fileChooser.showDialog(this, approveButtonText);
         if (option != JFileChooser.APPROVE_OPTION) {
             return null;
         }
+        
         return fileChooser.getSelectedFile();
     }
     
