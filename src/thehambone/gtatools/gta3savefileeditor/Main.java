@@ -120,6 +120,7 @@ public final class Main
          * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
          * -Documentation
+         * -Move/cleanup GUIUtils class
          * -Tooltip text
          * -New icon
          */
