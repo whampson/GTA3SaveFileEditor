@@ -106,15 +106,16 @@ public final class Main
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related? (IDE only?)
          * -BUG: Mac OS X crash when using "Save Slot" feature
+         * -BUG: Save title reset to previous value when switched back to
+         *  General page (Mobile only)
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Set combobox index to -1 when value out of range
-         * -Remove Ctrl+Q shortcut
-         * -Update status bar with platform info and notifications like "All
-         *  changes saved".
          * -Bomb armed checkbox
          * -WElcome page browse button page event
          * -Check if file changed on focus gained; prompt to reload file or
          *  ignore
+         * -"Save Changes" prompt mnemonic chars
+         * -Reset "dataChanged" flag in all variables when file saved
          * -Tweak about page text
          * -Drag files into editor to edit
          * -Recent files list (up to 10); File > Load Recent
