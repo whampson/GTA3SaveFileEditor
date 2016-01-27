@@ -124,7 +124,7 @@ public abstract class VariableTextField<T extends Variable>
                             setText("0");
                         }
                         if (!isInputValid()) {
-                            GUIUtils.showErrorMessage(getTopLevelAncestor(),
+                            GUIUtils.showErrorMessageBox(getTopLevelAncestor(),
                                     "Invalid input - " + getText(),
                                     "Invalid Input");
                             selectAll();

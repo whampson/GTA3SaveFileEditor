@@ -1,5 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -121,7 +122,6 @@ public final class Main
          * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
          * -Documentation
-         * -Move/cleanup GUIUtils class
          * -Tooltip text
          * -New icon
          */
@@ -375,7 +375,7 @@ public final class Main
             Logger.warn(errMsg + " [%s: %s]\n",
                     ex.getClass().getName(), ex.getMessage());
             Logger.stackTrace(ex);
-            GUIUtils.showErrorMessage(null, errMsg, "IO Error", ex);
+            GUIUtils.showErrorMessageBox(null, errMsg, "IO Error", ex);
             Settings.loadDefaults();
         }
     }
@@ -394,7 +394,7 @@ public final class Main
             Logger.error(errMsg + " [%s: %s]\n",
                     ex.getClass().getName(), ex.getMessage());
             Logger.stackTrace(ex.fillInStackTrace());
-            GUIUtils.showErrorMessage(null, errMsg, "IO Error", ex);
+            GUIUtils.showErrorMessageBox(null, errMsg, "IO Error", ex);
         }
     }
     

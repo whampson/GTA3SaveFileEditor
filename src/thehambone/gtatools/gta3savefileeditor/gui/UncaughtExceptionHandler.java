@@ -49,7 +49,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         }
         Logger.fatal(errorMessage);
         Logger.stackTrace(e);
-        GUIUtils.showErrorMessage(null, errorMessage, "Critical Error", 300, e);
+        GUIUtils.showErrorMessageBox(null, errorMessage, "Critical Error", e, 300, true);
         System.exit(1);     // Exit codes don't have any meaning yet, so a
                             // simple nonzero exit code will do.
     }

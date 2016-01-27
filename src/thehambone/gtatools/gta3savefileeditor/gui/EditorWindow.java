@@ -936,7 +936,7 @@ public class EditorWindow extends JFrame implements Observer
         
         String message = "Loaded file: " + f;
         Logger.info(message);
-        GUIUtils.showInformationMessage(this,
+        GUIUtils.showInformationMessageBox(this,
                 "File loaded successfully!", "Success");
         
         // Update GUI
@@ -1091,7 +1091,7 @@ public class EditorWindow extends JFrame implements Observer
     }
     
     private void showErrorMessage(String message, String title, Throwable t) {
-        GUIUtils.showErrorMessage(this, message, title, t);
+        GUIUtils.showErrorMessageBox(this, message, title, t);
     }
 
     @Override

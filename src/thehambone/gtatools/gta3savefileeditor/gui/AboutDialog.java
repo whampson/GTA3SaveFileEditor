@@ -92,7 +92,7 @@ public class AboutDialog extends JDialog
         buildDate1.setBorder(new EmptyBorder(1, 0, 1, 2));
         JLabel buildDate2 = new JLabel(new SimpleDateFormat("MMMM dd, yyyy").format(Main.getBuildDate()));
         buildDate2.setBorder(new EmptyBorder(1, 2, 1, 1));
-        JLabel aboutTextLabel = new JLabel(GUIUtils.formatHTMLString(ABOUT_STRING, 170, true));
+        JLabel aboutTextLabel = new JLabel(GUIUtils.formatHTMLString(ABOUT_STRING, 170, true, null));
         aboutTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
         aboutTextLabel.setBorder(new EmptyBorder(1, 0, 1, 0));
         JLabel bugsLabel1 = new JLabel("Bug reports go to:");
