@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
@@ -1011,7 +1012,8 @@ public class EditorWindow extends JFrame implements Observer
     }
     
     /**
-     * Prompts the user to choose a file from the filesystem.
+     * Prompts the user to choose a file from the filesystem. The parent
+     * directory of the file chosen will be stored in the program configuration.
      * 
      * @param title the FileChooser dialog title
      * @param approveButtonText the text for the approve button
@@ -1041,37 +1043,46 @@ public class EditorWindow extends JFrame implements Observer
         
         File f = fileChooser.getSelectedFile();
         
-        Settings.set(Settings.KEY_LAST_FILE_SELECTED_PARENT_DIR,f.getAbsolutePath());
+        Settings.set(Settings.KEY_LAST_FILE_SELECTED_PARENT_DIR,
+                f.getAbsolutePath());
         
         return f;
     }
     
     /**
-     * Asks the user if they want to save the changes made to the file. If the
-     * user selects "yes", the file will be saved.
+     * Asks the user if they want to save the changes made to the file, but only
+     * if changes have been made. If the user selects "Yes", the file will be
+     * saved.
      * 
-     * @return A boolean value indicating whether or not the calling process
-     *         should continue. True if "yes" or "no" selected, false otherwise.
+     * @return a boolean value indicating whether or not the calling process
+     *         should continue; true if "yes" or "no" selected, false otherwise
      */
     private boolean promptSaveChanges()
     {
-        if (!changesMade)
-        {
+        if (!changesMade) {
             return true;
         }
+        
+        // Prompt user to save changes
         int option = JOptionPane.showOptionDialog(this,
-                GUIUtils.formatHTMLString("Do you want to save the changes made to this file?"),
+                GUIUtils.formatHTMLString("Do you want to save the changes "
+                        + "made to this file?"),
                 "Save Changes?",
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
                 null);
+        
+        // Save changes if user approves
         if (option == JOptionPane.YES_OPTION) {
             File f = SaveFile.getCurrentSaveFile().getSourceFile();
             saveFile(f);
         }
-        return option == JOptionPane.YES_OPTION || option == JOptionPane.NO_OPTION;
+        
+        // Return true if "Yes" or "No" selected
+        return option == JOptionPane.YES_OPTION
+                || option == JOptionPane.NO_OPTION;
     }
     
     private void showErrorMessage(String s) {
