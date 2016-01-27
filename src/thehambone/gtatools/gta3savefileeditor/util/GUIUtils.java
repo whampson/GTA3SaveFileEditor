@@ -1,4 +1,4 @@
-package thehambone.gtatools.gta3savefileeditor.gui;
+package thehambone.gtatools.gta3savefileeditor.util;
 
 import java.awt.Component;
 import javax.swing.JOptionPane;

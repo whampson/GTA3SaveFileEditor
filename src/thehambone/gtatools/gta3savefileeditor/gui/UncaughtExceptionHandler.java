@@ -1,5 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.gui;
 
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;

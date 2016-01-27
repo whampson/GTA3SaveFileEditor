@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.observe.Observer;
 import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.Variable;
 

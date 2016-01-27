@@ -1,5 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.gui;
 
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;

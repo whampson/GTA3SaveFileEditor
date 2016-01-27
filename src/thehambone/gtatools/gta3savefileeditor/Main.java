@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import thehambone.gtatools.gta3savefileeditor.gui.EditorWindow;
-import thehambone.gtatools.gta3savefileeditor.gui.GUIUtils;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
