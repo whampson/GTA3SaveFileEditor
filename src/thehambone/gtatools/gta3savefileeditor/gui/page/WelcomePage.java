@@ -1,28 +1,19 @@
 package thehambone.gtatools.gta3savefileeditor.gui.page;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.gui.component.cellrenderer.SaveSlotCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -111,7 +102,8 @@ public class WelcomePage extends Page
         }
         notifyObservers(Event.FILE_DELETE, f);
         if (!f.exists()) {
-            JOptionPane.showMessageDialog(this, "File deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            GUIUtils.showInformationMessageBox(
+                    this, "File deleted successfully!", "Success");
         }
         populateSlotList();
     }

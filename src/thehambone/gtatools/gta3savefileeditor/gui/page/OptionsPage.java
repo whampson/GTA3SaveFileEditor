@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -34,7 +35,8 @@ public class OptionsPage extends Page
         setTextAreaFocusListener("gta3.save.dir", saveFileFolderTextField);
     }
     
-    private void setTextAreaFocusListener(final String propertyKey, final JTextField textField)
+    private void setTextAreaFocusListener(final String propertyKey,
+            final JTextField textField)
     {
         final JPanel parent = this;
         FocusListener listener = new FocusListener()
@@ -55,7 +57,8 @@ public class OptionsPage extends Page
                     if (textField.getText().matches(WIN32_FILE_PATH_REGEX)) {
                         Settings.set(propertyKey, textField.getText());
                     } else {
-                        JOptionPane.showMessageDialog(parent, "Invalid path!", "Invalid Path", JOptionPane.ERROR_MESSAGE);
+                        GUIUtils.showInformationMessageBox(
+                                parent, "Invalid path!", "Invalid Path");
                         textField.selectAll();
                         textField.requestFocus();
                     }
