@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
@@ -49,6 +50,7 @@ import thehambone.gtatools.gta3savefileeditor.gui.page.PlayerPage;
 import thehambone.gtatools.gta3savefileeditor.gui.page.WelcomePage;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
+import thehambone.gtatools.gta3savefileeditor.util.FixedLengthQueue;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -69,6 +71,7 @@ public class EditorWindow extends JFrame implements Observer
         new OptionsPage()
     };
     
+    private FixedLengthQueue<String> recentFiles;
     private JMenu loadSlotMenu;
     private JMenu loadRecentMenu;
     private JMenu saveSlotMenu;
@@ -89,6 +92,7 @@ public class EditorWindow extends JFrame implements Observer
     {
         initWindowListeners();
         initMenuBar();
+        initRecentFilesList();
         initTabbedPane();
         initPanels();
         initObservers();
@@ -423,6 +427,27 @@ public class EditorWindow extends JFrame implements Observer
     }
     
     /**
+     * Populates the recent files queue from the paths stored in the settings
+     * file.
+     */
+    private void initRecentFilesList()
+    {
+        recentFiles = new FixedLengthQueue<>(10);
+        
+        for (int i = 0; i < 10; i++) {
+            String key = Settings.KEY_RECENT_FILES_FORMAT.replace('#',
+                    Character.forDigit(i, 10));
+            String path = Settings.get(key);
+            
+            if (path == null) {
+                continue;
+            }
+            
+            recentFiles.insert(path);
+        }
+    }
+    
+    /**
      * Defines the tabbed pane and initializes the tab change listener.
      */
     private void initTabbedPane()
@@ -544,6 +569,7 @@ public class EditorWindow extends JFrame implements Observer
         });
         
         refreshSlotMenus();
+        refreshRecentFilesMenu();
     }
     
     /**
@@ -577,6 +603,57 @@ public class EditorWindow extends JFrame implements Observer
                 }
             }
         });
+    }
+    
+    /**
+     * Re-loads the recent files menu.
+     */
+    public void refreshRecentFilesMenu()
+    {
+        loadRecentMenu.removeAll();
+        
+        if (recentFiles.isEmpty()) {
+            JMenuItem menuItem = new JMenuItem("(no recent files)");
+            menuItem.setEnabled(false);
+            loadRecentMenu.add(menuItem);
+            return;
+        }
+        
+        final JFrame parentFrame = this;
+        
+        int numItems = 0;
+        for (final String path : recentFiles) {
+            String menuText = (++numItems) + ": " + path;
+            JMenuItem menuItem = new JMenuItem(menuText);
+            loadRecentMenu.add(menuItem);
+            
+            menuItem.setMnemonic(KeyEvent.VK_0 + numItems);
+            
+            if (numItems == 1) {
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+                        KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+            }
+            
+            menuItem.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    File f = new File(path);
+                    if (f.exists()) {
+                        if (SaveFile.isFileLoaded()) {
+                            if (!promptSaveChanges()) {
+                                return;
+                            }
+                        }
+                        loadFile(f);
+                    } else {
+                        GUIUtils.showErrorMessageBox(parentFrame,
+                                "File not found - " + f, "File Not Found");
+                    }
+                }
+            });
+        }
     }
     
     /**
@@ -646,7 +723,7 @@ public class EditorWindow extends JFrame implements Observer
                     {
                         File f = slot.getFile();
                         if (SaveFile.isFileLoaded()) {
-                                if (!promptSaveChanges()) {
+                            if (!promptSaveChanges()) {
                                 return;
                             }
                         }
@@ -932,6 +1009,8 @@ public class EditorWindow extends JFrame implements Observer
             showErrorMessage(errMsg, "Error Loading File", ex);
             return;
         }
+        
+        recentFiles.insert(f.getAbsolutePath());
         
         String message = "Loaded file: " + f;
         Logger.info(message);
