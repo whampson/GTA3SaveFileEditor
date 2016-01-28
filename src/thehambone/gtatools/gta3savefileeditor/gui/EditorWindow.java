@@ -18,7 +18,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
@@ -1086,10 +1085,14 @@ public class EditorWindow extends JFrame implements Observer
                 || option == JOptionPane.NO_OPTION;
     }
     
-    private void showErrorMessage(String s) {
-        showErrorMessage(s, "Error", null);
-    }
-    
+    /**
+     * Displays an error dialog box.
+     * 
+     * @param message the message to be shown on the dialog
+     * @param title the title of the dialog
+     * @param t (optional) the cause of the error, info about the Throwable
+     *          object will be displayed on the dialog
+     */
     private void showErrorMessage(String message, String title, Throwable t) {
         GUIUtils.showErrorMessageBox(this, message, title, t);
     }
@@ -1097,6 +1100,10 @@ public class EditorWindow extends JFrame implements Observer
     @Override
     public void update(Object message, Object... args)
     {
+        /*
+         * Handles page events.
+         */
+        
         if (!(message instanceof Page.Event)) {
             return;
         }
@@ -1112,18 +1119,14 @@ public class EditorWindow extends JFrame implements Observer
                 }
                 break;
             case FILE_LOAD:
-                File fileToLoad = (File)args[0];    // TODO: unsafe!!
-                if (fileToLoad == null) {
-                    return;
+                if (args[0] instanceof File && args[0] != null) {
+                    loadFile((File)args[0]);
                 }
-                loadFile(fileToLoad);
                 break;
             case FILE_DELETE:
-                File fileToDelete = (File)args[0];  // TODO: unsafe!!
-                if (fileToDelete == null) {
-                    return;
+                if (args[0] instanceof File && args[0] != null) {
+                    deleteFile((File)args[0]);
                 }
-                deleteFile(fileToDelete);
                 break;
             case REFRESH_SLOTS:
                 refreshSlotMenus();
@@ -1131,6 +1134,9 @@ public class EditorWindow extends JFrame implements Observer
         }
     }
     
+    /**
+     * Constants describing the possible actions for slot menu items.
+     */
     private static enum SlotMenuItemAction
     {
         LOAD, SAVE;
