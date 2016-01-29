@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import thehambone.gtatools.gta3savefileeditor.game.Game;
 import thehambone.gtatools.gta3savefileeditor.util.FixedLengthQueue;
 
@@ -199,7 +201,16 @@ public class Settings
      */
     public static void save() throws IOException
     {
-        Properties p = new Properties();
+        // Create a Properties object that returns keys in alphabetical order
+        Properties p = new Properties()
+        {
+            @Override
+            public synchronized Enumeration<Object> keys()
+            {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+        
         p.putAll(CURRENT_CONFIG);
         
         String comment = String.format("%s %s Configuration",
