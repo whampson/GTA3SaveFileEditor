@@ -21,7 +21,6 @@ public abstract class Variable<T> implements DataStructure
 {
     protected int size;
     protected int offset;
-    protected int crc;
     protected boolean isLoaded;
     protected DataBuffer buf;
     protected SaveFile.Platform platform;
@@ -40,7 +39,6 @@ public abstract class Variable<T> implements DataStructure
         
         this.size = size;
         offset = -1;
-        crc = 0;
         isLoaded = false;
         buf = null;
     }
@@ -72,30 +70,6 @@ public abstract class Variable<T> implements DataStructure
     public boolean hasValue()
     {
         return isAccessible();
-    }
-    
-    /**
-     * Checks whether the data has changed since it was first loaded.
-     * <p>
-     * This flag can be reset by calling {@link #resetDataChangedFlag()}.
-     * 
-     * @return {@code true} if the data has changed, {@code false} otherwise
-     */
-    public boolean dataChanged()
-    {
-        // Check if stored CRC is the same as the CRC of the current data
-        return crc != checksum();
-    }
-    
-    /**
-     * Marks the current data as original. {@link #dataChanged()} will return
-     * {@code false} until new data is written using
-     * {@link #setValue(java.lang.Object)}.
-     */
-    public void resetDataChangedFlag()
-    {
-        // Update the stored CRC to match the CRC of the current data
-        crc = checksum();
     }
     
     /**
@@ -179,7 +153,6 @@ public abstract class Variable<T> implements DataStructure
         this.offset = offset;
         this.platform = platform;
         isLoaded = true;
-        resetDataChangedFlag();
     }
 
     @Override
