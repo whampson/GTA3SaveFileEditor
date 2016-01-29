@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
@@ -92,7 +92,7 @@ public class EditorWindow extends JFrame implements Observer
     {
         initWindowListeners();
         initMenuBar();
-        initRecentFilesList();
+        loadRecentFilesList();
         initTabbedPane();
         initPanels();
         initObservers();
@@ -225,18 +225,7 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (SaveFile.isFileLoaded()) {
-                    if (!promptSaveChanges()) {
-                        return;
-                    }
-                }
-                
-                File f = promptForFile("Load File", "Open");
-                if (f == null) {
-                    return;
-                }
-                
-                loadFile(f);
+                loadFile();
             }
         });
         
@@ -279,12 +268,7 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (SaveFile.isFileLoaded()) {
-                    if (!promptSaveChanges()) {
-                        return;
-                    }
-                    closeFile();
-                }
+                closeFile();
             }
         });
         
@@ -430,21 +414,9 @@ public class EditorWindow extends JFrame implements Observer
      * Populates the recent files queue from the paths stored in the settings
      * file.
      */
-    private void initRecentFilesList()
+    private void loadRecentFilesList()
     {
-        recentFiles = new FixedLengthQueue<>(10);
-        
-        for (int i = 0; i < 10; i++) {
-            String key = Settings.KEY_RECENT_FILES_FORMAT.replace('#',
-                    Character.forDigit(i, 10));
-            String path = Settings.get(key);
-            
-            if (path == null) {
-                continue;
-            }
-            
-            recentFiles.insert(path);
-        }
+        recentFiles = Settings.getRecentFiles();
     }
     
     /**
@@ -622,18 +594,21 @@ public class EditorWindow extends JFrame implements Observer
         final JFrame parentFrame = this;
         
         int numItems = 0;
-        for (final String path : recentFiles) {
+        Iterator<String> it;
+        for (it = recentFiles.reverseOrderIterator(); it.hasNext();) {
+            final String path = it.next();
             String menuText = (++numItems) + ": " + path;
+            
             JMenuItem menuItem = new JMenuItem(menuText);
             loadRecentMenu.add(menuItem);
             
-            menuItem.setMnemonic(KeyEvent.VK_0 + numItems);
-            
+            // Add CTRL+SHIFT+R keystroke to first item in menu
             if (numItems == 1) {
                 menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                         KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
             }
             
+            // Define menu item action
             menuItem.addActionListener(new ActionListener()
             {
                 @Override
@@ -641,11 +616,6 @@ public class EditorWindow extends JFrame implements Observer
                 {
                     File f = new File(path);
                     if (f.exists()) {
-                        if (SaveFile.isFileLoaded()) {
-                            if (!promptSaveChanges()) {
-                                return;
-                            }
-                        }
                         loadFile(f);
                     } else {
                         GUIUtils.showErrorMessageBox(parentFrame,
@@ -722,11 +692,6 @@ public class EditorWindow extends JFrame implements Observer
                     public void actionPerformed(ActionEvent e)
                     {
                         File f = slot.getFile();
-                        if (SaveFile.isFileLoaded()) {
-                            if (!promptSaveChanges()) {
-                                return;
-                            }
-                        }
                         loadFile(f);
                     }
                 });
@@ -832,10 +797,11 @@ public class EditorWindow extends JFrame implements Observer
      */
     private void closeFrame()
     {   
-        if ((SaveFile.isFileLoaded() && promptSaveChanges())
-                || !SaveFile.isFileLoaded()) {
+        if (closeFile()) {
             Logger.info("Closing user interface...");
-            dispose();
+            
+            Logger.debug("Exiting JVM with exit status 0...");
+            System.exit(0);
         }
     }
     
@@ -951,28 +917,66 @@ public class EditorWindow extends JFrame implements Observer
     
     /**
      * Closes the current file and closes all tabs related to file editing.
+     * 
+     * @return true if the current file was closed or if no file was loaded,
+     *         false if the current file was not closed
      */
-    private void closeFile()
+    private boolean closeFile()
     {
+        if (SaveFile.isFileLoaded()) {
+            // Ask user to save changes, end if user hits "Cancel"
+            if (!promptSaveChanges()) {
+                return false;
+            }
+        } else {
+            // End if no file is loaded
+            return true;
+        }
+        
+        // Close the file
         File f = SaveFile.getCurrentSaveFile().getSourceFile();
         SaveFile.close();
         
         String message = "Closed file: " + f;
         Logger.info(message);
         
+        Settings.storeRecentFiles(recentFiles);
+        
+        // Update GUI
         setStatusMessage(message);
         refreshMenus();
         refreshPages();
         setChangesMade(false);
         updatePlatformStatus();
+        
+        return true;
+    }
+    
+    private void loadFile()
+    {
+        loadFile(null);
     }
     
     /**
      * Loads a file and opens all tabs related to file editing.
-     * @param f 
+     * 
+     * @param f the file to load
      */
     private void loadFile(File f)
     {
+        // Attempt to close the current file; end if the user cancels
+        if (!closeFile()) {
+            return;
+        }
+        
+        // Prompt for a file
+        if (f == null) {
+            f = promptForFile("Load File", "Open");
+            if (f == null) {
+                return;
+            }
+        }
+                
         Logger.info("Loading file...");
         
         // Detect platform
@@ -1010,6 +1014,13 @@ public class EditorWindow extends JFrame implements Observer
             return;
         }
         
+        /* Ensure that a QueueException is never thrown for attempting to add to
+           a full queue */
+        if (recentFiles.isFull()) {
+            recentFiles.remove();
+        }
+        
+        // Add this file to the list of recent files
         recentFiles.insert(f.getAbsolutePath());
         
         String message = "Loaded file: " + f;
@@ -1105,8 +1116,7 @@ public class EditorWindow extends JFrame implements Observer
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
         
-        String parentDirPath
-                = Settings.get(Settings.KEY_LAST_FILE_SELECTED_PARENT_DIR);
+        String parentDirPath = Settings.get(Settings.Key.LAST_LOCATION);
         
         if (parentDirPath != null) {
             fileChooser.setSelectedFile(new File(parentDirPath));
@@ -1122,8 +1132,7 @@ public class EditorWindow extends JFrame implements Observer
         
         File f = fileChooser.getSelectedFile();
         
-        Settings.set(Settings.KEY_LAST_FILE_SELECTED_PARENT_DIR,
-                f.getAbsolutePath());
+        Settings.set(Settings.Key.LAST_LOCATION, f.getAbsolutePath());
         
         return f;
     }
