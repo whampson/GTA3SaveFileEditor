@@ -58,9 +58,7 @@ public abstract class Page extends JPanel implements Observable
     
     protected void notifyChange(Variable var)
     {
-        if (var.dataChanged()) {
-            notifyObservers(Event.VARIABLE_CHANGED);
-        }
+        notifyObservers(Event.VARIABLE_CHANGED);
     }
     
     /**

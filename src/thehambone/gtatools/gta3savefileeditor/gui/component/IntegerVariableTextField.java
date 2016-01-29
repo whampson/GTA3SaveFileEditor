@@ -156,9 +156,7 @@ public final class IntegerVariableTextField
             Logger.debug("Variable updated: " + v1);
         }
         
-        if (v.dataChanged()) {
-            notifyObservers(Page.Event.VARIABLE_CHANGED);
-        }
+        notifyObservers(Page.Event.VARIABLE_CHANGED);
     }
     
     private static enum DataType
