@@ -1202,8 +1202,7 @@ public class EditorWindow extends JFrame implements Observer
         switch (e) {
             case VARIABLE_CHANGED:
                 if (!changesMade) {
-                    changesMade = true;
-                    updateFrameTitleAndModificationStatus();
+                    setChangesMade(true);
                 }
                 break;
             case FILE_LOAD:

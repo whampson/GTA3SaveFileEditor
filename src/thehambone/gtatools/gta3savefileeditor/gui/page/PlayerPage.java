@@ -23,12 +23,12 @@ public class PlayerPage extends Page
     private PlayerPed playerped;
     private BlockGarages garages;
     private VarArray<WeaponSlot> aWeaponSlot;
-    private boolean updateChaosLevelVar;
+    private boolean updateMaxChaosLevelVar;
     
     public PlayerPage()
     {
         super("Player", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
-        updateChaosLevelVar = true;
+        updateMaxChaosLevelVar = true;
         
         initComponents();
         initVariableComponentParameters();
@@ -102,7 +102,7 @@ public class PlayerPage extends Page
         maxWantedLevelComboBox.setEnabled(isEnabled);
         
         if (isEnabled) {
-            int maxWantedLevel = playerped.nMaxWantedLevel.getValue();            
+            int maxWantedLevel = playerped.nMaxWantedLevel.getValue();  
             maxWantedLevelComboBox.setSelectedIndex(maxWantedLevel - 1);
         } else {
             updateMaxChaosLevel(0);
@@ -133,7 +133,7 @@ public class PlayerPage extends Page
                 break;
         }
         
-        if (updateChaosLevelVar) {
+        if (updateMaxChaosLevelVar) {
             playerped.nMaxChaosLevel.setValue(maxChaosLevel);
             Logger.debug("Variable updated: " + playerped.nMaxChaosLevel);
             notifyChange(playerped.nMaxChaosLevel);
@@ -199,12 +199,14 @@ public class PlayerPage extends Page
         
         weaponSlotComboBox.setSelectedIndex(0);
         
-        updateChaosLevelVar = false;
+        updateMaxChaosLevelVar = false;
+        maxWantedLevelComboBox.updateVariableOnChange(false);
         boolean wantedLevelEnabled = playerped.nMaxChaosLevel.getValue() >= 40;
         setWantedLevelEnabled(wantedLevelEnabled);
         enableWantedLevelCheckBox.setSelected(wantedLevelEnabled);
         maxWantedLevelComboBox.setVariable(playerped.nMaxWantedLevel);
-        updateChaosLevelVar = true;
+        maxWantedLevelComboBox.updateVariableOnChange(true);
+        updateMaxChaosLevelVar = true;
         
         playerXTextField.setVariable(playerped.cPlayerPed.vPosition.fX);
         playerYTextField.setVariable(playerped.cPlayerPed.vPosition.fY);
