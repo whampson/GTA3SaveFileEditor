@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -84,13 +85,14 @@ public class EditorWindow extends JFrame implements Observer
     private JLabel modificationStatusLabel;
     private JLabel platformStatusLabel;
     private boolean changesMade;
+    private int crc;
     
     /**
      * Creates a new {@code EditorWindow} instance.
      */
     public EditorWindow()
     {
-        initWindowListeners();
+        initWindowListener();
         initMenuBar();
         loadRecentFilesList();
         initTabbedPane();
@@ -103,11 +105,10 @@ public class EditorWindow extends JFrame implements Observer
     }
     
     /**
-     * Sets up the window close and window focus listeners for the frame.
+     * Sets up the window close and window focus events for the frame.
      */
-    private void initWindowListeners()
+    private void initWindowListener()
     {
-        // Window close listener (X button on window)
         addWindowListener(new WindowAdapter()
         {
             @Override
@@ -115,17 +116,38 @@ public class EditorWindow extends JFrame implements Observer
             {
                 closeFrame();
             }
-        });
-        
-        // Window focus listener
-        addWindowFocusListener(new WindowAdapter()
-        {
+            
             @Override
-            public void windowGainedFocus(WindowEvent evt)
+            public void windowActivated(WindowEvent evt)
             {
-                // Refresh save slots when focus gained
+                /* This event will trigger whenever the frame gains focus, which
+                   can occur after closing a modal dialog. We only want this
+                   code to run when the entire program gains focus. This can be
+                   checked by testing whether the opposite window is null. */
+                if (evt.getOppositeWindow() != null) {
+                    return;
+                }
+                Logger.debug("Program gained focus");
+                
                 refreshSlotMenus();
-                Logger.debug("Window focus gained - slots refreshed");
+                
+                if (SaveFile.isFileLoaded()) {
+                    checkForExternalChanges();
+                }
+            }
+            
+            @Override
+            public void windowDeactivated(WindowEvent evt)
+            {
+                /* This event will trigger whenever the frame loses focus, which
+                   can occur after activating a modal dialog. We only want this
+                   code to run when the entire program loses focus. This can be
+                   checked by testing whether the opposite window is null. */
+                if (evt.getOppositeWindow() != null) {
+                    return;
+                }
+                
+                // Calculate CRC on current data
             }
         });
     }
@@ -573,6 +595,8 @@ public class EditorWindow extends JFrame implements Observer
                 for (JMenuItem item : save) {
                     saveSlotMenu.add(item);
                 }
+                
+                Logger.debug("Save slots refreshed");
             }
         });
     }
@@ -1028,6 +1052,9 @@ public class EditorWindow extends JFrame implements Observer
         GUIUtils.showInformationMessageBox(this,
                 "File loaded successfully!", "Success");
         
+        crc = SaveFile.getCurrentSaveFile().getCRC32();
+        Logger.debug("File checksum (CRC32): 0x%08x\n", crc);
+        
         // Update GUI
         setStatusMessage(message);
         refreshMenus();
@@ -1099,6 +1126,53 @@ public class EditorWindow extends JFrame implements Observer
         
         setStatusMessage(message);
         refreshSlotMenus();
+    }
+    
+    private void checkForExternalChanges()
+    {
+        int newCRC;
+        try {
+            newCRC = SaveFile.getCurrentSaveFile().getSourceFileCRC32();
+        } catch (IOException ex) {
+            Logger.warn("Could not calculate CRC32 on source file [%s: %s]\n",
+                    ex.getClass().getName(), ex.getMessage());
+            Logger.stackTrace(ex);
+            return;
+        }
+            
+        if (newCRC == crc) {
+            // No external changes made
+            return;
+        }
+
+        File f = SaveFile.getCurrentSaveFile().getSourceFile();
+        String[] options = new String[] {
+            "Reload File", "Ignore and Continue"
+        };
+        String message = GUIUtils.formatHTMLString(
+                "<b>Warning:</b> " + f + " has been modified by another "
+                        + "program.\n\nWould you like to reload the file or "
+                        + "ignore the changes and continue working with the "
+                        + "current data? Reloading the file will destroy all "
+                        + "unsaved changes.",
+                350, false, null);
+        
+        Toolkit.getDefaultToolkit().beep();
+        int option = JOptionPane.showOptionDialog(this,
+                message,
+                "External Changes Detected",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+        
+        if (option == 0) {
+            setChangesMade(false);
+            loadFile(f);
+        } else {
+            crc = newCRC;   // Prevent user from being prompted continuously
+        }
     }
     
     /**
