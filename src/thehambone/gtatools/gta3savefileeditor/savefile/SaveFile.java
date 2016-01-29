@@ -2,11 +2,9 @@ package thehambone.gtatools.gta3savefileeditor.savefile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Pattern;
 import thehambone.gtatools.gta3savefileeditor.newshit.Checksum;
 import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
 import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
@@ -246,6 +244,17 @@ public class SaveFile
         fileInfo[1] = new SimpleDateFormat(TIMESTAMP_FORMAT).format(timestamp);
         
         return fileInfo;
+    }
+    
+    public int getCRC32()
+    {
+        return Checksum.crc32(buf.toArray());
+    }
+    
+    public int getSourceFileCRC32() throws IOException
+    {
+        DataBuffer tempBuf = new DataBuffer(src);
+        return Checksum.crc32(tempBuf.toArray());
     }
     
     public void save() throws IOException
