@@ -1,6 +1,5 @@
 package thehambone.gtatools.gta3savefileeditor;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Level;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -20,7 +17,6 @@ import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
-import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -109,17 +105,21 @@ public final class Main
          * -BUG: Mac OS X crash when using "Save Slot" feature
          * -BUG: Save title reset to previous value when switched back to
          *  General page (Mobile only)
+         * -BUG: Welcome page buttons do not work
+         * -BUG: "Equipped" check box on player page does not appear to
+         *       accurately reflect whether a weapon is enabled
+         * -BUG: Mobile saves erroneously show changes made when the file is
+         *       first loaded
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Set combobox index to -1 when value out of range
          * -Bomb armed checkbox
-         * -WElcome page browse button page event
+         * -Welcome page browse button page event
          * -Check if file changed on focus gained; prompt to reload file or
          *  ignore
-         * -"Save Changes" prompt mnemonic chars
+         * -Revise "Options" page
          * -Reset "dataChanged" flag in all variables when file saved
          * -Tweak about page text
          * -Drag files into editor to edit
-         * -Recent files list (up to 10); File > Load Recent
          * -Better crashdump output
          * -Documentation
          * -Tooltip text
@@ -315,8 +315,8 @@ public final class Main
                             + "--help\n"
                             + "--log-level=<DEBUG | INFO | WARN | ERROR "
                             + "| FATAL>";
-                    JOptionPane.showMessageDialog(null, helpString, "Help",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    GUIUtils.showInformationMessageBox(
+                            null, helpString, "Help");
                     break;
                 case "log-level":
                     if (tokens.length < 2) {
