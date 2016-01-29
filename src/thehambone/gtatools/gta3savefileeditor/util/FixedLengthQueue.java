@@ -125,6 +125,37 @@ public class FixedLengthQueue<E> implements Iterable<E>
         return queue[front++];
     }
     
+    /**
+     * Returns an Iterator object that iterates the queue from the last item to
+     * the first item.
+     * 
+     * @return a reverse-order Iterator object
+     */
+    public Iterator<E> reverseOrderIterator()
+    {
+        return new Iterator<E>()
+        {
+            int itemsIterated = 0;
+            int index = rear;
+            
+            @Override
+            public boolean hasNext()
+            {
+                return itemsIterated != itemCount;
+            }
+
+            @Override
+            public E next()
+            {
+                if (index == -1) {
+                    index = queue.length - 1;
+                }
+                itemsIterated++;
+                return queue[index--];
+            }
+        };
+    }
+    
     @Override
     public Iterator<E> iterator()
     {
