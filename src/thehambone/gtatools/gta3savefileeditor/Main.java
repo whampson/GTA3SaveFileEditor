@@ -12,9 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import thehambone.gtatools.gta3savefileeditor.gui.EditorWindow;
-import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
-import thehambone.gtatools.gta3savefileeditor.gui.UncaughtExceptionHandler;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
@@ -99,7 +97,6 @@ public final class Main
     public static void main(String[] args)
     {
         /* TODO:
-         * -cmd options: --log-to-file
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related? (IDE only?)
          * -BUG: Mac OS X crash when using "Save Slot" feature
@@ -110,16 +107,14 @@ public final class Main
          *       accurately reflect whether a weapon is enabled
          * -BUG: Mobile saves erroneously show changes made when the file is
          *       first loaded
+         * -cmd options: --log-to-file
+         * -Cut down on save slot refreshes
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Set combobox index to -1 when value out of range
          * -Bomb armed checkbox
          * -Welcome page browse button page event
-         * -Check if file changed on focus gained; prompt to reload file or
-         *  ignore
          * -Revise "Options" page
-         * -Reset "dataChanged" flag in all variables when file saved
          * -Tweak about page text
-         * -Drag files into editor to edit
          * -Better crashdump output
          * -Documentation
          * -Tooltip text
@@ -315,7 +310,7 @@ public final class Main
                             + "--help\n"
                             + "--log-level=<DEBUG | INFO | WARN | ERROR "
                             + "| FATAL>";
-                    GUIUtils.showInformationMessageBox(
+                    GUIUtilities.showInformationMessageBox(
                             null, helpString, "Help");
                     break;
                 case "log-level":
@@ -375,7 +370,7 @@ public final class Main
             Logger.warn(errMsg + " [%s: %s]\n",
                     ex.getClass().getName(), ex.getMessage());
             Logger.stackTrace(ex);
-            GUIUtils.showErrorMessageBox(null, errMsg, "IO Error", ex);
+            GUIUtilities.showErrorMessageBox(null, errMsg, "IO Error", ex);
             Settings.loadDefaults();
         }
     }
@@ -394,7 +389,7 @@ public final class Main
             Logger.error(errMsg + " [%s: %s]\n",
                     ex.getClass().getName(), ex.getMessage());
             Logger.stackTrace(ex.fillInStackTrace());
-            GUIUtils.showErrorMessageBox(null, errMsg, "IO Error", ex);
+            GUIUtilities.showErrorMessageBox(null, errMsg, "IO Error", ex);
         }
     }
     

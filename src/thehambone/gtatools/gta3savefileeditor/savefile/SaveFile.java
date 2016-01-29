@@ -5,17 +5,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import thehambone.gtatools.gta3savefileeditor.newshit.Checksum;
-import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.newshit.UnsupportedPlatformException;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGangs;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockGarages;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPedTypes;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerInfo;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockPlayerPeds;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.BlockSimpleVars;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarString;
-import thehambone.gtatools.gta3savefileeditor.newshit.struct.var.VarString16;
+import thehambone.gtatools.gta3savefileeditor.util.Checksum;
+import thehambone.gtatools.gta3savefileeditor.util.DataBuffer;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockGangs;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockGarages;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPedTypes;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPlayerInfo;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPlayerPeds;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockSimpleVars;
+import thehambone.gtatools.gta3savefileeditor.savefile.var.VarString;
+import thehambone.gtatools.gta3savefileeditor.savefile.var.VarString16;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**

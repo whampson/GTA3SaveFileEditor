@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import thehambone.gtatools.gta3savefileeditor.newshit.DataBuffer;
+import thehambone.gtatools.gta3savefileeditor.util.DataBuffer;
 
 /**
  * The purpose of this class is to read text data found within a Grand Theft
