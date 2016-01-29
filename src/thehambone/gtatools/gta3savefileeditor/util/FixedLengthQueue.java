@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * A {@code FixedLengthQueue} represents a first-in-first-out (FIFO) collection
  * of objects whose maximum capacity does not change. The class implements the
- * Iterable interface so items in the queue can be iterated.
+ * {@code Iterable} interface so items in the queue can be iterated.
  * <p>
  * Created on Jan 27, 2016.
  *
@@ -41,7 +41,7 @@ public class FixedLengthQueue<E> implements Iterable<E>
         itemCount = 0;
     }
     
-        /**
+    /**
      * Checks whether the queue is empty.
      * 
      * @return {@code true} if the queue is empty, {@code false} otherwise
