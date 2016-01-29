@@ -82,7 +82,7 @@ public class PCSaveSlot
     public void refresh() throws IOException
     {
         // Get GTA3 User Files location from program settings file
-        File gta3SaveDir = new File(Settings.get(Settings.KEY_GTA3_USER_FILES));
+        File gta3SaveDir = new File(Settings.get(Settings.Key.GTA3_USER_DIR));
         
         // Check whether the GTA3 User Files location is valid
         if (!gta3SaveDir.exists()) {
