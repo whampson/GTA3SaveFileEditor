@@ -4,12 +4,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.Settings;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtils;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -32,10 +30,10 @@ public class OptionsPage extends Page
     
     private void initFocusListeners()
     {
-        setTextAreaFocusListener("gta3.save.dir", saveFileFolderTextField);
+        setTextAreaFocusListener(Settings.Key.GTA3_USER_DIR, saveFileFolderTextField);
     }
     
-    private void setTextAreaFocusListener(final String propertyKey,
+    private void setTextAreaFocusListener(final Settings.Key propertyKey,
             final JTextField textField)
     {
         final JPanel parent = this;
@@ -73,9 +71,9 @@ public class OptionsPage extends Page
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
-        saveFileFolderTextField.setText(Settings.get("gta3.save.dir"));
-        backupCheckBox.setSelected(Boolean.parseBoolean(Settings.get("make.backups")));
-        updateTimestampCheckBox.setSelected(Boolean.parseBoolean(Settings.get("update.timestamp")));
+        saveFileFolderTextField.setText(Settings.get(Settings.Key.GTA3_USER_DIR));
+        backupCheckBox.setSelected(Boolean.parseBoolean(Settings.get(Settings.Key.MAKE_BACKUPS)));
+        updateTimestampCheckBox.setSelected(Boolean.parseBoolean(Settings.get(Settings.Key.TIMESTAMP_FILES)));
     }
     
     private File chooseDir()
@@ -241,18 +239,18 @@ public class OptionsPage extends Page
         File dir = chooseDir();
         if (dir != null) {
             saveFileFolderTextField.setText(dir.getAbsolutePath());
-            Settings.set("gta3.save.dir", dir.getAbsolutePath());
+            Settings.set(Settings.Key.GTA3_USER_DIR, dir.getAbsolutePath());
         }
     }//GEN-LAST:event_saveFileFolderBrowseButtonActionPerformed
 
     private void backupCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_backupCheckBoxActionPerformed
     {//GEN-HEADEREND:event_backupCheckBoxActionPerformed
-        Settings.set("make.backups", Boolean.toString(backupCheckBox.isSelected()));
+        Settings.set(Settings.Key.MAKE_BACKUPS, Boolean.toString(backupCheckBox.isSelected()));
     }//GEN-LAST:event_backupCheckBoxActionPerformed
 
     private void updateTimestampCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_updateTimestampCheckBoxActionPerformed
     {//GEN-HEADEREND:event_updateTimestampCheckBoxActionPerformed
-        Settings.set("update.timestamp", Boolean.toString(updateTimestampCheckBox.isSelected()));
+        Settings.set(Settings.Key.TIMESTAMP_FILES, Boolean.toString(updateTimestampCheckBox.isSelected()));
     }//GEN-LAST:event_updateTimestampCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
