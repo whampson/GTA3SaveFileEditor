@@ -1,13 +1,16 @@
 package thehambone.gtatools.gta3savefileeditor.page;
 
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
@@ -17,9 +20,9 @@ import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * Created in Mar 30, 2015.
+ * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 30, 2015
  */
 public class WelcomePage extends Page
 {
@@ -28,9 +31,66 @@ public class WelcomePage extends Page
     public WelcomePage()
     {
         super("Welcome", Visibility.VISIBLE_WHEN_FILE_NOT_LOADED_ONLY);
+        
         initComponents();
+        initIcon();
+        initButtons();
         initListSelectionListener();
         initMouseListener();
+    }
+    
+    private void initIcon()
+    {
+        try {
+            imageLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));
+        } catch (IOException ex) {
+            Logger.error("Failed to load image resource. [%s: %s]\n",
+                    ex.getClass().getName(), ex.getMessage());
+            Logger.stackTrace(ex);
+        }
+        imageLabel.setText("");
+    }
+    
+    private void initButtons()
+    {
+        refreshButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                refresh();
+            }
+        });
+        
+        loadButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                loadSelectedSlot();
+            }
+        });
+        
+        deleteButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                deleteSelectedSlot();
+            }
+        });
+        
+        final Component dialogParent = this;
+        browseButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                File f = GUIUtilities.showFileSelectionDialog(dialogParent,
+                        "Load File", "Open");
+                notifyObservers(Page.Event.FILE_LOAD, f);
+            }
+        });
     }
     
     private void initListSelectionListener()
@@ -40,56 +100,42 @@ public class WelcomePage extends Page
             @Override
             public void valueChanged(ListSelectionEvent e)
             {
-                PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
-                if (saveSlot == null) {
+                PCSaveSlot slot = (PCSaveSlot)saveSlotList.getSelectedValue();
+                if (slot == null) {
                     return;
                 }
                 
-                loadButton.setEnabled(saveSlot.isUsable());
-                deleteButton.setEnabled(saveSlot.isUsable());
+                loadButton.setEnabled(slot.isUsable());
+                deleteButton.setEnabled(slot.isUsable());
             }
         });
     }
     
     private void initMouseListener()
     {
+        // Item double-click listener
         saveSlotList.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2 && !saveSlotList.isSelectionEmpty()) {
+                if (e.getButton() == MouseEvent.BUTTON1
+                        && e.getClickCount() == 2
+                        && !saveSlotList.isSelectionEmpty()) {
                     loadSelectedSlot();
                 }
             }
         });
     }
     
-    @SuppressWarnings("unchecked")
-    private void populateSlotList()
-    {
-        saveSlotList.clearSelection();
-        DefaultListModel<PCSaveSlot> saveSlotListModel = new DefaultListModel<>();
-        for (PCSaveSlot slot : PCSaveSlot.getSaveSlots()) {
-            saveSlotListModel.addElement(slot);
-        }
-        saveSlotList.setModel(saveSlotListModel);
-        saveSlotList.setCellRenderer(new SaveSlotCellRenderer());
-        saveSlotList.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        
-        loadButton.setEnabled(!saveSlotList.isSelectionEmpty());
-        deleteButton.setEnabled(!saveSlotList.isSelectionEmpty());
-        
-        saveSlotList.repaint();
-    }
-    
     private void loadSelectedSlot()
     {
         PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
         File f = saveSlot.getFile();
-        if (saveSlot.isUsable()) {
+        if (!saveSlot.isUsable()) {
             return;
         }
+        
         notifyObservers(Event.FILE_LOAD, f);
     }
     
@@ -97,15 +143,16 @@ public class WelcomePage extends Page
     {
         PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
         File f = saveSlot.getFile();
-        if (saveSlot.isUsable()) {
+        if (!saveSlot.isUsable()) {
             return;
         }
+        
         notifyObservers(Event.FILE_DELETE, f);
         if (!f.exists()) {
             GUIUtilities.showInformationMessageBox(
                     this, "File deleted successfully!", "Success");
+            refresh();
         }
-        populateSlotList();
     }
     
     private void refresh()
@@ -114,20 +161,41 @@ public class WelcomePage extends Page
         populateSlotList();
     }
     
+    @SuppressWarnings("unchecked")
+    private void populateSlotList()
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                saveSlotList.clearSelection();
+                
+                DefaultListModel<PCSaveSlot> saveSlotListModel
+                        = new DefaultListModel<>();
+                
+                for (PCSaveSlot slot : PCSaveSlot.getSaveSlots()) {
+                    saveSlotListModel.addElement(slot);
+                }
+                
+                saveSlotList.setModel(saveSlotListModel);
+                saveSlotList.setCellRenderer(new SaveSlotCellRenderer());
+                saveSlotList.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+                loadButton.setEnabled(!saveSlotList.isSelectionEmpty());
+                deleteButton.setEnabled(!saveSlotList.isSelectionEmpty());
+
+                saveSlotList.repaint();
+            }
+        });
+    }
+    
     @Override
     public void loadPage()
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
-        try {
-            imageLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));
-        } catch (IOException ex) {
-            Logger.error("Failed to load image resource.");
-            Logger.stackTrace(ex);
-        }
-        imageLabel.setText("");
         refresh();
-        populateSlotList();
     }
 
     /**
@@ -186,46 +254,18 @@ public class WelcomePage extends Page
         refreshButton.setMaximumSize(new java.awt.Dimension(79, 23));
         refreshButton.setMinimumSize(new java.awt.Dimension(79, 23));
         refreshButton.setPreferredSize(new java.awt.Dimension(79, 23));
-        refreshButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                refreshButtonActionPerformed(evt);
-            }
-        });
 
         loadButton.setText("Load");
         loadButton.setMaximumSize(new java.awt.Dimension(79, 23));
         loadButton.setMinimumSize(new java.awt.Dimension(79, 23));
         loadButton.setPreferredSize(new java.awt.Dimension(79, 23));
-        loadButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                loadButtonActionPerformed(evt);
-            }
-        });
 
         deleteButton.setText("Delete");
         deleteButton.setMaximumSize(new java.awt.Dimension(79, 23));
         deleteButton.setMinimumSize(new java.awt.Dimension(79, 23));
         deleteButton.setPreferredSize(new java.awt.Dimension(79, 23));
-        deleteButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                deleteButtonActionPerformed(evt);
-            }
-        });
 
         browseButton.setText("Browse...");
-        browseButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                browseButtonActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout loadGamePanelLayout = new javax.swing.GroupLayout(loadGamePanel);
         loadGamePanel.setLayout(loadGamePanelLayout);
@@ -293,34 +333,6 @@ public class WelcomePage extends Page
             .addComponent(scrollPane)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_refreshButtonActionPerformed
-    {//GEN-HEADEREND:event_refreshButtonActionPerformed
-        refresh();
-    }//GEN-LAST:event_refreshButtonActionPerformed
-
-    private void browseButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_browseButtonActionPerformed
-    {//GEN-HEADEREND:event_browseButtonActionPerformed
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int option = fileChooser.showOpenDialog(this);
-        if (option != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        File f = fileChooser.getSelectedFile();
-        notifyObservers("load.file", f);
-    }//GEN-LAST:event_browseButtonActionPerformed
-
-    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadButtonActionPerformed
-    {//GEN-HEADEREND:event_loadButtonActionPerformed
-        loadSelectedSlot();
-    }//GEN-LAST:event_loadButtonActionPerformed
-
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deleteButtonActionPerformed
-    {//GEN-HEADEREND:event_deleteButtonActionPerformed
-        deleteSelectedSlot();
-    }//GEN-LAST:event_deleteButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseButton;

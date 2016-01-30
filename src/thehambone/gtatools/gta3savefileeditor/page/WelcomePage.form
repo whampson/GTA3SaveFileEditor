@@ -178,9 +178,6 @@
                       <Dimension value="[79, 23]"/>
                     </Property>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="refreshButtonActionPerformed"/>
-                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="loadButton">
                   <Properties>
@@ -195,9 +192,6 @@
                       <Dimension value="[79, 23]"/>
                     </Property>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadButtonActionPerformed"/>
-                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="deleteButton">
                   <Properties>
@@ -212,17 +206,11 @@
                       <Dimension value="[79, 23]"/>
                     </Property>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteButtonActionPerformed"/>
-                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="browseButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Browse..."/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="browseButtonActionPerformed"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>
