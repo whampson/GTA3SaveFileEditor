@@ -12,6 +12,7 @@ import javax.swing.text.Document;
  * @author thehambone
  * @version 0.1
  * @since 0.1, April 12, 2015
+ * @deprecated 
  */
 public class DocumentOutputStream extends OutputStream
 {

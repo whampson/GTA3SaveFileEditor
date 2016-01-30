@@ -12,6 +12,7 @@ import java.util.List;
  * @author thehambone
  * @version 0.1
  * @since 0.1, April 12, 2015
+ * @deprecated 
  */
 public class TeeableOutputStream extends OutputStream
 {
