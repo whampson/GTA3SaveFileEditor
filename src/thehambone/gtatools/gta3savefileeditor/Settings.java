@@ -40,7 +40,7 @@ public class Settings
         // Populate defaults list
         DEFAULTS.put(Key.GTA3_USER_DIR.propertyName,
                 Game.getGameUserDirectoryPath());
-        DEFAULTS.put(Key.LAST_LOCATION.propertyName, "");
+        DEFAULTS.put(Key.LAST_SELECTED_FILE.propertyName, "");
         DEFAULTS.put(Key.MAKE_BACKUPS.propertyName, "true");
         DEFAULTS.put(Key.TIMESTAMP_FILES.propertyName, "true");
     }
@@ -232,6 +232,10 @@ public class Settings
          * Dictates whether a backup should be made before loading a save file.
          * <p>
          * Acceptable values: {@code "true"}, {@code "false"}
+         *//**
+         * Dictates whether a backup should be made before loading a save file.
+         * <p>
+         * Acceptable values: {@code "true"}, {@code "false"}
          */
         MAKE_BACKUPS("make.backups"),
         
@@ -244,11 +248,11 @@ public class Settings
         GTA3_USER_DIR("gta3.user.dir"),
         
         /**
-         * Holds the most-recently browsed directory.
+         * Holds the most-recently selected file.
          * <p>
          * Acceptable values: any valid directory path
          */
-        LAST_LOCATION("last.location"),
+        LAST_SELECTED_FILE("last.selected.file"),
         
         /**
          * Dictates whether the timestamp of the working file should be
