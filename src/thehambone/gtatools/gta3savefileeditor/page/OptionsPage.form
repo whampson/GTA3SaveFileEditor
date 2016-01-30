@@ -35,12 +35,14 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="saveFileFolderPanel" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="timestampPanel" max="32767" attributes="0"/>
-                          <Component id="backupPanel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="fileBackupsPanel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="saveFileDirectoryPanel" alignment="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -50,9 +52,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="saveFileFolderPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="saveFileDirectoryPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="backupPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="fileBackupsPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="timestampPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
@@ -61,11 +63,11 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="saveFileFolderPanel">
+            <Container class="javax.swing.JPanel" name="saveFileDirectoryPanel">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="GTA III Save File Folder"/>
+                    <TitledBorder title="Save File Directory"/>
                   </Border>
                 </Property>
               </Properties>
@@ -73,11 +75,19 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="saveFileFolderTextField" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="saveFileFolderBrowseButton" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="saveFileDirectoryTextField" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="browseButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="pathStatusLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -87,32 +97,39 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="saveFileFolderTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="saveFileFolderBrowseButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="saveFileDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="browseButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="pathStatusLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JTextField" name="saveFileFolderTextField">
+                <Component class="javax.swing.JTextField" name="saveFileDirectoryTextField">
+                  <Properties>
+                    <Property name="toolTipText" type="java.lang.String" value="Path to the &quot;GTA3 User Files&quot; folder."/>
+                  </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="saveFileFolderBrowseButton">
+                <Component class="javax.swing.JButton" name="browseButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Browse..."/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveFileFolderBrowseButtonActionPerformed"/>
-                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="pathStatusLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="&lt;path status&gt;"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="backupPanel">
+            <Container class="javax.swing.JPanel" name="fileBackupsPanel">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Save File Backup"/>
+                    <TitledBorder title="File Backups"/>
                   </Border>
                 </Property>
               </Properties>
@@ -122,8 +139,8 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="backupCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="311" max="32767" attributes="0"/>
+                          <Component id="makeFileBackupCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="296" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -131,20 +148,18 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="backupCheckBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="makeFileBackupCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JCheckBox" name="backupCheckBox">
+                <Component class="javax.swing.JCheckBox" name="makeFileBackupCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Make backups when file is loaded"/>
+                    <Property name="text" type="java.lang.String" value="Make a backup when file is loaded"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Backup files have the &quot;.bak&quot; extension and appear in the same folder as the source file."/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backupCheckBoxActionPerformed"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -163,7 +178,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="updateTimestampCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="236" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -180,11 +195,9 @@
               <SubComponents>
                 <Component class="javax.swing.JCheckBox" name="updateTimestampCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Update timestamp on save (shows up in in-game load menu)"/>
+                    <Property name="text" type="java.lang.String" value="Update timestamp when file is saved (PC only)"/>
+                    <Property name="toolTipText" type="java.lang.String" value="The timestamp that shows up on the in-game Load menu will be updated to reflect the time that the file was saved."/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateTimestampCheckBoxActionPerformed"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>

@@ -1,69 +1,157 @@
 package thehambone.gtatools.gta3savefileeditor.page;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import thehambone.gtatools.gta3savefileeditor.Main;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * Created on Mar 31, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 31, 2015
  */
 public class OptionsPage extends Page
 {
-    private static final String WIN32_FILE_PATH_REGEX = "^([A-Z]|[a-z]):((\\\\|/).*)$";
-    
     public OptionsPage()
     {
         super("Options", Visibility.ALWAYS_VISIBLE);
+        
         initComponents();
-        initFocusListeners();
+        initSaveDirComponents();
+        initBackupComponents();
+        initTimestampComponents();
     }
     
-    private void initFocusListeners()
+    private void initSaveDirComponents()
     {
-        setTextAreaFocusListener(Settings.Key.GTA3_USER_DIR, saveFileFolderTextField);
-    }
-    
-    private void setTextAreaFocusListener(final Settings.Key propertyKey,
-            final JTextField textField)
-    {
-        final JPanel parent = this;
-        FocusListener listener = new FocusListener()
+        saveFileDirectoryTextField.addFocusListener(new FocusAdapter()
         {
-            @Override
-            public void focusGained(FocusEvent e)
-            {
-                // Do nothing
-            }
-            
             @Override
             public void focusLost(FocusEvent e)
             {
-                if (textField.getText().isEmpty()) {
-                    textField.setText(Settings.getDefault(propertyKey));
+                JTextField tf = saveFileDirectoryTextField;
+                
+                if (tf.getText().isEmpty()) {
+                    tf.setText(Settings.getDefault(Settings.Key.GTA3_USER_DIR));
                 }
-                if (Main.getOperatingSystem() == Main.OperatingSystem.WINDOWS) {
-                    if (textField.getText().matches(WIN32_FILE_PATH_REGEX)) {
-                        Settings.set(propertyKey, textField.getText());
-                    } else {
-                        GUIUtilities.showInformationMessageBox(
-                                parent, "Invalid path!", "Invalid Path");
-                        textField.selectAll();
-                        textField.requestFocus();
-                    }
+                
+                Settings.set(Settings.Key.GTA3_USER_DIR, tf.getText());
+            }
+        });
+        
+        Document doc = saveFileDirectoryTextField.getDocument();
+        doc.addDocumentListener(new DocumentListener()
+        {
+            private void update()
+            {
+                String path = saveFileDirectoryTextField.getText();
+                
+                File f = new File(path);
+                String labelText;
+                
+                if (f.isDirectory()) {
+                    labelText = GUIUtilities.formatHTMLString(
+                            "<b>Path OK.</b>",
+                            GUIUtilities.DEFAULT_TEXT_WIDTH,
+                            false,
+                            new Color(0, 192, 0));
+                } else {
+                    labelText = GUIUtilities.formatHTMLString(
+                            "<b>Invalid path!</b>",
+                            GUIUtilities.DEFAULT_TEXT_WIDTH,
+                            false,
+                            new Color(192, 0, 0));
+                }
+                
+                pathStatusLabel.setText(labelText);
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent e)
+            {
+                update();
+            }
+            
+            @Override
+            public void removeUpdate(DocumentEvent e)
+            {
+                update();
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent e)
+            {
+                // Nop
+            }
+        });
+        
+        browseButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                File f = selectDirectory();
+                if (f != null) {
+                    saveFileDirectoryTextField.setText(f.getAbsolutePath());
+                    Settings.set(Settings.Key.GTA3_USER_DIR,
+                            f.getAbsolutePath());
                 }
             }
-        };
-        textField.addFocusListener(listener);
+        });
+    }
+    
+    private void initBackupComponents()
+    {
+        makeFileBackupCheckBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                boolean selected = makeFileBackupCheckBox.isSelected();
+                String value = Boolean.toString(selected);
+                Settings.set(Settings.Key.MAKE_BACKUPS, value);
+            }
+        });
+    }
+    
+    private void initTimestampComponents()
+    {
+        updateTimestampCheckBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                boolean selected = updateTimestampCheckBox.isSelected();
+                String value = Boolean.toString(selected);
+                Settings.set(Settings.Key.TIMESTAMP_FILES, value);
+            }
+        });
+    }
+    
+    private File selectDirectory()
+    {
+        JFileChooser jfc = new JFileChooser();
+        jfc.setMultiSelectionEnabled(false);
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        int option = jfc.showOpenDialog(this);
+        if (option != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        
+        File f = jfc.getSelectedFile();
+        
+        return f;
     }
     
     @Override
@@ -71,21 +159,13 @@ public class OptionsPage extends Page
     {
         Logger.debug("Loading page: %s...\n", getPageTitle());
         
-        saveFileFolderTextField.setText(Settings.get(Settings.Key.GTA3_USER_DIR));
-        backupCheckBox.setSelected(Boolean.parseBoolean(Settings.get(Settings.Key.MAKE_BACKUPS)));
-        updateTimestampCheckBox.setSelected(Boolean.parseBoolean(Settings.get(Settings.Key.TIMESTAMP_FILES)));
-    }
-    
-    private File chooseDir()
-    {
-        JFileChooser jfc = new JFileChooser();
-        jfc.setMultiSelectionEnabled(false);
-        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int option = jfc.showOpenDialog(this);
-        if (option != JFileChooser.APPROVE_OPTION) {
-            return null;
-        }
-        return jfc.getSelectedFile();
+        String gta3UserDir = Settings.get(Settings.Key.GTA3_USER_DIR);
+        String makeBackups = Settings.get(Settings.Key.MAKE_BACKUPS);
+        String tstampFiles = Settings.get(Settings.Key.TIMESTAMP_FILES);
+        
+        saveFileDirectoryTextField.setText(gta3UserDir);
+        makeFileBackupCheckBox.setSelected(Boolean.parseBoolean(makeBackups));
+        updateTimestampCheckBox.setSelected(Boolean.parseBoolean(tstampFiles));
     }
 
     /**
@@ -100,84 +180,77 @@ public class OptionsPage extends Page
 
         scrollPane = new javax.swing.JScrollPane();
         mainPanel = new javax.swing.JPanel();
-        saveFileFolderPanel = new javax.swing.JPanel();
-        saveFileFolderTextField = new javax.swing.JTextField();
-        saveFileFolderBrowseButton = new javax.swing.JButton();
-        backupPanel = new javax.swing.JPanel();
-        backupCheckBox = new javax.swing.JCheckBox();
+        saveFileDirectoryPanel = new javax.swing.JPanel();
+        saveFileDirectoryTextField = new javax.swing.JTextField();
+        browseButton = new javax.swing.JButton();
+        pathStatusLabel = new javax.swing.JLabel();
+        fileBackupsPanel = new javax.swing.JPanel();
+        makeFileBackupCheckBox = new javax.swing.JCheckBox();
         timestampPanel = new javax.swing.JPanel();
         updateTimestampCheckBox = new javax.swing.JCheckBox();
 
-        saveFileFolderPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("GTA III Save File Folder"));
+        saveFileDirectoryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save File Directory"));
 
-        saveFileFolderBrowseButton.setText("Browse...");
-        saveFileFolderBrowseButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                saveFileFolderBrowseButtonActionPerformed(evt);
-            }
-        });
+        saveFileDirectoryTextField.setToolTipText("Path to the \"GTA3 User Files\" folder.");
 
-        javax.swing.GroupLayout saveFileFolderPanelLayout = new javax.swing.GroupLayout(saveFileFolderPanel);
-        saveFileFolderPanel.setLayout(saveFileFolderPanelLayout);
-        saveFileFolderPanelLayout.setHorizontalGroup(
-            saveFileFolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(saveFileFolderPanelLayout.createSequentialGroup()
+        browseButton.setText("Browse...");
+
+        pathStatusLabel.setText("<path status>");
+
+        javax.swing.GroupLayout saveFileDirectoryPanelLayout = new javax.swing.GroupLayout(saveFileDirectoryPanel);
+        saveFileDirectoryPanel.setLayout(saveFileDirectoryPanelLayout);
+        saveFileDirectoryPanelLayout.setHorizontalGroup(
+            saveFileDirectoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveFileDirectoryPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(saveFileFolderTextField)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(saveFileFolderBrowseButton)
+                .addGroup(saveFileDirectoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(saveFileDirectoryPanelLayout.createSequentialGroup()
+                        .addComponent(saveFileDirectoryTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(browseButton))
+                    .addGroup(saveFileDirectoryPanelLayout.createSequentialGroup()
+                        .addComponent(pathStatusLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        saveFileFolderPanelLayout.setVerticalGroup(
-            saveFileFolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(saveFileFolderPanelLayout.createSequentialGroup()
+        saveFileDirectoryPanelLayout.setVerticalGroup(
+            saveFileDirectoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveFileDirectoryPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(saveFileFolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveFileFolderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveFileFolderBrowseButton))
+                .addGroup(saveFileDirectoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(saveFileDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(browseButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pathStatusLabel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        backupPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save File Backup"));
+        fileBackupsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("File Backups"));
 
-        backupCheckBox.setText("Make backups when file is loaded");
-        backupCheckBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                backupCheckBoxActionPerformed(evt);
-            }
-        });
+        makeFileBackupCheckBox.setText("Make a backup when file is loaded");
+        makeFileBackupCheckBox.setToolTipText("Backup files have the \".bak\" extension and appear in the same folder as the source file.");
 
-        javax.swing.GroupLayout backupPanelLayout = new javax.swing.GroupLayout(backupPanel);
-        backupPanel.setLayout(backupPanelLayout);
-        backupPanelLayout.setHorizontalGroup(
-            backupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(backupPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout fileBackupsPanelLayout = new javax.swing.GroupLayout(fileBackupsPanel);
+        fileBackupsPanel.setLayout(fileBackupsPanelLayout);
+        fileBackupsPanelLayout.setHorizontalGroup(
+            fileBackupsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fileBackupsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backupCheckBox)
-                .addContainerGap(311, Short.MAX_VALUE))
+                .addComponent(makeFileBackupCheckBox)
+                .addContainerGap(296, Short.MAX_VALUE))
         );
-        backupPanelLayout.setVerticalGroup(
-            backupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(backupPanelLayout.createSequentialGroup()
+        fileBackupsPanelLayout.setVerticalGroup(
+            fileBackupsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fileBackupsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backupCheckBox)
+                .addComponent(makeFileBackupCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         timestampPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Timestamp"));
 
-        updateTimestampCheckBox.setText("Update timestamp on save (shows up in in-game load menu)");
-        updateTimestampCheckBox.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                updateTimestampCheckBoxActionPerformed(evt);
-            }
-        });
+        updateTimestampCheckBox.setText("Update timestamp when file is saved (PC only)");
+        updateTimestampCheckBox.setToolTipText("The timestamp that shows up on the in-game Load menu will be updated to reflect the time that the file was saved.");
 
         javax.swing.GroupLayout timestampPanelLayout = new javax.swing.GroupLayout(timestampPanel);
         timestampPanel.setLayout(timestampPanelLayout);
@@ -186,7 +259,7 @@ public class OptionsPage extends Page
             .addGroup(timestampPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(updateTimestampCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(236, Short.MAX_VALUE))
         );
         timestampPanelLayout.setVerticalGroup(
             timestampPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,19 +275,20 @@ public class OptionsPage extends Page
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(saveFileFolderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(timestampPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(backupPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(fileBackupsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveFileDirectoryPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(saveFileFolderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(saveFileDirectoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(backupPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(fileBackupsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(timestampPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -234,32 +308,14 @@ public class OptionsPage extends Page
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveFileFolderBrowseButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveFileFolderBrowseButtonActionPerformed
-    {//GEN-HEADEREND:event_saveFileFolderBrowseButtonActionPerformed
-        File dir = chooseDir();
-        if (dir != null) {
-            saveFileFolderTextField.setText(dir.getAbsolutePath());
-            Settings.set(Settings.Key.GTA3_USER_DIR, dir.getAbsolutePath());
-        }
-    }//GEN-LAST:event_saveFileFolderBrowseButtonActionPerformed
-
-    private void backupCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_backupCheckBoxActionPerformed
-    {//GEN-HEADEREND:event_backupCheckBoxActionPerformed
-        Settings.set(Settings.Key.MAKE_BACKUPS, Boolean.toString(backupCheckBox.isSelected()));
-    }//GEN-LAST:event_backupCheckBoxActionPerformed
-
-    private void updateTimestampCheckBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_updateTimestampCheckBoxActionPerformed
-    {//GEN-HEADEREND:event_updateTimestampCheckBoxActionPerformed
-        Settings.set(Settings.Key.TIMESTAMP_FILES, Boolean.toString(updateTimestampCheckBox.isSelected()));
-    }//GEN-LAST:event_updateTimestampCheckBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox backupCheckBox;
-    private javax.swing.JPanel backupPanel;
+    private javax.swing.JButton browseButton;
+    private javax.swing.JPanel fileBackupsPanel;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JButton saveFileFolderBrowseButton;
-    private javax.swing.JPanel saveFileFolderPanel;
-    private javax.swing.JTextField saveFileFolderTextField;
+    private javax.swing.JCheckBox makeFileBackupCheckBox;
+    private javax.swing.JLabel pathStatusLabel;
+    private javax.swing.JPanel saveFileDirectoryPanel;
+    private javax.swing.JTextField saveFileDirectoryTextField;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JPanel timestampPanel;
     private javax.swing.JCheckBox updateTimestampCheckBox;
