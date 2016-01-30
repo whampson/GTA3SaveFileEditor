@@ -1,6 +1,5 @@
 package thehambone.gtatools.gta3savefileeditor;
 
-import thehambone.gtatools.gta3savefileeditor.AboutDialog;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -40,8 +39,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import thehambone.gtatools.gta3savefileeditor.Main;
-import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.page.GangsPage;
 import thehambone.gtatools.gta3savefileeditor.page.GaragesPage;
 import thehambone.gtatools.gta3savefileeditor.page.GeneralPage;
@@ -485,7 +482,7 @@ public class EditorWindow extends JFrame implements Observer
         JPanel statusPanel = new JPanel(new BorderLayout());
         
         // Set up status labels
-        Dimension statusLabelSize = new Dimension(50, 14);
+        Dimension statusLabelSize = new Dimension(55, 14);
         
         statusMessageLabel = new JLabel();
         
