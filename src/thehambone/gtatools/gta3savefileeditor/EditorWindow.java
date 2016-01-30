@@ -1218,30 +1218,8 @@ public class EditorWindow extends JFrame implements Observer
      */
     private File promptForFile(String title, String approveButtonText)
     {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle(title);
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setMultiSelectionEnabled(false);
-        
-        String parentDirPath = Settings.get(Settings.Key.LAST_SELECTED_FILE);
-        
-        if (parentDirPath != null) {
-            fileChooser.setSelectedFile(new File(parentDirPath));
-        }
-        
-        fileChooser.setFileFilter(new FileNameExtensionFilter(
-                "GTA III-era Save Files (*.b)", "b"));
-        
-        int option = fileChooser.showDialog(this, approveButtonText);
-        if (option != JFileChooser.APPROVE_OPTION) {
-            return null;
-        }
-        
-        File f = fileChooser.getSelectedFile();
-        
-        Settings.set(Settings.Key.LAST_SELECTED_FILE, f.getAbsolutePath());
-        
-        return f;
+        return GUIUtilities.showFileSelectionDialog(this,
+                title, approveButtonText);
     }
     
     /**
