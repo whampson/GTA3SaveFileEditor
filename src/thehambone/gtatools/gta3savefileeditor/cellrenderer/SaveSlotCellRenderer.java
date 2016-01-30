@@ -36,7 +36,8 @@ public class SaveSlotCellRenderer implements ListCellRenderer<PCSaveSlot>
         timestampLabel.setFont(list.getFont());
         
         if (!value.isUsable()) {
-            titleLabel.setText("Slot is not usable");
+            titleLabel.setText("Slot is not usable "
+                    + "- check file or GTA3 save dir");
             titleLabel.setForeground(Color.gray);
         } else if (value.isEmpty()) {
             titleLabel.setText("Slot " + value.getSlotNumber() + " is free");
