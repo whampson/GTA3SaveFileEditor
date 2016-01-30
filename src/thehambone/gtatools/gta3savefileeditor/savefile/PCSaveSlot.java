@@ -69,6 +69,14 @@ public class PCSaveSlot
         return file;
     }
     
+    public String getFilePath()
+    {
+        File gta3SaveDir = new File(Settings.get(Settings.Key.GTA3_USER_DIR));
+        String fileName = gta3SaveDir + File.separator + generateFileName();
+        
+        return fileName;
+    }
+    
     public String getSaveName()
     {
         return saveName;
@@ -81,7 +89,7 @@ public class PCSaveSlot
     
     public void refresh() throws IOException
     {
-        // Get GTA3 User Files location from program settings file
+        // Get GTA3 User Files location from program settings
         File gta3SaveDir = new File(Settings.get(Settings.Key.GTA3_USER_DIR));
         
         // Check whether the GTA3 User Files location is valid
