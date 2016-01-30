@@ -11,6 +11,7 @@ Editor
 * Better logging.
 * Added command line option --log-level=<level>
 * Minor visual changes
+* Added recent files list
 
 General
 -------

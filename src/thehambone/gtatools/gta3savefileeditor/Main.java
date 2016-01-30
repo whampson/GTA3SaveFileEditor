@@ -12,10 +12,11 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
+
 
 /**
  * This class handles program initialization and contains general program
@@ -102,22 +103,25 @@ public final class Main
          * -BUG: Mac OS X crash when using "Save Slot" feature
          * -BUG: Save title reset to previous value when switched back to
          *  General page (Mobile only)
-         * -BUG: Welcome page buttons do not work
          * -BUG: "Equipped" check box on player page does not appear to
          *       accurately reflect whether a weapon is enabled
          * -BUG: Mobile saves erroneously show changes made when the file is
          *       first loaded
+         * -BUG: Mac OS X: Modified label is too small
+         * -BUG: External changes dialog will show after saving a file
+         * -BUG: Gang vehicles offset is off by 1
          * -cmd options: --log-to-file
-         * -Cut down on save slot refreshes
+         * -Make file backups
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Set combobox index to -1 when value out of range
          * -Bomb armed checkbox
-         * -Welcome page browse button page event
-         * -Revise "Options" page
+         * -Append .B extension to files with no extension
          * -Tweak about page text
          * -Better crashdump output
          * -Documentation
          * -Tooltip text
+         * -Reorder imports
+         * -Add newline to end of all files
          * -New icon
          */
         
