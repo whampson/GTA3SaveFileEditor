@@ -39,7 +39,7 @@ public class Settings
     static {
         // Populate defaults list
         DEFAULTS.put(Key.GTA3_USER_DIR.propertyName,
-                Game.getGameUserDirectoryPath());
+                Game.getUserDirectoryPath());
         DEFAULTS.put(Key.LAST_SELECTED_FILE.propertyName, "");
         DEFAULTS.put(Key.MAKE_BACKUPS.propertyName, "true");
         DEFAULTS.put(Key.TIMESTAMP_FILES.propertyName, "true");
