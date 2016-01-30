@@ -1,6 +1,5 @@
 package thehambone.gtatools.gta3savefileeditor;
 
-import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -49,6 +48,7 @@ import thehambone.gtatools.gta3savefileeditor.page.WelcomePage;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.FixedLengthQueue;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -95,7 +95,9 @@ public class EditorWindow extends JFrame implements Observer
         initTabbedPane();
         initPanels();
         initObservers();
-        refreshMenus();
+        enableFileMenuComponents(false);
+        refreshRecentFilesMenu();
+        refreshSlotMenus();
         refreshPages();
         setChangesMade(false);
         setStatusMessage("Welcome to the GTA III Save File Editor!");
@@ -292,26 +294,29 @@ public class EditorWindow extends JFrame implements Observer
         });
         
         // Define "Refresh" action
+        final Component dialogParent = this;
         refreshMenuItem.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (!SaveFile.isFileLoaded() || !promptSaveChanges()) {
-                    return;
-                }
-                
-                try {
-                    SaveFile.load(SaveFile.getCurrentSaveFile().getSourceFile());
+                if (changesMade) {
+                    String message = GUIUtilities.formatHTMLString("Refreshing "
+                            + "this file will destroy any unsaved changes.\n\n"
+                            + "Continue?");
+                    int option = JOptionPane.showOptionDialog(dialogParent,
+                            message,
+                            "Confirm Refresh",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null, null, null);
+                    if (option != JOptionPane.YES_OPTION) {
+                        return;
+                    }
                     changesMade = false;
-                    updateFrameTitleAndModificationStatus();
-                    // TODO: prompt save as
-                } catch (IOException ex) {
-                    Logger.stackTrace(ex);
-                    // TODO: message
                 }
                 
-                refreshPages();
+                loadFile(SaveFile.getCurrentSaveFile().getSourceFile(), false);
                 setStatusMessage("Current file has been re-loaded.");
             }
         });
@@ -529,15 +534,13 @@ public class EditorWindow extends JFrame implements Observer
     }
     
     /**
-     * Marks certain menu items enabled or disabled based on whether a file is
-     * loaded, and also refreshes the save slot menu items.
+     * Enables or disables certain items in the "File" menu.
      */
-    private void refreshMenus()
+    private void enableFileMenuComponents(final boolean enabled)
     {
-        final boolean isFileLoaded = SaveFile.isFileLoaded();
         final boolean isPC;
         
-        if (isFileLoaded) {
+        if (enabled) {
             SaveFile.Platform p = SaveFile.getCurrentSaveFile().getPlatform();
             isPC = p == SaveFile.Platform.PC;
         } else {
@@ -551,16 +554,13 @@ public class EditorWindow extends JFrame implements Observer
             @Override
             public void run()
             {
-                saveMenuItem.setEnabled(isFileLoaded);
-                saveAsMenuItem.setEnabled(isFileLoaded);
-                saveSlotMenu.setEnabled(isFileLoaded && isPC);
-                closeFileMenuItem.setEnabled(isFileLoaded);
-                refreshMenuItem.setEnabled(isFileLoaded);
+                saveMenuItem.setEnabled(enabled);
+                saveAsMenuItem.setEnabled(enabled);
+                saveSlotMenu.setEnabled(enabled && isPC);
+                closeFileMenuItem.setEnabled(enabled);
+                refreshMenuItem.setEnabled(enabled);
             }
         });
-        
-        refreshSlotMenus();
-        refreshRecentFilesMenu();
     }
     
     /**
@@ -601,7 +601,7 @@ public class EditorWindow extends JFrame implements Observer
     /**
      * Re-loads the recent files menu.
      */
-    public void refreshRecentFilesMenu()
+    private void refreshRecentFilesMenu()
     {
         loadRecentMenu.removeAll();
         
@@ -686,7 +686,7 @@ public class EditorWindow extends JFrame implements Observer
                 slotMenuItem.setEnabled(false);
             } else if (slot.isEmpty()) {
                 slotMenuItem.setText((i + 1) + ". (slot is empty)");
-                slotMenuItem.setEnabled(false);
+                slotMenuItem.setEnabled(action != SlotMenuItemAction.LOAD);
             } else {
                 slotMenuItem.setText((i + 1) + ". " + slot.getSaveName());
             }
@@ -705,7 +705,6 @@ public class EditorWindow extends JFrame implements Observer
             }
             
             // Define menu item action
-            final Frame dialogParent = this;
             if (action == SlotMenuItemAction.LOAD) {
                 slotMenuItem.addActionListener(new ActionListener()
                 {
@@ -722,26 +721,17 @@ public class EditorWindow extends JFrame implements Observer
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        // TODO: clean up
-                        File f = slot.getFile();
                         if (!SaveFile.isFileLoaded()) {
                             return;
                         }
-                        File currentSaveFile
-                                = SaveFile.getCurrentSaveFile().getSourceFile();
-                        if (!currentSaveFile.getAbsolutePath().equals(f.getAbsolutePath()) && f.exists()) {
-                            int option = JOptionPane.showOptionDialog(dialogParent,
-                                    GUIUtilities.formatHTMLString("Are you sure you want to overwrite \"" + f.getName() + "\"?"),
-                                    "Comfirm Overwrite",
-                                    JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE,
-                                    null,
-                                    null,
-                                    null);
-                            if (option != JOptionPane.YES_OPTION) {
-                                return;
-                            }
+                        
+                        File f;
+                        if (slot.isEmpty()) {
+                            f = new File(slot.getFilePath());
+                        } else {
+                            f = slot.getFile();
                         }
+                        
                         saveFile(f);
                     }
                 });
@@ -965,7 +955,7 @@ public class EditorWindow extends JFrame implements Observer
         
         // Update GUI
         setStatusMessage(message);
-        refreshMenus();
+        enableFileMenuComponents(false);
         refreshPages();
         setChangesMade(false);
         updatePlatformStatus();
@@ -973,9 +963,13 @@ public class EditorWindow extends JFrame implements Observer
         return true;
     }
     
+    /**
+     * Prompts for a file, then loads the file and opens all tabs related to
+     * file editing.
+     */
     private void loadFile()
     {
-        loadFile(null);
+        loadFile(null, true);
     }
     
     /**
@@ -984,6 +978,18 @@ public class EditorWindow extends JFrame implements Observer
      * @param f the file to load
      */
     private void loadFile(File f)
+    {
+        loadFile(f, true);
+    }
+    
+    /**
+     * Loads a file and opens all tabs related to file editing.
+     * 
+     * @param f the file to load
+     * @param showCompletionMessage a boolean indicating whether to show a
+     *        message when the file has loaded
+     */
+    private void loadFile(File f, boolean showCompletionMessage)
     {
         // Attempt to close the current file; end if the user cancels
         if (!closeFile()) {
@@ -1046,15 +1052,18 @@ public class EditorWindow extends JFrame implements Observer
         
         String message = "Loaded file: " + f;
         Logger.info(message);
-        GUIUtilities.showInformationMessageBox(this,
-                "File loaded successfully!", "Success");
+        
+        if (showCompletionMessage) {
+            GUIUtilities.showInformationMessageBox(this,
+                    "File loaded successfully!", "Success");
+        }
         
         crc = SaveFile.getCurrentSaveFile().getCRC32();
         Logger.debug("File checksum (CRC32): 0x%08x\n", crc);
         
         // Update GUI
         setStatusMessage(message);
-        refreshMenus();
+        enableFileMenuComponents(true);
         refreshPages();
         setChangesMade(false);
         updatePlatformStatus();
@@ -1073,6 +1082,30 @@ public class EditorWindow extends JFrame implements Observer
      */
     private void saveFile(File f)
     {
+        if (f == null) {
+            return;
+        }
+        
+        File currentFile = SaveFile.getCurrentSaveFile().getSourceFile();
+        boolean isSameFile = f.getAbsolutePath()
+                .equalsIgnoreCase(currentFile.getAbsolutePath());
+        
+        // Prompt user to overwrite file
+        if (f.exists() && !isSameFile) {
+            int option = JOptionPane.showOptionDialog(this,
+                    GUIUtilities.formatHTMLString("Are you sure you want to "
+                            + "overwrite \"" + f.getName() + "\"?"),
+                    "Comfirm Overwrite",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    null,
+                    null);
+            if (option != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
         Logger.info("Saving file...");
         
         // Save the file
@@ -1085,6 +1118,9 @@ public class EditorWindow extends JFrame implements Observer
             Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Error Saving File", ex);
         }
+        
+        crc = SaveFile.getCurrentSaveFile().getCRC32();
+        Logger.debug("File checksum (CRC32): 0x%08x\n", crc);
         
         String message = "Saved file: " + f;
         Logger.info(message);
@@ -1166,7 +1202,7 @@ public class EditorWindow extends JFrame implements Observer
         
         if (option == 0) {
             setChangesMade(false);
-            loadFile(f);
+            loadFile(f, false);
         } else {
             crc = newCRC;   // Prevent user from being prompted continuously
         }
