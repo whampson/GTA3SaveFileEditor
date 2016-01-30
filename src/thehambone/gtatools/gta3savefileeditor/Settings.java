@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import thehambone.gtatools.gta3savefileeditor.game.Game;
 import thehambone.gtatools.gta3savefileeditor.util.FixedLengthQueue;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * This class handles the program settings.
@@ -104,6 +105,8 @@ public class Settings
     public static void set(Key key, String value)
     {
         CURRENT_CONFIG.put(key.propertyName, value);
+        
+        Logger.debug("Property updated: %s = %s\n", key, value);
     }
     
     /**
