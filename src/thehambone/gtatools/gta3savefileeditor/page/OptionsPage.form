@@ -39,10 +39,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="timestampPanel" max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="fileBackupsPanel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="saveFileDirectoryPanel" alignment="0" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="fileBackupsPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="saveFileDirectoryPanel" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>

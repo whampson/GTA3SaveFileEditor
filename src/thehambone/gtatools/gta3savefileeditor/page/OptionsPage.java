@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
-import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -140,18 +139,8 @@ public class OptionsPage extends Page
     
     private File selectDirectory()
     {
-        JFileChooser jfc = new JFileChooser();
-        jfc.setMultiSelectionEnabled(false);
-        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        
-        int option = jfc.showOpenDialog(this);
-        if (option != JFileChooser.APPROVE_OPTION) {
-            return null;
-        }
-        
-        File f = jfc.getSelectedFile();
-        
-        return f;
+        return GUIUtilities.showDirectorySelectionDialog(this,
+                "Browse for GTA3 User Files", "Open");
     }
     
     @Override
