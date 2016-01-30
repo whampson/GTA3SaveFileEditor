@@ -3,7 +3,11 @@ package thehambone.gtatools.gta3savefileeditor.util;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import thehambone.gtatools.gta3savefileeditor.Settings;
 
 /**
  * This class provides several convenience methods for GUI-related tasks, such
@@ -217,5 +221,77 @@ public class GUIUtilities
                 formatHTMLString(message, textWidth, false, null),
                 title,
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Displays a file selection dialog. The dialog will have a file name filter
+     * enabled to only allow for files with the ".b" extension to be selected.
+     * However, this can be disabled by the user. The file selection dialog will
+     * start in the most recently-visited folder.
+     * 
+     * @param parent the dialog parent
+     * @param title the dialog title
+     * @param approveButtonText the text to appear on the approve button
+     * @return the selected file, {@code null} if the user cancels
+     */
+    public static File showFileSelectionDialog(Component parent, String title,
+            String approveButtonText)
+    {
+        String lastLocation = Settings.get(Settings.Key.LAST_LOCATION);
+        
+        JFileChooser jfc = new JFileChooser();
+        jfc.setDialogTitle(title);
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc.setMultiSelectionEnabled(false);
+        jfc.setFileFilter(new FileNameExtensionFilter(
+                "GTA III-era Save Files (*.b)", "b"));
+        if (lastLocation != null) {
+            jfc.setCurrentDirectory(new File(lastLocation));
+        }
+        
+        int option = jfc.showDialog(parent, approveButtonText);
+        if (option != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        
+        File f = jfc.getSelectedFile();
+        
+        Settings.set(Settings.Key.LAST_LOCATION, f.getAbsolutePath());
+        
+        return f;
+    }
+    
+    /**
+     * Displays a file selection dialog that only allows folders to be selected.
+     * The file selection dialog will start in the most recently-visited folder.
+     * 
+     * @param parent the dialog parent
+     * @param title the dialog title
+     * @param approveButtonText the text to appear on the approve button
+     * @return the selected file, {@code null} if the user cancels
+     */
+    public static File showDirectorySelectionDialog(Component parent,
+            String title, String approveButtonText)
+    {
+        String lastLocation = Settings.get(Settings.Key.LAST_LOCATION);
+        
+        JFileChooser jfc = new JFileChooser();
+        jfc.setDialogTitle(title);
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc.setMultiSelectionEnabled(false);
+        if (lastLocation != null) {
+            jfc.setCurrentDirectory(new File(lastLocation));
+        }
+        
+        int option = jfc.showDialog(parent, approveButtonText);
+        if (option != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        
+        File dir = jfc.getSelectedFile();
+        
+        Settings.set(Settings.Key.LAST_LOCATION, dir.getAbsolutePath());
+        
+        return dir;
     }
 }
