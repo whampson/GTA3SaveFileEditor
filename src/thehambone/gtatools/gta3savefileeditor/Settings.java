@@ -28,7 +28,7 @@ public class Settings
     /**
      * The path to the program configuration file.
      */
-    public static final String CONFIG_FILE_PATH = "./gta3-sfedit.cfg";
+    public static final String CONFIG_FILE_PATH = "./.gta3-save-editor";
     
     // Replace the # character with a number when using
     private static final String RECENT_FILE_KEY_FORMAT = "recent.file#";
