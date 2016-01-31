@@ -1,83 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- You may freely edit this file. See commented blocks below for -->
-<!-- some examples of how to customize the build. -->
-<!-- (If you delete it and reopen the project it will be recreated.) -->
-<!-- By default, only the Clean and Build commands use this build script. -->
-<!-- Commands such as Run, Debug, and Test only use this build script if -->
-<!-- the Compile on Save feature is turned off for the project. -->
-<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
-<!-- in the project's Project Properties dialog box.-->
 <project name="GTA_III_Save_File_Editor" default="default" basedir=".">
     <description>Builds, tests, and runs the project GTA III Save File Editor.</description>
+    
     <import file="nbproject/build-impl.xml"/>
-    <!--
-
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
-
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
-      -pre-compile-single:       called before javac compilation of single file
-      -post-compile-single:      called after javac compilation of single file
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-compile-test-single:  called before javac compilation of single JUnit test
-      -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-jar:                  called before JAR building
-      -post-jar:                 called after JAR building
-      -post-clean:               called after cleaning build products
-
-    (Targets beginning with '-' are not intended to be called on their own.)
-
-    Example of inserting an obfuscator after compilation could look like this:
-
-        <target name="-post-compile">
-            <obfuscate>
-                <fileset dir="${build.classes.dir}"/>
-            </obfuscate>
-        </target>
-
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
-
-
-    Another way to customize the build is by overriding existing main targets.
-    The targets of interest are: 
-
-      -init-macrodef-javac:     defines macro for javac compilation
-      -init-macrodef-junit:     defines macro for junit execution
-      -init-macrodef-debug:     defines macro for class debugging
-      -init-macrodef-java:      defines macro for class execution
-      -do-jar:                  JAR building
-      run:                      execution of project 
-      -javadoc-build:           Javadoc generation
-      test-report:              JUnit report generation
-
-    An example of overriding the target for project execution could look like this:
-
-        <target name="run" depends="GTA_III_Gamesave_Editor-impl.jar">
-            <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
-            </exec>
-        </target>
-
-    Notice that the overridden target depends on the jar target and not only on 
-    the compile target as the regular run target does. Again, for a list of available 
-    properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file. 
-
-    -->
+    
     <target name="-pre-jar">
+        <!-- Update build properties -->
         <propertyfile file="build.properties" comment="JAR build info">
             <entry key="build.date" type="date" value="now" pattern="yyyy-MM-dd HH:mm:ss"/>
             <entry key="build.date.format" value="yyyy-MM-dd HH:mm:ss"/>
             <entry key="build.number" default="0" type="int" operation="+" value="1"/>
         </propertyfile>
+        
+        <!-- Load build properties into ant to access build number -->
         <loadproperties srcFile="build.properties"/>
-        <copy file="build.properties" tofile="${build.classes.dir}/META-INF/build.properties"/>
+        
+        <!-- Copy build properties and resources into META-INF -->
+        <copy file="build.properties"
+                tofile="${build.classes.dir}/META-INF/build.properties"/>
         <copy todir="${build.classes.dir}/META-INF/res">
             <fileset dir="res">
                 <exclude name="icon.ico"/>
@@ -86,19 +26,26 @@
         </copy>
     </target>
     
-    <property name="launch4j.dir" location="C:\\Program Files (x86)\\Launch4j"/>
+    <!-- Define launch4j task for Windows executables -->
+    <property name="launch4j.dir" location="C:/Program Files (x86)/Launch4j" />
     <taskdef name="launch4j"
             classname="net.sf.launch4j.ant.Launch4jTask"
             classpath="${launch4j.dir}/launch4j.jar
                     :${launch4j.dir}/lib/xstream.jar" />
-                    
-    <taskdef name="appbundler" classname="com.oracle.appbundler.AppBundlerTask" classpath="lib/appbundler-1.0.jar" />
+    
+    <!-- Define appbundler task for Mac OS X .app packages -->
+    <taskdef name="appbundler"
+            classname="com.oracle.appbundler.AppBundlerTask"
+            classpath="appbundler-1.0.jar" />
     
     <target name="-post-jar">
-        <mkdir dir="${dist.dir}/windows"/>
-        <launch4j configFile="launch4j.xml" fileVersion="0.2.0.${build.number}"/>
+        <!-- Build windows executable -->
+        <mkdir dir="${dist.dir}/windows" />
+        <launch4j configFile="launch4j.xml"
+                fileVersion="0.2.0.${build.number}" />
         
-        <mkdir dir="${dist.dir}/osx"/>
+        <!-- Build OSX .app package -->
+        <mkdir dir="${dist.dir}/osx" />
         <appbundler
                 outputdirectory="${dist.dir}/osx"
                 name="GTA III Save File Editor"
@@ -107,13 +54,12 @@
                 icon="res/icon.icns"
                 shortversion="0.2"
                 mainclassname="thehambone.gtatools.gta3savefileeditor.Main">
-			<classpath file="${dist.jar}"/>
-			<option value="-Dapple.lad.useScreenManuBar=true" />
-			<option value="-Xdock:icon=/Contents/Resources/iiiicontrans.icns" />
-	        <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
-	        <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
-	        <option value="-Dapple.awt.application.name=GTA III Save File Editor"/>
-	        <option value="-Dcom.apple.smallTabs=true"/>
+            <classpath file="${dist.jar}" />
+            <option value="-Dapple.awt.application.name=GTA III Save File Editor" />
+            <option value="-Dapple.lad.useScreenManuBar=true" />
+            <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
+            <option value="-Dcom.apple.smallTabs=true" />
+            <option value="-Xdock:icon=/Contents/Resources/icon.icns" />
         </appbundler>
     </target>
 </project>

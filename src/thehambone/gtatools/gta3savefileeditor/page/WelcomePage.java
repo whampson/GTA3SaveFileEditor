@@ -1,6 +1,5 @@
 package thehambone.gtatools.gta3savefileeditor.page;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -80,15 +80,18 @@ public class WelcomePage extends Page
             }
         });
         
-        final Component dialogParent = this;
+        final JFrame dialogParent
+                = (JFrame)SwingUtilities.getWindowAncestor(this);
         browseButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 File f = GUIUtilities.showFileSelectionDialog(dialogParent,
-                        "Load File", "Open");
-                notifyObservers(Page.Event.FILE_LOAD, f);
+                        "Load File", false);
+                if (f != null) {
+                    notifyObservers(Page.Event.FILE_LOAD, f);
+                }
             }
         });
     }

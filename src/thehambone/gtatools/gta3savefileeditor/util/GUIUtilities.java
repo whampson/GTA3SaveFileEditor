@@ -2,11 +2,16 @@ package thehambone.gtatools.gta3savefileeditor.util;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FilenameFilter;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.Settings;
 
 /**
@@ -231,32 +236,53 @@ public class GUIUtilities
      * 
      * @param parent the dialog parent
      * @param title the dialog title
-     * @param approveButtonText the text to appear on the approve button
+     * @param showFileSaveDialog a boolean indicating whether to show the "Save"
+     *        dialog
      * @return the selected file, {@code null} if the user cancels
      */
-    public static File showFileSelectionDialog(Component parent, String title,
-            String approveButtonText)
+    public static File showFileSelectionDialog(Frame parent, String title,
+            boolean showFileSaveDialog)
     {
         String lastLocation = Settings.get(Settings.Key.LAST_LOCATION);
+        File f;
         
-        JFileChooser jfc = new JFileChooser();
-        jfc.setDialogTitle(title);
-        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jfc.setMultiSelectionEnabled(false);
-        jfc.setFileFilter(new FileNameExtensionFilter(
-                "GTA III-era Save Files (*.b)", "b"));
-        if (lastLocation != null) {
-            jfc.setCurrentDirectory(new File(lastLocation));
+        if (Main.getOperatingSystem() == Main.OperatingSystem.MAC_OS_X) {
+            FileDialog fd = new FileDialog(parent, title,
+                    showFileSaveDialog ? FileDialog.SAVE : FileDialog.LOAD);
+            fd.setMultipleMode(false);
+            if (lastLocation != null) {
+                fd.setDirectory(lastLocation);
+            }
+            fd.setLocationRelativeTo(parent);
+            fd.setVisible(true);
+            
+            if (fd.getDirectory()== null || fd.getFile() == null) {
+                return null;
+            }
+            f = new File(fd.getDirectory() + File.separator + fd.getFile());
+        } else {
+            JFileChooser jfc = new JFileChooser();
+            jfc.setDialogTitle(title);
+            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            jfc.setMultiSelectionEnabled(false);
+            jfc.setFileFilter(new FileNameExtensionFilter(
+                    "GTA III-era Save Files (*.b)", "b"));
+            if (lastLocation != null) {
+                jfc.setCurrentDirectory(new File(lastLocation));
+            }
+
+            int option = jfc.showDialog(parent,
+                    showFileSaveDialog ? "Save" : "Open");
+            if (option != JFileChooser.APPROVE_OPTION) {
+                return null;
+            }
+
+            f = jfc.getSelectedFile();
         }
         
-        int option = jfc.showDialog(parent, approveButtonText);
-        if (option != JFileChooser.APPROVE_OPTION) {
-            return null;
+        if (f != null) {
+            Settings.set(Settings.Key.LAST_LOCATION, f.getAbsolutePath());
         }
-        
-        File f = jfc.getSelectedFile();
-        
-        Settings.set(Settings.Key.LAST_LOCATION, f.getAbsolutePath());
         
         return f;
     }
@@ -267,30 +293,48 @@ public class GUIUtilities
      * 
      * @param parent the dialog parent
      * @param title the dialog title
-     * @param approveButtonText the text to appear on the approve button
      * @return the selected file, {@code null} if the user cancels
      */
-    public static File showDirectorySelectionDialog(Component parent,
-            String title, String approveButtonText)
+    public static File showDirectorySelectionDialog(Frame parent,
+            String title)
     {
         String lastLocation = Settings.get(Settings.Key.LAST_LOCATION);
+        File dir;
         
-        JFileChooser jfc = new JFileChooser();
-        jfc.setDialogTitle(title);
-        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        jfc.setMultiSelectionEnabled(false);
-        if (lastLocation != null) {
-            jfc.setCurrentDirectory(new File(lastLocation));
+        if (Main.getOperatingSystem() == Main.OperatingSystem.MAC_OS_X) {
+            System.setProperty("apple.awt.fileDialogForDirectories", "true");
+            FileDialog fd = new FileDialog(parent, title, FileDialog.LOAD);
+            fd.setMultipleMode(false);
+            if (lastLocation != null) {
+                fd.setDirectory(lastLocation);
+            }
+            fd.setLocationRelativeTo(parent);
+            fd.setVisible(true);
+            if (fd.getDirectory() == null ||fd.getFile() == null) {
+                return null;
+            }
+            dir = new File(fd.getDirectory()+ File.separator + fd.getFile());
+            System.setProperty("apple.awt.fileDialogForDirectories", "false");
+        } else {
+            JFileChooser jfc = new JFileChooser();
+            jfc.setDialogTitle(title);
+            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            jfc.setMultiSelectionEnabled(false);
+            if (lastLocation != null) {
+                jfc.setCurrentDirectory(new File(lastLocation));
+            }
+
+            int option = jfc.showDialog(parent, "Open");
+            if (option != JFileChooser.APPROVE_OPTION) {
+                return null;
+            }
+            
+            dir = jfc.getSelectedFile();
         }
         
-        int option = jfc.showDialog(parent, approveButtonText);
-        if (option != JFileChooser.APPROVE_OPTION) {
-            return null;
+        if (dir != null) {
+            Settings.set(Settings.Key.LAST_LOCATION, dir.getAbsolutePath());
         }
-        
-        File dir = jfc.getSelectedFile();
-        
-        Settings.set(Settings.Key.LAST_LOCATION, dir.getAbsolutePath());
         
         return dir;
     }

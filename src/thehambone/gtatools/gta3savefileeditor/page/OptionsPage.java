@@ -6,7 +6,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
+import javax.swing.JFrame;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
@@ -139,8 +141,9 @@ public class OptionsPage extends Page
     
     private File selectDirectory()
     {
-        return GUIUtilities.showDirectorySelectionDialog(this,
-                "Browse for GTA3 User Files", "Open");
+        return GUIUtilities.showDirectorySelectionDialog(
+                (JFrame)SwingUtilities.getWindowAncestor(this),
+                "Browse for GTA3 User Files");
     }
     
     @Override
@@ -226,7 +229,7 @@ public class OptionsPage extends Page
             .addGroup(fileBackupsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(makeFileBackupCheckBox)
-                .addContainerGap(296, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         fileBackupsPanelLayout.setVerticalGroup(
             fileBackupsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +241,7 @@ public class OptionsPage extends Page
 
         timestampPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Timestamp"));
 
-        updateTimestampCheckBox.setText("Update timestamp when file is saved (PC only)");
+        updateTimestampCheckBox.setText("Update timestamp when file is saved (PC saves only)");
         updateTimestampCheckBox.setToolTipText("The timestamp that shows up on the in-game Load menu will be updated to reflect the time that the file was saved.");
 
         javax.swing.GroupLayout timestampPanelLayout = new javax.swing.GroupLayout(timestampPanel);
@@ -248,7 +251,7 @@ public class OptionsPage extends Page
             .addGroup(timestampPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(updateTimestampCheckBox)
-                .addContainerGap(236, Short.MAX_VALUE))
+                .addContainerGap(283, Short.MAX_VALUE))
         );
         timestampPanelLayout.setVerticalGroup(
             timestampPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,12 +267,11 @@ public class OptionsPage extends Page
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(timestampPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(fileBackupsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(saveFileDirectoryPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(saveFileDirectoryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fileBackupsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(timestampPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

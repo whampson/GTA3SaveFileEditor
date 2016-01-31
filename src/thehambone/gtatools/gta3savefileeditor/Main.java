@@ -100,20 +100,19 @@ public final class Main
         /* TODO:
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related? (IDE only?)
-         * -BUG: Mac OS X crash when using "Save Slot" feature
          * -BUG: Save title reset to previous value when switched back to
          *  General page (Mobile only)
          * -BUG: "Equipped" check box on player page does not appear to
          *       accurately reflect whether a weapon is enabled
          * -BUG: Mobile saves erroneously show changes made when the file is
          *       first loaded
-         * -BUG: Mac OS X: Modified label is too small
-         * -BUG: External changes dialog will show after saving a file
-         * -BUG: Gang vehicles offset is off by 1
          * -cmd options: --log-to-file
          * -Make file backups
+         * -update timestamp on save
+         * -ResourceLoader class
          * -Game constants (ObjectType, WeatherType, etc.)
          * -Set combobox index to -1 when value out of range
+         * -VariableComboBoxItem class
          * -Bomb armed checkbox
          * -Append .B extension to files with no extension
          * -Tweak about page text
@@ -122,7 +121,6 @@ public final class Main
          * -Tooltip text
          * -Reorder imports
          * -Add newline to end of all files
-         * -New icon
          */
         
         initLogger();

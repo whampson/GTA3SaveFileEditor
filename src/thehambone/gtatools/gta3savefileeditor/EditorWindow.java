@@ -279,7 +279,7 @@ public class EditorWindow extends JFrame implements Observer
                     return;
                 }
                 
-                File f = promptForFile("Save As", "Save");
+                File f = promptForFile("Save As", true);
                 if (f == null) {
                     return;
                 }
@@ -1005,7 +1005,7 @@ public class EditorWindow extends JFrame implements Observer
         
         // Prompt for a file
         if (f == null) {
-            f = promptForFile("Load File", "Open");
+            f = promptForFile("Load File", false);
             if (f == null) {
                 return;
             }
@@ -1029,9 +1029,9 @@ public class EditorWindow extends JFrame implements Observer
         
         // Show error message if file type not supported
         if (!platform.isSupported()) {
-            String msg = "This file originates from a gaming platform which "
-                    + "is not currently supported by this editor. "
-                    + "(Platform: " + platform.getFriendlyName() + ")";
+            String msg = "This type of GTA III save file is not currently "
+                    + "supported by this editor.\n"
+                    + "(File type: " + platform.getFriendlyName() + ")";
             Logger.info(msg);
             showErrorMessage(msg, "Platform Not Supported", null);
             return;
@@ -1223,10 +1223,10 @@ public class EditorWindow extends JFrame implements Observer
      * @param approveButtonText the text for the approve button
      * @return the selected file, null if the the user cancelled
      */
-    private File promptForFile(String title, String approveButtonText)
+    private File promptForFile(String title, boolean showSaveFileDialog)
     {
         return GUIUtilities.showFileSelectionDialog(this,
-                title, approveButtonText);
+                title, showSaveFileDialog);
     }
     
     /**

@@ -12,6 +12,7 @@ Editor
 * Added command line option --log-level=<level>
 * Minor visual changes
 * Added recent files list
+* Added support for Mac OS X
 
 General
 -------

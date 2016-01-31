@@ -27,7 +27,8 @@ public class Game
         String gta3UserFiles = documentsPath + File.separator;
         if (Main.getOperatingSystem() == Main.OperatingSystem.MAC_OS_X) {
             gta3UserFiles += 
-                    "Rockstar Games" + File.separator + "GTA3 User Files";
+                    "Documents" + File.separator + "Rockstar Games"
+                    + File.separator + "GTA3 User Files";
         } else {
             gta3UserFiles += "GTA3 User Files";
         }
