@@ -76,9 +76,44 @@
             <entry key="build.date.format" value="yyyy-MM-dd HH:mm:ss"/>
             <entry key="build.number" default="0" type="int" operation="+" value="1"/>
         </propertyfile>
+        <loadproperties srcFile="build.properties"/>
         <copy file="build.properties" tofile="${build.classes.dir}/META-INF/build.properties"/>
-        <copy file="logo1.png" tofile="${build.classes.dir}/META-INF/res/logo1.png"/>
-        <copy file="logo2.png" tofile="${build.classes.dir}/META-INF/res/logo2.png"/>
-        <copy file="icon.png" tofile="${build.classes.dir}/META-INF/res/icon.png"/>
+        <copy todir="${build.classes.dir}/META-INF/res">
+            <fileset dir="res">
+                <exclude name="icon.ico"/>
+                <exclude name="icon.icns"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <property name="launch4j.dir" location="C:\\Program Files (x86)\\Launch4j"/>
+    <taskdef name="launch4j"
+            classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar
+                    :${launch4j.dir}/lib/xstream.jar" />
+                    
+    <taskdef name="appbundler" classname="com.oracle.appbundler.AppBundlerTask" classpath="lib/appbundler-1.0.jar" />
+    
+    <target name="-post-jar">
+        <mkdir dir="${dist.dir}/windows"/>
+        <launch4j configFile="launch4j.xml" fileVersion="0.2.0.${build.number}"/>
+        
+        <mkdir dir="${dist.dir}/osx"/>
+        <appbundler
+                outputdirectory="${dist.dir}/osx"
+                name="GTA III Save File Editor"
+                displayname="GTA III Save File Editor"
+                identifier="com.oracle.javafx.swing.Test"
+                icon="res/icon.icns"
+                shortversion="0.2"
+                mainclassname="thehambone.gtatools.gta3savefileeditor.Main">
+			<classpath file="${dist.jar}"/>
+			<option value="-Dapple.lad.useScreenManuBar=true" />
+			<option value="-Xdock:icon=/Contents/Resources/iiiicontrans.icns" />
+	        <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
+	        <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
+	        <option value="-Dapple.awt.application.name=GTA III Save File Editor"/>
+	        <option value="-Dcom.apple.smallTabs=true"/>
+        </appbundler>
     </target>
 </project>
