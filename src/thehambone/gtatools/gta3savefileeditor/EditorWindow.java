@@ -214,29 +214,34 @@ public class EditorWindow extends JFrame implements Observer
         
         loadMenuItem.setMnemonic(KeyEvent.VK_L);
         loadMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+                KeyEvent.VK_O,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         loadSlotMenu.setMnemonic(KeyEvent.VK_O);
         loadRecentMenu.setMnemonic(KeyEvent.VK_E);
         
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
         saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+                KeyEvent.VK_S,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         saveAsMenuItem.setMnemonic(KeyEvent.VK_A);
         saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S,
-                KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
+                        | KeyEvent.SHIFT_DOWN_MASK));
         saveSlotMenu.setMnemonic(KeyEvent.VK_V);
         
         closeFileMenuItem.setMnemonic(KeyEvent.VK_C);
         closeFileMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
+                KeyEvent.VK_W,
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         
         refreshMenuItem.setMnemonic(KeyEvent.VK_R);
         refreshMenuItem.setAccelerator(
                 KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
         refreshSlotsMenuItem.setMnemonic(KeyEvent.VK_F);
         refreshSlotsMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F5, KeyEvent.SHIFT_DOWN_MASK));
+                KeyEvent.VK_F5,
+                KeyEvent.SHIFT_DOWN_MASK));
         
         exitMenuItem.setMnemonic(KeyEvent.VK_X);
         
@@ -626,7 +631,8 @@ public class EditorWindow extends JFrame implements Observer
             // Add CTRL+SHIFT+R keystroke to first item in menu
             if (numItems == 1) {
                 menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-                        KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
+                                | KeyEvent.SHIFT_DOWN_MASK));
             }
             
             // Define menu item action
@@ -695,12 +701,13 @@ public class EditorWindow extends JFrame implements Observer
             if (action == SlotMenuItemAction.LOAD) {
                 // CTRL + <slot_index>
                 slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                        KeyEvent.VK_1 + i, InputEvent.CTRL_DOWN_MASK));
+                        KeyEvent.VK_1 + i,
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             } else if (action == SlotMenuItemAction.SAVE) {
                 // CTRL + SHIFT + <slot_index>
                 slotMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                         KeyEvent.VK_1 + i,
-                        InputEvent.CTRL_DOWN_MASK
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
                                 | InputEvent.SHIFT_DOWN_MASK));
             }
             
