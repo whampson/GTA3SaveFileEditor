@@ -3,8 +3,8 @@ package thehambone.gtatools.gta3savefileeditor.gxt;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
-import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * This class is responsible for keeping track of the active GXT table. A GXT
@@ -41,7 +41,11 @@ public final class GXT
     {
         GXTReader r = new GXTReader(gxtFile);
         gxtTable = r.readFile();
-        
-        Logger.info("Loaded GXT table from file: " + gxtFile);
+    }
+    
+    public static void loadGXTTable(InputStream gxtStream) throws IOException
+    {
+        GXTReader r = new GXTReader(gxtStream);
+        gxtTable = r.readFile();
     }
 }
