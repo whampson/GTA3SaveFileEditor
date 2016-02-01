@@ -111,6 +111,27 @@ public final class Logger
     }
     
     /**
+     * Writes a message to the log using the {@code WARN} level. Information
+     * about the specified {@code Throwable} object will be appended to the
+     * message. Information about the Throwable object is appended in the
+     * following format: {@code [throwable.ClassName: throwable message]}.
+     * 
+     * @param message the message to be written to the log
+     * @param t the {@code Throwable} object to be described in the message
+     */
+    public static void warn(Object message, Throwable t)
+    {
+        if (t == null) {
+            warn(message);
+        } else {
+            warn("%s [%s: %s]\n",
+                    message == null ? "null" : message.toString(),
+                    t.getClass().getName(),
+                    t.getMessage());
+        }
+    }
+    
+    /**
      * Writes a formatted message to the log using the {@code WARN} level.
      * 
      * @param format the message format
@@ -132,6 +153,27 @@ public final class Logger
     }
     
     /**
+     * Writes a message to the log using the {@code ERROR} level. Information
+     * about the specified {@code Throwable} object will be appended to the
+     * message. Information about the Throwable object is appended in the
+     * following format: {@code [throwable.ClassName: throwable message]}.
+     * 
+     * @param message the message to be written to the log
+     * @param t the {@code Throwable} object to be described in the message
+     */
+    public static void error(Object message, Throwable t)
+    {
+        if (t == null) {
+            error(message);
+        } else {
+            error("%s [%s: %s]\n",
+                    message == null ? "null" : message.toString(),
+                    t.getClass().getName(),
+                    t.getMessage());
+        }
+    }
+    
+    /**
      * Writes a formatted message to the log using the {@code ERROR} level.
      * 
      * @param format the message format
@@ -150,6 +192,27 @@ public final class Logger
     public static void fatal(Object message)
     {
         fatal("%s\n", message == null ? "null" : message.toString());
+    }
+    
+    /**
+     * Writes a message to the log using the {@code FATAL} level. Information
+     * about the specified {@code Throwable} object will be appended to the
+     * message. Information about the Throwable object is appended in the
+     * following format: {@code [throwable.ClassName: throwable message]}.
+     * 
+     * @param message the message to be written to the log
+     * @param t the {@code Throwable} object to be described in the message
+     */
+    public static void fatal(Object message, Throwable t)
+    {
+        if (t == null) {
+            fatal(message);
+        } else {
+            fatal("%s [%s: %s]\n",
+                    message == null ? "null" : message.toString(),
+                    t.getClass().getName(),
+                    t.getMessage());
+        }
     }
     
     /**
