@@ -3,6 +3,7 @@ package thehambone.gtatools.gta3savefileeditor.gxt;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +38,18 @@ public class GXTReader
     public GXTReader(File f) throws IOException
     {
         gxtBuf = new DataBuffer(f); // Loads file data into memory
+    }
+    
+    /**
+     * Creates a new {@code GXTReader} instance from the data in the specified
+     * stream.
+     * 
+     * @param stream the data stream
+     * @throws IOException if an I/O error occurs while reading the data stream
+     */
+    public GXTReader(InputStream stream) throws IOException
+    {
+        gxtBuf = new DataBuffer(stream); // Loads stream data into memory
     }
     
     /**
