@@ -29,6 +29,7 @@ import javax.swing.border.EmptyBorder;
 import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
+import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
 
 /**
  * The "About" window.
@@ -64,7 +65,8 @@ public class AboutDialog extends JDialog
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         iconLabel.setVerticalAlignment(SwingConstants.CENTER);
         try {
-            iconLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));
+            iconLabel.setIcon(new ImageIcon(
+                    ResourceLoader.loadImageResource(ICON_PATH)));
         } catch (IOException ex) {
             Logger.error("Failed to load image resource.");
             Logger.stackTrace(ex);

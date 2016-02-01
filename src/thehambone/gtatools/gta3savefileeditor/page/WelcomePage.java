@@ -18,6 +18,7 @@ import thehambone.gtatools.gta3savefileeditor.cellrenderer.SaveSlotCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
+import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
 
 /**
  * Created in Mar 30, 2015.
@@ -42,7 +43,8 @@ public class WelcomePage extends Page
     private void initIcon()
     {
         try {
-            imageLabel.setIcon(new ImageIcon(IO.loadImageResource(ICON_PATH)));
+            imageLabel.setIcon(new ImageIcon(
+                    ResourceLoader.loadImageResource(ICON_PATH)));
         } catch (IOException ex) {
             Logger.error("Failed to load image resource. [%s: %s]\n",
                     ex.getClass().getName(), ex.getMessage());
