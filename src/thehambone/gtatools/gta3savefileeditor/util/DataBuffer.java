@@ -1,14 +1,18 @@
 package thehambone.gtatools.gta3savefileeditor.util;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * A {@code DataBuffer} allows for the reading and writing of data found within
- * a Grand Theft Auto save file in terms of simple data types.
+ * A {@code DataBuffer} is a fixed-length collection of bytes. This class allows
+ * for the reading and writing of simple data structures to the buffer, which
+ * makes it useful for editing a file.
  * <p>
  * A {@code DataBuffer} cannot be resized.
  * <p>
@@ -51,30 +55,67 @@ public class DataBuffer
      */
     public DataBuffer(File file) throws IOException
     {
+        if (!file.exists()) {
+            throw new FileNotFoundException("file not found - " + file);
+        }
+        if (file.length() > Integer.MAX_VALUE) {
+            throw new IOException("file is too large");
+        }
+        
         try {
             buf = new byte[(int)file.length()];
             offset = 0;
             mark = 0;
         } catch (OutOfMemoryError ex) {
+            // Not sure if this is the correct way to handle large files...
             throw new IOException("file is too large", ex);
         }
         
-        loadFile(file);
-    }
-    
-    // Keep this private; file is meant to be loaded only once (in constructor)
-    private void loadFile(File f) throws IOException
-    {
-        if (!f.exists()) {
-            throw new FileNotFoundException("file not found - " + f);
-        }
-        if (f.length() > Integer.MAX_VALUE) {
-            throw new IOException("file is too large");
-        }
-        
-        try (FileInputStream in = new FileInputStream(f)) {
+        // Load the file into memory
+        try (FileInputStream in = new FileInputStream(file)) {
             in.read(buf, 0, buf.length);
         }
+    }
+    
+    /**
+     * Creates a new {@code DataBuffer} and populates it with the data from the
+     * specified stream.
+     * 
+     * @param stream the stream to read from
+     * @throws IOException if an error occurs while reading the stream
+     */
+    public DataBuffer(InputStream stream) throws IOException
+    {
+        buf = getStreamBytes(stream);
+        offset = 0;
+        mark = 0;
+    }
+    
+    /**
+     * Loads the stream into a byte array.
+     * 
+     * @param stream the stream to load
+     * @return the stream data as a byte array
+     * @throws IOException if an error occurs while reading the stream
+     */
+    private byte[] getStreamBytes(InputStream stream) throws IOException
+    {
+        BufferedInputStream bin = new BufferedInputStream(stream);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
+        int bytesRead;
+        byte[] readBuffer = new byte[4096];
+        
+        try {
+            while ((bytesRead = bin.read(readBuffer)) != -1) {
+                baos.write(readBuffer, 0, bytesRead);
+            }
+        } catch (OutOfMemoryError ex) {
+            // Not sure if this is the correct way to handle large streams...
+            throw new IOException("stream is too large", ex);
+        }
+        
+        return baos.toByteArray();
     }
     
     /**
@@ -269,15 +310,6 @@ public class DataBuffer
         return arr;
     }
     
-//    public byte[] toArrayReadOnly(int off, int len)
-//    {
-//        byte[] selection = new byte[len];
-//        for (int i = 0; i < len; i++) {
-//            selection[i] = buf[off + i];
-//        }
-//        return selection;
-//    }
-    
     /**
      * Returns the current position in the buffer.
      * 
@@ -389,20 +421,6 @@ public class DataBuffer
         return readInt() != 0;
     }
     
-//    /**
-//     * Reads the next two bytes from the buffer and interprets their combined
-//     * value as a 16-bit Unicode character. In the Java Programming Language, a
-//     * Unicode character is stored as a {@code char}.
-//     * 
-//     * @return the next two bytes as a {@code char} value
-//     * @throws IndexOutOfBoundsException if an attempt is made to read past the
-//     *         end of the buffer
-//     */
-//    public char readChar()
-//    {
-//        return (char) readShort();
-//    }
-    
     /**
      * Reads the next four bytes from the buffer and interprets their combined
      * value as a 32-bit floating-point number. In a Grand Theft Auto save file,
@@ -419,19 +437,6 @@ public class DataBuffer
     {
         return Float.intBitsToFloat(readInt());
     }
-    
-//    public float readFloat(int off)
-//    {
-//        int mark0;
-//        float value;
-//        
-//        mark0 = offset;
-//        offset = off;
-//        value = readFloat();
-//        offset = mark0;
-//        
-//        return value;
-//    }
     
     /**
      * Reads the next four bytes from the buffer and interprets their combined
@@ -579,19 +584,6 @@ public class DataBuffer
     {
         writeInt(bool ? 1 : 0);
     }
-    
-//    /**
-//     * Writes a 16-bit Unicode character value to the buffer at the current
-//     * offset as two bytes.
-//     * 
-//     * @param c the {@code char} value to be written
-//     * @throws IndexOutOfBoundsException if an attempt is made to write past the
-//     *         end of the buffer
-//     */
-//    public void writeChar(char c)
-//    {
-//        writeShort((short) c);
-//    }
     
     /**
      * Writes a 32-bit floating-point value to the buffer at the current offset
