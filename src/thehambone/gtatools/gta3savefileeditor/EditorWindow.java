@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -37,7 +36,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import thehambone.gtatools.gta3savefileeditor.page.GangsPage;
 import thehambone.gtatools.gta3savefileeditor.page.GaragesPage;
 import thehambone.gtatools.gta3savefileeditor.page.GeneralPage;
@@ -1020,8 +1018,7 @@ public class EditorWindow extends JFrame implements Observer
             Logger.debug("Detected platform: " + platform);
         } catch (IOException ex) {
             String errMsg = "An error occured while loading the file.";
-            Logger.error("%s [%s: %s]\n", errMsg,
-                    ex.getClass().getName(), ex.getMessage());
+            Logger.error(errMsg, ex);
             Logger.stackTrace(ex);
             showErrorMessage(errMsg, "Error Loading File", ex);
             return;
@@ -1071,6 +1068,7 @@ public class EditorWindow extends JFrame implements Observer
         // Update GUI
         setStatusMessage(message);
         enableFileMenuComponents(true);
+        refreshRecentFilesMenu();
         refreshPages();
         setChangesMade(false);
         updatePlatformStatus();
@@ -1174,8 +1172,7 @@ public class EditorWindow extends JFrame implements Observer
         try {
             newCRC = SaveFile.getCurrentSaveFile().getSourceFileCRC32();
         } catch (IOException ex) {
-            Logger.warn("Could not calculate CRC32 on source file [%s: %s]\n",
-                    ex.getClass().getName(), ex.getMessage());
+            Logger.warn("Could not calculate CRC32 on source file", ex);
             Logger.stackTrace(ex);
             return;
         }
