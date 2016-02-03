@@ -37,10 +37,14 @@ public class ResourceLoader
      * @throws IOException if the resource path is invalid or if the resource
      *         is not an image
      */
-    public static Image getImageResource(String resourcePath)
+    public static Image loadImageResource(String resourcePath)
             throws IOException
     {
-        InputStream stream = getResourceStream(resourcePath);
-        return ImageIO.read(stream);
+        InputStream in = ClassLoader.getSystemResourceAsStream(resourcePath);
+        if (in == null) {
+            throw new IOException("resource path is invalid - " + resourcePath);
+        }
+        
+        return ImageIO.read(in);
     }
 }
