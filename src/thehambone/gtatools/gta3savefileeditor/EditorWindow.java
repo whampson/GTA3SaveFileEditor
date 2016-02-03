@@ -132,20 +132,6 @@ public class EditorWindow extends JFrame implements Observer
                     checkForExternalChanges();
                 }
             }
-            
-            @Override
-            public void windowDeactivated(WindowEvent evt)
-            {
-                /* This event will trigger whenever the frame loses focus, which
-                   can occur after activating a modal dialog. We only want this
-                   code to run when the entire program loses focus. This can be
-                   checked by testing whether the opposite window is null. */
-                if (evt.getOppositeWindow() != null) {
-                    return;
-                }
-                
-                // Calculate CRC on current data
-            }
         });
     }
     
@@ -353,10 +339,13 @@ public class EditorWindow extends JFrame implements Observer
     {
         // Menu item definitions
         JMenu debugMenu = new JMenu("Debug");
+        JMenuItem clearChangesMadeFlagMenuItem
+                = new JMenuItem("Clear \"Changes Made\" Flag");
         JMenuItem runtimeExceptionMenuItem
                 = new JMenuItem("Cause RuntimeException");
         
         // Add menu items to Debug menu
+        debugMenu.add(clearChangesMadeFlagMenuItem);
         debugMenu.add(runtimeExceptionMenuItem);
         
         // Add menu to menu bar
@@ -364,7 +353,30 @@ public class EditorWindow extends JFrame implements Observer
         
         // Set keyboard mnemonics
         debugMenu.setMnemonic(KeyEvent.VK_D);
+        clearChangesMadeFlagMenuItem.setMnemonic(KeyEvent.VK_C);
         runtimeExceptionMenuItem.setMnemonic(KeyEvent.VK_R);
+        
+        // Set keyboard shotcuts
+        clearChangesMadeFlagMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                        KeyEvent.VK_C,
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
+                                | KeyEvent.ALT_DOWN_MASK));
+        
+        runtimeExceptionMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                        KeyEvent.VK_R,
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
+                                | KeyEvent.ALT_DOWN_MASK));
+        
+        // Define "Clear Changes Made Flag" action
+        clearChangesMadeFlagMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                setChangesMade(false);
+                Logger.debug("\"Changes Made\" flag reset");
+            }
+        });
         
         // Define "Cause RuntimeException" action
         runtimeExceptionMenuItem.addActionListener(new ActionListener()
