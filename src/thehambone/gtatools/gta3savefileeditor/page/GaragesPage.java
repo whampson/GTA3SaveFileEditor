@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -25,6 +28,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.SaveCarGarageSlot;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.StoredCar;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarByte;
+import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableComboBoxItem;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -62,7 +66,6 @@ public class GaragesPage extends Page
     
     private void initVariableComponentParameters()
     {
-        vehicleComboBox.setValueOffset(90);
         bulletproofCheckBox.setMask(
                 GameConstants.VehicleImmunity.BULLETPROOF.getMask());
         collisionproofCheckBox.setMask(
@@ -155,9 +158,6 @@ public class GaragesPage extends Page
     
     private void initColorPanels()
     {
-//        primaryColorPanel.setFocusable(true);
-//        secondaryColorPanel.setFocusable(true);
-        
         primaryColorPanel.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -191,12 +191,16 @@ public class GaragesPage extends Page
     
     private void initVehicleComboBox()
     {
-        DefaultComboBoxModel<String> vehicleComboBoxModel
-                = new DefaultComboBoxModel<>();
-        
+        List<VariableComboBoxItem> vehicles = new ArrayList<>();
         for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            vehicleComboBoxModel.addElement(v.getFriendlyName());
+            vehicles.add(
+                    new VariableComboBoxItem(v.getID(), v.getFriendlyName()));
         }
+        Collections.sort(vehicles);
+        
+        DefaultComboBoxModel<VariableComboBoxItem> vehicleComboBoxModel
+                = new DefaultComboBoxModel<>(
+                        vehicles.toArray(new VariableComboBoxItem[0]));
         
         vehicleComboBox.setModel(vehicleComboBoxModel);
         
@@ -205,30 +209,43 @@ public class GaragesPage extends Page
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                storedCarList.repaint();
+                SwingUtilities.invokeLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        storedCarList.repaint();
+                    }
+                });
             }
         });
     }
     
     private void initRadioStationComboBox()
     {
-        DefaultComboBoxModel<String> radioStationComboBoxModel
+        DefaultComboBoxModel<VariableComboBoxItem> radioStationComboBoxModel
                 = new DefaultComboBoxModel<>();
+        
         for (GameConstants.RadioStation r
                 : GameConstants.RadioStation.values()) {
-            radioStationComboBoxModel.addElement(r.getFriendlyName());
+            radioStationComboBoxModel.addElement(
+                    new VariableComboBoxItem(r.getID(), r.getFriendlyName()));
         }
+        
         radioStationComboBox.setModel(radioStationComboBoxModel);
     }
     
     private void initBombTypeComboBox()
     {
-        DefaultComboBoxModel<String> bombTypeComboBoxModel
+        DefaultComboBoxModel<VariableComboBoxItem> bombTypeComboBoxModel
                 = new DefaultComboBoxModel<>();
+        
         for (GameConstants.CarBomb cb
                 : GameConstants.CarBomb.values()) {
-            bombTypeComboBoxModel.addElement(cb.getFriendlyName());
+            bombTypeComboBoxModel.addElement(
+                    new VariableComboBoxItem(cb.getID(), cb.getFriendlyName()));
         }
+        
         bombTypeComboBox.setModel(bombTypeComboBoxModel);
     }
     

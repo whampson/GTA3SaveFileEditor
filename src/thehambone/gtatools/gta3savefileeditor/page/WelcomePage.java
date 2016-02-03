@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.cellrenderer.SaveSlotCellRenderer;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
@@ -46,8 +45,7 @@ public class WelcomePage extends Page
             imageLabel.setIcon(new ImageIcon(
                     ResourceLoader.loadImageResource(ICON_PATH)));
         } catch (IOException ex) {
-            Logger.error("Failed to load image resource. [%s: %s]\n",
-                    ex.getClass().getName(), ex.getMessage());
+            Logger.error("Failed to load image resource!", ex);
             Logger.stackTrace(ex);
         }
         imageLabel.setText("");

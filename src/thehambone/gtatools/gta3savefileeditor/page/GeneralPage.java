@@ -18,6 +18,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.Gang;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.PedType;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarDWORD;
+import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableComboBoxItem;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -73,7 +74,6 @@ public class GeneralPage extends Page
      */
     private void initVariableComponentParameters()
     {
-        monthComboBox.setValueOffset(1);
         dayTextField.setUnsigned(true);
         yearTextField.setUnsigned(true);
         hourTextField.setDisplayFormat("%02d");
@@ -150,6 +150,33 @@ public class GeneralPage extends Page
             monthLabel, dayLabel, dayOfWeekLabel, yearLabel, hourLabel,
             minuteLabel, secondLabel, millisLabel
         };
+        
+        DefaultComboBoxModel<VariableComboBoxItem> monthComboBoxModel
+                = new DefaultComboBoxModel<>();
+        monthComboBoxModel.addElement(new VariableComboBoxItem(1, "Jan."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(2, "Feb."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(3, "Mar."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(4, "Apr."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(5, "May"));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(6, "Jun."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(7, "Jul."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(8, "Aug."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(9, "Sep."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(10, "Oct."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(11, "Nov."));
+        monthComboBoxModel.addElement(new VariableComboBoxItem(12, "Dec."));
+        monthComboBox.setModel(monthComboBoxModel);
+        
+        DefaultComboBoxModel<VariableComboBoxItem> dayOfWeekComboBoxModel
+                = new DefaultComboBoxModel<>();
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(0, "Sun."));
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(1, "Mon."));
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(2, "Tue."));
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(3, "Wed."));
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(4, "Thu."));
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(5, "Fri."));
+        dayOfWeekComboBoxModel.addElement(new VariableComboBoxItem(6, "Sat."));
+        dayOfWeekComboBox.setModel(dayOfWeekComboBoxModel);
     }
     
     private void initGlitchFixButtons()
@@ -179,15 +206,17 @@ public class GeneralPage extends Page
     @SuppressWarnings("unchecked")
     private void initWeatherComponents()
     {
-        DefaultComboBoxModel<String> currentWeatherModel
+        DefaultComboBoxModel<VariableComboBoxItem> currentWeatherModel
                 = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<String> previousWeatherModel
+        DefaultComboBoxModel<VariableComboBoxItem> previousWeatherModel
                 = new DefaultComboBoxModel<>();
         
         // Populate combo boxes with weather types
         for (GameConstants.WeatherType w : GameConstants.WeatherType.values()) {
-            currentWeatherModel.addElement(w.getFriendlyName());
-            previousWeatherModel.addElement(w.getFriendlyName());
+            currentWeatherModel.addElement(
+                    new VariableComboBoxItem(w.getID(), w.getFriendlyName()));
+            previousWeatherModel.addElement(
+                    new VariableComboBoxItem(w.getID(), w.getFriendlyName()));
         }
         currentWeatherComboBox.setModel(currentWeatherModel);
         previousWeatherComboBox.setModel(previousWeatherModel);

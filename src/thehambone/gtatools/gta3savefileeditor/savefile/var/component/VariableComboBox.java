@@ -16,10 +16,9 @@ import thehambone.gtatools.gta3savefileeditor.savefile.var.Variable;
  *
  * @author thehambone
  * @param <T>
- * @param <E>
  */
-public abstract class VariableComboBox<T extends Variable, E>
-        extends JComboBox<E> implements VariableComponent<T>
+public abstract class VariableComboBox<T extends Variable>
+        extends JComboBox<VariableComboBoxItem> implements VariableComponent<T>
 {
     private final List<Observer> observers;
     private final List<T> supplementaryVars;

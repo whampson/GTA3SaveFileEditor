@@ -1,6 +1,7 @@
 
 package thehambone.gtatools.gta3savefileeditor.savefile.var.component;
 
+import javax.swing.ComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.page.Page;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.IntegerVariable;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
@@ -9,33 +10,39 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * Created on Jan 12, 2016.
  *
  * @author thehambone
- * @param <E>
  */
-public class IntegerVariableComboBox<E>
-        extends VariableComboBox<IntegerVariable, E>
+public class IntegerVariableComboBox
+        extends VariableComboBox<IntegerVariable>
 {
-    private int valueOffset;
-    
     public IntegerVariableComboBox()
     {
-        this(null, 0);
+        this(null);
     }
     
-    public IntegerVariableComboBox(IntegerVariable var, int valueOffset,
+    public IntegerVariableComboBox(IntegerVariable var,
             IntegerVariable... supplementaryVars)
     {
         super(var, supplementaryVars);
-        this.valueOffset = valueOffset;
     }
     
-    public int getValueOffset()
+    private int getItemIndex(int id)
     {
-        return valueOffset;
-    }
-    
-    public void setValueOffset(int valueOffset)
-    {
-        this.valueOffset = valueOffset;
+        int index = -1;        
+        ComboBoxModel<VariableComboBoxItem> model = getModel();
+        
+        // TODO: remove
+        if (!(model.getSelectedItem() instanceof VariableComboBoxItem)) {
+            return -1;
+        }
+        
+        for (int i = 0; i < model.getSize(); i++) {
+            if (model.getElementAt(i).getID() == id) {
+                index = i;
+                break;
+            }
+        }
+        
+        return index;
     }
     
     @Override
@@ -46,8 +53,10 @@ public class IntegerVariableComboBox<E>
             return;
         }
         
-        int val = Integer.parseInt(v.getValue().toString()) - valueOffset;
-        if (val > -1 && val < getItemCount() - 1) {
+        int val = getItemIndex(Integer.parseInt(v.getValue().toString()));
+        if (val == -1) {
+            setSelectedIndex(-1);
+        } else {
             boolean temp = doUpdateOnChange;
             doUpdateOnChange = false;
             setSelectedIndex(val);
@@ -63,7 +72,11 @@ public class IntegerVariableComboBox<E>
             return;
         }
         
-        String val = Integer.toString(getSelectedIndex() + valueOffset);
+        if (getSelectedIndex() == -1) {
+            return;
+        }
+        VariableComboBoxItem selected = (VariableComboBoxItem)getSelectedItem();
+        String val = Integer.toString(selected.getID());
         v.parseValue(val);
         Logger.debug("Variable updated: " + v);
         

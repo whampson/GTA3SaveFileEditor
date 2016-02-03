@@ -2,12 +2,16 @@ package thehambone.gtatools.gta3savefileeditor.page;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.Gang;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.PedType;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarArray;
+import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableComboBoxItem;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -58,29 +62,35 @@ public class GangsPage extends Page
     
     private void initVehicleComboBox()
     {
-        DefaultComboBoxModel<String> vehicleComboBoxModel
-                = new DefaultComboBoxModel<>();
-        
+        List<VariableComboBoxItem> vehicles = new ArrayList<>();
         for (GameConstants.Vehicle v : GameConstants.Vehicle.values()) {
-            vehicleComboBoxModel.addElement(v.getFriendlyName());
+            vehicles.add(
+                    new VariableComboBoxItem(v.getID(), v.getFriendlyName()));
         }
+        Collections.sort(vehicles);
+        
+        DefaultComboBoxModel<VariableComboBoxItem> vehicleComboBoxModel
+                = new DefaultComboBoxModel<>(
+                        vehicles.toArray(new VariableComboBoxItem[0]));
         
         vehicleComboBox.setModel(vehicleComboBoxModel);
-        vehicleComboBox.setValueOffset(90);
     }
     
     private void initWeaponComboBoxes()
     {
-        DefaultComboBoxModel<String> weapon1ComboBoxModel
+        DefaultComboBoxModel<VariableComboBoxItem> weapon1ComboBoxModel
                 = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<String> weapon2ComboBoxModel
+        DefaultComboBoxModel<VariableComboBoxItem> weapon2ComboBoxModel
                 = new DefaultComboBoxModel<>();
         
         for (GameConstants.Weapon w : GameConstants.Weapon.values()) {
-            if (w != GameConstants.Weapon.DETONATOR) {
-                weapon1ComboBoxModel.addElement(w.getFriendlyName());
-                weapon2ComboBoxModel.addElement(w.getFriendlyName());
+            if (w == GameConstants.Weapon.DETONATOR) {
+                continue;
             }
+            weapon1ComboBoxModel.addElement(
+                    new VariableComboBoxItem(w.getID(), w.getFriendlyName()));
+            weapon2ComboBoxModel.addElement(
+                    new VariableComboBoxItem(w.getID(), w.getFriendlyName()));
         }
         
         weapon1ComboBox.setModel(weapon1ComboBoxModel);

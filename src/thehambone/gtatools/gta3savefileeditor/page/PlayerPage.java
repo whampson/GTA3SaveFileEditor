@@ -10,6 +10,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPlayerInfo;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.PlayerPed;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.WeaponSlot;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarArray;
+import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableComboBoxItem;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -40,7 +41,6 @@ public class PlayerPage extends Page
     {
         weaponEquippedCheckBox.setDeselectedValue(0);
         weaponAmmoTextField.setUnsigned(true);
-        maxWantedLevelComboBox.setValueOffset(1);
     }
     
     private void initWeaponsComponents()
@@ -77,6 +77,16 @@ public class PlayerPage extends Page
     
     private void initWantedLevelComponents()
     {
+        DefaultComboBoxModel<VariableComboBoxItem> wLevelComboBoxModel
+                = new DefaultComboBoxModel<>();
+        wLevelComboBoxModel.addElement(new VariableComboBoxItem(1, "1 star"));
+        wLevelComboBoxModel.addElement(new VariableComboBoxItem(2, "2 stars"));
+        wLevelComboBoxModel.addElement(new VariableComboBoxItem(3, "3 stars"));
+        wLevelComboBoxModel.addElement(new VariableComboBoxItem(4, "4 stars"));
+        wLevelComboBoxModel.addElement(new VariableComboBoxItem(5, "5 stars"));
+        wLevelComboBoxModel.addElement(new VariableComboBoxItem(6, "6 stars"));
+        maxWantedLevelComboBox.setModel(wLevelComboBoxModel);
+        
         enableWantedLevelCheckBox.addActionListener(new ActionListener()
         {
             @Override
