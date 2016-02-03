@@ -242,10 +242,16 @@ public class GeneralPage extends Page
         });
     }
     
+    private void updateSaveTitle(String str, boolean isGXTKey)
+    {
+        updateSaveTitle(str, isGXTKey, true);
+    }
+    
     /*
      * Updates the save title text field and variable
      */
-    private void updateSaveTitle(String str, boolean isGXTKey)
+    private void updateSaveTitle(String str, boolean isGXTKey,
+            boolean updateVariable)
     {
         if (isGXTKey) {
             // Put text field in "GXT" mode
@@ -265,9 +271,11 @@ public class GeneralPage extends Page
                 prevTitleText = gxtValue;
                 
                 // Update variable with GXT key
-                simp.szSaveName.setValue(GXT_INDICATOR + str);
-                Logger.debug("Variable updated: " + simp.szSaveName);
-                notifyChange(simp.szSaveName);
+                if (updateVariable) {
+                    simp.szSaveName.setValue(GXT_INDICATOR + str);
+                    Logger.debug("Variable updated: " + simp.szSaveName);
+                    notifyChange(simp.szSaveName);
+                }
             } else {
                 saveTitleTextField.setText("<invalid GXT key>");
                 saveTitleTextField.setToolTipText("Invalid GXT key.");
@@ -282,9 +290,11 @@ public class GeneralPage extends Page
             prevTitleText = str;
             
             // Update variable with string
-            simp.szSaveName.setValue(str);
-            Logger.debug("Variable updated: " + simp.szSaveName);
-            notifyChange(simp.szSaveName);
+            if (updateVariable) {
+                simp.szSaveName.setValue(str);
+                Logger.debug("Variable updated: " + simp.szSaveName);
+                notifyChange(simp.szSaveName);
+            }
             
             // Refresh text field
             saveTitleTextField.refreshComponent();
@@ -516,6 +526,7 @@ public class GeneralPage extends Page
         selectGXTStringButton.setVisible(isMobile);
         
         // Set up "Save Name" page
+        saveTitleTextField.updateVariableOnChange(false);
         saveTitleTextField.setVariable(simp.szSaveName);
         saveTitleTextField.setMaxInputLength(simp.szSaveName.getMaxLength()- 1);
         if (isMobile) {
@@ -527,17 +538,39 @@ public class GeneralPage extends Page
                 if (simp.szSaveName.getValue().charAt(0) == GXT_INDICATOR) {
                     // Select "GXT Key" button and get GXT string
                     prevTitleGXTKey = simp.szSaveName.getValue().substring(1);
-                    gxtKeyRadioButton.doClick();
+//                    gxtKeyRadioButton.doClick();
+                    gxtKeyRadioButton.setSelected(true);
+                    selectGXTStringButton.setEnabled(true);
+                    if (prevTitleGXTKey != null) {
+                        updateSaveTitle(prevTitleGXTKey, true, false);
+                    } else {
+                        updateSaveTitle(saveTitleTextField.getText(), true, false);
+                    }
                 } else {
                     // Select "Text" button
-                    textRadioButton.doClick();
+//                    textRadioButton.doClick();
+                    textRadioButton.setSelected(true);
+                    selectGXTStringButton.setEnabled(false);
+                    if (prevTitleText != null) {
+                        updateSaveTitle(prevTitleText, false, false);
+                    } else {
+                        updateSaveTitle(saveTitleTextField.getText(), false, false);
+                    }
                 }
             } else {
                 // GXT failed to load; disable GXT features
                 gxtKeyRadioButton.setEnabled(false);
-                textRadioButton.doClick();
+//                textRadioButton.doClick();
+                textRadioButton.setSelected(true);
+                selectGXTStringButton.setEnabled(false);
+                if (prevTitleText != null) {
+                    updateSaveTitle(prevTitleText, false, false);
+                } else {
+                    updateSaveTitle(saveTitleTextField.getText(), false, false);
+                }
             }
         }
+        saveTitleTextField.updateVariableOnChange(true);
         
         if (isPC) {
             // Set variables for timestamp components
