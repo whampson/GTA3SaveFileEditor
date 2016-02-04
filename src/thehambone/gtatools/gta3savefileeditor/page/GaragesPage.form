@@ -409,13 +409,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="bombTypeComboBox" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                                      <Component id="bombArmedCheckBox" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="bombTypeComboBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -425,9 +419,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="bombTypeComboBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="7" max="32767" attributes="0"/>
-                              <Component id="bombArmedCheckBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace pref="37" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -440,11 +432,6 @@
                             <StringItem index="0" value="&lt;bombtype_name&gt;"/>
                           </StringArray>
                         </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableCheckBox" name="bombArmedCheckBox">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Armed"/>
                       </Properties>
                     </Component>
                   </SubComponents>

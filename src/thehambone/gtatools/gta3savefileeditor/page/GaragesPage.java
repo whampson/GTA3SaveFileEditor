@@ -83,8 +83,7 @@ public class GaragesPage extends Page
             fireproofCheckBox, collisionproofCheckBox, explosionproofCheckBox,
             colorsPanel, primaryColorLabel, primaryColorPanel,
             secondaryColorLabel, secondaryColorPanel, bombTypePanel,
-            bombTypeComboBox, bombArmedCheckBox, radioStationPanel,
-            radioStationComboBox
+            bombTypeComboBox, radioStationPanel, radioStationComboBox
         };
         
         for (JComponent comp : vehicleComponents) {
@@ -237,14 +236,21 @@ public class GaragesPage extends Page
     
     private void initBombTypeComboBox()
     {
-        DefaultComboBoxModel<VariableComboBoxItem> bombTypeComboBoxModel
-                = new DefaultComboBoxModel<>();
-        
+        List<VariableComboBoxItem> bombTypes = new ArrayList<>();
         for (GameConstants.CarBomb cb
                 : GameConstants.CarBomb.values()) {
-            bombTypeComboBoxModel.addElement(
+            if (cb == GameConstants.CarBomb.TIMEDACTIVE) {
+                continue;
+            }
+            
+            bombTypes.add(
                     new VariableComboBoxItem(cb.getID(), cb.getFriendlyName()));
         }
+        Collections.sort(bombTypes);
+        
+        DefaultComboBoxModel<VariableComboBoxItem> bombTypeComboBoxModel
+                = new DefaultComboBoxModel<>(
+                        bombTypes.toArray(new VariableComboBoxItem[0]));
         
         bombTypeComboBox.setModel(bombTypeComboBoxModel);
     }
@@ -322,7 +328,6 @@ public class GaragesPage extends Page
         fireproofCheckBox.setVariable(selectedStoredCar.nImmunities);
         radioStationComboBox.setVariable(selectedStoredCar.nRadioStationID);
         bombTypeComboBox.setVariable(selectedStoredCar.nBombID);
-//        bombArmedCheckBox.setVariable(selectedStoredCar.nBombID);
         
         for (GameConstants.CarColor cc : GameConstants.CarColor.values()) {
             if (selectedStoredCar.nPrimaryColorID.getValue() == cc.getID()) {
@@ -379,7 +384,6 @@ public class GaragesPage extends Page
         radioStationComboBox = new thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableComboBox();
         bombTypePanel = new javax.swing.JPanel();
         bombTypeComboBox = new thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableComboBox();
-        bombArmedCheckBox = new thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableCheckBox();
 
         safehouseLabel.setText("Safehouse:");
         safehouseLabel.setToolTipText("");
@@ -521,19 +525,13 @@ public class GaragesPage extends Page
 
         bombTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<bombtype_name>" }));
 
-        bombArmedCheckBox.setText("Armed");
-
         javax.swing.GroupLayout bombTypePanelLayout = new javax.swing.GroupLayout(bombTypePanel);
         bombTypePanel.setLayout(bombTypePanelLayout);
         bombTypePanelLayout.setHorizontalGroup(
             bombTypePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bombTypePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(bombTypePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bombTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(bombTypePanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(bombArmedCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(bombTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         bombTypePanelLayout.setVerticalGroup(
@@ -541,9 +539,7 @@ public class GaragesPage extends Page
             .addGroup(bombTypePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(bombTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addComponent(bombArmedCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout saveGaragePanelLayout = new javax.swing.GroupLayout(saveGaragePanel);
@@ -632,7 +628,6 @@ public class GaragesPage extends Page
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableCheckBox bombArmedCheckBox;
     private thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableComboBox bombTypeComboBox;
     private javax.swing.JPanel bombTypePanel;
     private thehambone.gtatools.gta3savefileeditor.savefile.var.component.BitmaskVariableCheckBox bulletproofCheckBox;

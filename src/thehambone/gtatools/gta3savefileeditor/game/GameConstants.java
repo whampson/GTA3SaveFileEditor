@@ -335,11 +335,11 @@ public class GameConstants
     public enum CarBomb
     {
         NONE            (0, "(none)"),
-        TIMED           (1, "Timer"),
-        ONIGNITION      (2, "Ignition"),
-        REMOTE          (3, "Remote"),
-        TIMEDACTIVE     (4, "Timer (armed)"),
-        ONIGNITIONACTIVE(5, "Ignition (armed)");
+        TIMED           (1, "Time Bomb"),
+        ONIGNITION      (2, "Ignition Bomb"),
+        REMOTE          (3, "Remote Bomb"),
+        TIMEDACTIVE     (4, "Time Bomb (armed)"),
+        ONIGNITIONACTIVE(5, "Ignition Bomb (armed)");
         
         private final int id;
         private final String friendlyName;
