@@ -265,14 +265,20 @@ public class SaveFile
     
     public void save(File dest) throws IOException
     {
+        save(dest, false);
+    }
+    
+    private void save(File dest, boolean makingBackup) throws IOException
+    {
         /* Change source file so subsequent calls to save() will write to the
            same file */
-        if (dest != src) {
+        if (dest != src && !makingBackup) {
             src = dest;
         }
         
         String timestampSetting = Settings.get(Settings.Key.TIMESTAMP_FILES);
-        if (Boolean.parseBoolean(timestampSetting)) {
+        if (Boolean.parseBoolean(timestampSetting) && !makingBackup
+                && platform == Platform.PC) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             Timestamp t = simpleVars.timestamp;
@@ -358,14 +364,10 @@ public class SaveFile
         
         String makeBackupsSetting = Settings.get(Settings.Key.MAKE_BACKUPS);
         if (Boolean.parseBoolean(makeBackupsSetting)) {
-            File original = src;
-            File backupFile = new File(original.getAbsolutePath() + ".bak");
+            File backupFile = new File(src.getAbsolutePath() + ".bak");
             
             Logger.info("Creating backup file at %s...\n", backupFile);
-            save(backupFile);
-            
-            // Revert "src" back to original file because save() reassigns "src"
-            src = original;
+            save(backupFile, true);
         }
     }
     
