@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import thehambone.gtatools.gta3savefileeditor.Settings;
 import thehambone.gtatools.gta3savefileeditor.util.Checksum;
 import thehambone.gtatools.gta3savefileeditor.util.DataBuffer;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockGangs;
@@ -13,6 +14,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPedTypes;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPlayerInfo;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockPlayerPeds;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.BlockSimpleVars;
+import thehambone.gtatools.gta3savefileeditor.savefile.struct.Timestamp;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarString;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarString16;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
@@ -269,6 +271,22 @@ public class SaveFile
             src = dest;
         }
         
+        String timestampSetting = Settings.get(Settings.Key.TIMESTAMP_FILES);
+        if (Boolean.parseBoolean(timestampSetting)) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            Timestamp t = simpleVars.timestamp;
+            t.nYear.setValue((short)cal.get(Calendar.YEAR));
+            t.nMonth.setValue((short)(cal.get(Calendar.MONTH) + 1));
+            t.nDayOfWeek.setValue((short)(cal.get(Calendar.DAY_OF_WEEK) - 1));
+            t.nDay.setValue((short)cal.get(Calendar.DAY_OF_MONTH));
+            t.nHour.setValue((short)cal.get(Calendar.HOUR_OF_DAY));
+            t.nMinute.setValue((short)cal.get(Calendar.MINUTE));
+            t.nSecond.setValue((short)cal.get(Calendar.SECOND));
+            t.nMillisecond.setValue((short)cal.get(Calendar.MILLISECOND));
+            Logger.info("File timestamp updated: %s\n", cal.getTime());
+        }
+        
         int checksum = Checksum.checksum32(buf.toArray(0, buf.getSize() - 4));
         Logger.debug("File checksum: 0x%08x\n", checksum);
         buf.seek(buf.getSize() - 4);
@@ -281,7 +299,7 @@ public class SaveFile
     /*
      * Loads block data.
      */
-    private void load() throws UnsupportedPlatformException
+    private void load() throws UnsupportedPlatformException, IOException
     {
         int blockIndex;
         int blockSize;
@@ -336,6 +354,18 @@ public class SaveFile
             }
             buf.seek(offset);
             buf.skip(blockSize);
+        }
+        
+        String makeBackupsSetting = Settings.get(Settings.Key.MAKE_BACKUPS);
+        if (Boolean.parseBoolean(makeBackupsSetting)) {
+            File original = src;
+            File backupFile = new File(original.getAbsolutePath() + ".bak");
+            
+            Logger.info("Creating backup file at %s...\n", backupFile);
+            save(backupFile);
+            
+            // Revert "src" back to original file because save() reassigns "src"
+            src = original;
         }
     }
     
