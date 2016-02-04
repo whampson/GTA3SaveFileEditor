@@ -13,6 +13,7 @@ Editor
 * Minor visual changes
 * Added recent files list
 * Added support for Mac OS X
+* Overall stability has been improved
 
 General
 -------

@@ -1,7 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor;
 
 import java.awt.Image;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -13,9 +12,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
+import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
 
 
 /**
@@ -37,12 +36,14 @@ public final class Main
     public static final String PROGRAM_UPDATE_URL
             = "http://www.gtagarage.com/mods/show.php?id=27101";
     public static final String PROGRAM_COPYRIGHT
-            = "Copyright (C) 2015-2016 thehambone";
+            = "Copyright (C) 2015-2016 thehambone.";
     
-    private static final String PROGRAM_BUILD_PROPERTIES_PATH
+    private static final String BUILD_PROPERTIES_PATH
             = "META-INF/build.properties";
     private static final String PROGRAM_ICON_PATH
             = "META-INF/res/icon.png";
+    private static final String GXT_PATH
+            = "META-INF/res/mobile/american.gxt";
     
     private static final Logger.Level DEFAULT_LOGGING_LEVEL
             = Logger.Level.DEBUG;   // TODO: CHANGE THIS FOR RELEASE
@@ -100,23 +101,14 @@ public final class Main
         /* TODO:
          * -BUG: "Exception while removing reference" at shutdown; shutdown hook
          *       related? (IDE only?)
-         * -BUG: Save title reset to previous value when switched back to
-         *  General page (Mobile only)
-         * -BUG: "Equipped" check box on player page does not appear to
-         *       accurately reflect whether a weapon is enabled
-         * -BUG: Mobile saves erroneously show changes made when the file is
-         *       first loaded
          * -cmd options: --log-to-file
          * -Make file backups
          * -update timestamp on save
-         * -ResourceLoader class
-         * -Game constants (ObjectType, WeatherType, etc.)
-         * -Set combobox index to -1 when value out of range
-         * -VariableComboBoxItem class
-         * -Bomb armed checkbox
-         * -Append .B extension to files with no extension
          * -Tweak about page text
+         * -About dialog copyright text put copyright holder
          * -Better crashdump output
+         * -Recent files: remove duplicates/push duplicate to top
+         * -Recent files: update list on load
          * -Documentation
          * -Tooltip text
          * -Reorder imports
@@ -124,9 +116,9 @@ public final class Main
          */
         
         initLogger();
-        parseCommandLineArgs(args);
         initUncaughtExceptionHandler();
         initLookAndFeel();
+        parseCommandLineArgs(args);
         determineOS();
         readBuildProperties();
         
@@ -181,8 +173,7 @@ public final class Main
         } catch (ClassNotFoundException | InstantiationException
                 | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.warn("Failed to initialize UI look and feel. "
-                    + "Using default look and feel. [%s: %s]\n",
-                    ex.getClass().getName(), ex.getMessage());
+                    + "Using default look and feel.", ex);
             Logger.stackTrace(ex);
         }
     }
@@ -221,16 +212,14 @@ public final class Main
         Properties buildProperties = new Properties();
         InputStream in = null;
         try {
-            in = ClassLoader.getSystemClassLoader()
-                    .getResourceAsStream(PROGRAM_BUILD_PROPERTIES_PATH);
+            in = ResourceLoader.getResourceStream(BUILD_PROPERTIES_PATH);
             if (in == null) {
                 throw new IOException("file not found - "
-                        + PROGRAM_BUILD_PROPERTIES_PATH);
+                        + BUILD_PROPERTIES_PATH);
             }
             buildProperties.load(in);
         } catch (IOException ex) {
-            Logger.error("Failed to read build properties. [%s: %s]\n",
-                    ex.getClass().getName(), ex.getMessage());
+            Logger.error("Failed to read build properties!", ex);
             Logger.stackTrace(ex);
         }
             
@@ -273,16 +262,14 @@ public final class Main
                     Logger.info("Saving program settings...");
                     Settings.save();
                 } catch (IOException ex) {
-                    Logger.error("Failed to save program settings. [%s: %s]",
-                            ex.getClass().getName(), ex.getMessage());
+                    Logger.error("Failed to save program settings!", ex);
                     Logger.stackTrace(ex);
                 }
             }
         };
         
-        // TODO: Potentially buggy
-        Runtime.getRuntime()
-                .addShutdownHook(new Thread(saveSettingsHook, "Save-Settings"));
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(saveSettingsHook, "Save-Settings"));
         Logger.debug("\"Save-Settings\" hook initialized!");
     }
     
@@ -291,8 +278,11 @@ public final class Main
      */
     private static void parseCommandLineArgs(String[] args)
     {
-        Logger.debug("Parsing command-line options...");
+        if (args.length == 0) {
+            return;
+        }
         
+        Logger.debug("Parsing command-line options...");
         for (String arg : args) {
             if (!arg.startsWith("--")) {
                 continue;
@@ -347,13 +337,11 @@ public final class Main
         Image icon = null;
 
         try {
-            icon = IO.loadImageResource(PROGRAM_ICON_PATH);
+            icon = ResourceLoader.loadImageResource(PROGRAM_ICON_PATH);
         } catch (IOException ex) {
             Logger.warn("Failed to load icon resource.");
             Logger.stackTrace(ex);
         }
-        
-        Logger.debug("Icon loaded successfully!");
         
         return icon;
     }
@@ -369,8 +357,7 @@ public final class Main
         } catch (IOException ex) {
             String errMsg = "Failed to load program settings. "
                     + "Default settings will be used.";
-            Logger.warn(errMsg + " [%s: %s]\n",
-                    ex.getClass().getName(), ex.getMessage());
+            Logger.warn(errMsg, ex);
             Logger.stackTrace(ex);
             GUIUtilities.showErrorMessageBox(null, errMsg, "IO Error", ex);
             Settings.loadDefaults();
@@ -384,12 +371,12 @@ public final class Main
     {
         Logger.info("Loading GXT table...");
         try {
-            GXT.loadGXTTable(new File("american.gxt"));
+            InputStream gxtStream = ResourceLoader.getResourceStream(GXT_PATH);
+            GXT.loadGXTTable(gxtStream);
         } catch (IOException ex) {
             String errMsg = "Failed to load GXT table. "
                     + "Some features will be unavailable.";
-            Logger.error(errMsg + " [%s: %s]\n",
-                    ex.getClass().getName(), ex.getMessage());
+            Logger.error(errMsg, ex);
             Logger.stackTrace(ex.fillInStackTrace());
             GUIUtilities.showErrorMessageBox(null, errMsg, "IO Error", ex);
         }

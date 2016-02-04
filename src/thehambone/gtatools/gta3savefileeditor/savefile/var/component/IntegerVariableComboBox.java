@@ -30,11 +30,6 @@ public class IntegerVariableComboBox
         int index = -1;        
         ComboBoxModel<VariableComboBoxItem> model = getModel();
         
-        // TODO: remove
-        if (!(model.getSelectedItem() instanceof VariableComboBoxItem)) {
-            return -1;
-        }
-        
         for (int i = 0; i < model.getSize(); i++) {
             if (model.getElementAt(i).getID() == id) {
                 index = i;

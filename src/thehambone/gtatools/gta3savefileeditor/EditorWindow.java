@@ -417,6 +417,7 @@ public class EditorWindow extends JFrame implements Observer
         aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         
         // Define "Check for Updates" action
+        final JFrame parent = (JFrame)SwingUtilities.getWindowAncestor(this);
         checkForUpdatesMenuItem.addActionListener(new ActionListener()
         {
             @Override
@@ -427,8 +428,11 @@ public class EditorWindow extends JFrame implements Observer
                     URI uri = new URI(Main.PROGRAM_UPDATE_URL);
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException | URISyntaxException ex) {
+                    Logger.warn("Unable to open Internet browser!", ex);
                     Logger.stackTrace(ex);
-                    // TODO: message
+                    GUIUtilities.showErrorMessageBox(parent,
+                            "Unable to open Internet browser!",
+                            "Failed to Open Browser");
                 }
             }
         });
