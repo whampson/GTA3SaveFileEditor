@@ -8,6 +8,7 @@ package thehambone.gtatools.gta3savefileeditor.util;
  * Created on Jan 27, 2016.
  *
  * @author thehambone
+ * @deprecated 
  */
 public class QueueException extends RuntimeException
 {
