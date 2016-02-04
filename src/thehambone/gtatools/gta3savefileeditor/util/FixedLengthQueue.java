@@ -13,6 +13,7 @@ import java.util.Iterator;
  *
  * @author thehambone
  * @param <E> the type of each element in the queue
+ * @deprecated 
  */
 public class FixedLengthQueue<E> implements Iterable<E>
 {
