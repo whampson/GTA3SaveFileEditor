@@ -156,22 +156,36 @@ public class PlayerPage extends Page
         if (selectedWeaponIndex == -1) {
             return;
         }
-        selectedWeaponIndex += 1;
+        selectedWeaponIndex += 1;   // Add 1 to account for "Fists" not in list
         
         WeaponSlot ws = aWeaponSlot.getElementAt(selectedWeaponIndex);
         
         weaponEquippedCheckBox.setSelectedValue(selectedWeaponIndex);
         weaponEquippedCheckBox.setVariable(ws.nWeaponID);
-        weaponAmmoTextField.setVariable(ws.nWeaponAmmo);
-        weaponAmmoTextField.setEnabled(ws.nWeaponID.getValue() > 1);
+        
+        if (ws.nWeaponAmmo.getValue() == 0) {
+            weaponEquippedCheckBox.updateVariableOnChange(false);
+            weaponEquippedCheckBox.setSelected(false);
+            weaponEquippedCheckBox.updateVariableOnChange(true);
+        }
+        
+        if (ws.nWeaponID.getValue() == GameConstants.Weapon.BAT.getID()) {
+            weaponAmmoTextField.updateVariableOnChange(false);
+            weaponAmmoTextField.setText("0");
+            weaponAmmoTextField.setEnabled(false);
+        } else {
+            weaponAmmoTextField.setVariable(ws.nWeaponAmmo);
+            weaponAmmoTextField.setEnabled(weaponEquippedCheckBox.isSelected());
+            weaponAmmoTextField.updateVariableOnChange(true);
+        }
     }
     
     private void weaponEquippedCheckBoxAction(ActionEvent e)
     {
         int index = weaponSlotComboBox.getSelectedIndex();
-                
-        // Skip enabling ammo text field if "Bat" selected
-        if (index != 0) {
+        
+        // Skip enabling ammo text field if "Bat" or nothing is selected
+        if (index > 0) {
             weaponAmmoTextField.setEnabled(weaponEquippedCheckBox.isSelected());
         }
     }
@@ -365,7 +379,7 @@ public class PlayerPage extends Page
         weaponPropertiesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Weapon Properties"));
 
         weaponEquippedCheckBox.setText("Equipped");
-        weaponEquippedCheckBox.setToolTipText("");
+        weaponEquippedCheckBox.setToolTipText("Indicates whether the weapon is in Claude's inventory.");
 
         weaponAmmoLabel.setText("Ammo:");
 

@@ -323,7 +323,7 @@
                     <Component class="thehambone.gtatools.gta3savefileeditor.savefile.var.component.IntegerVariableCheckBox" name="weaponEquippedCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Equipped"/>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Indicates whether the weapon is in Claude&apos;s inventory."/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="weaponAmmoLabel">
