@@ -36,7 +36,7 @@ public final class Main
     public static final String PROGRAM_UPDATE_URL
             = "http://www.gtagarage.com/mods/show.php?id=27101";
     public static final String PROGRAM_COPYRIGHT
-            = "Copyright (C) 2015-2016 thehambone.";
+            = "Copyright (C) 2015-2016 thehambone";
     
     private static final String BUILD_PROPERTIES_PATH
             = "META-INF/build.properties";

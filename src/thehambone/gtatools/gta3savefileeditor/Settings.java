@@ -6,14 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import thehambone.gtatools.gta3savefileeditor.game.Game;
-import thehambone.gtatools.gta3savefileeditor.util.FixedLengthQueue;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
@@ -30,10 +31,13 @@ public class Settings
      */
     public static final String CONFIG_FILE_PATH = "./.gta3-save-editor";
     
+    /**
+     * The maximum number of recent files to store.
+     */
+    public static final int MAX_RECENT_FILES = 10;
+    
     // Replace the # character with a number when using
     private static final String RECENT_FILE_KEY_FORMAT = "recent.file#";
-    
-    private static final int MAX_RECENT_FILES = 10;
     
     private static final TreeMap<String, String> DEFAULTS = new TreeMap<>();
     static {
@@ -112,13 +116,12 @@ public class Settings
     /**
      * Gets a collection containing the paths of recently-accessed files.
      * 
-     * @return a {@code FixedLengthQueue} containing the paths of
+     * @return a {@code List} containing the paths of
      *         recently-accessed files
      */
-    public static FixedLengthQueue<String> getRecentFiles()
+    public static List<String> getRecentFiles()
     {
-        FixedLengthQueue<String> recentFiles
-                = new FixedLengthQueue<>(MAX_RECENT_FILES);
+        List<String> recentFiles = new ArrayList<>();
         
         for (int i = 0; i < MAX_RECENT_FILES; i++) {
             char indexChar = Character.forDigit(i + 1, 10);
@@ -129,7 +132,7 @@ public class Settings
                 continue;
             }
             
-            recentFiles.insert(path);
+            recentFiles.add(path);
         }
         
         return recentFiles;
@@ -139,10 +142,10 @@ public class Settings
      * Stores the paths of recently-accessed files to the current program
      * configuration.
      * 
-     * @param recentFiles a {@code FixedLengthQueue} containing the paths of
+     * @param recentFiles a {@code List} containing the paths of
      *        recently-accessed files
      */
-    public static void storeRecentFiles(FixedLengthQueue<String> recentFiles)
+    public static void storeRecentFiles(List<String> recentFiles)
     {
         int i = 0;
         for (String path : recentFiles) {

@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -67,7 +68,7 @@ public class EditorWindow extends JFrame implements Observer
         new OptionsPage()
     };
     
-    private FixedLengthQueue<String> recentFiles;
+    private List<String> recentFiles;
     private JMenu loadSlotMenu;
     private JMenu loadRecentMenu;
     private JMenu saveSlotMenu;
@@ -634,9 +635,9 @@ public class EditorWindow extends JFrame implements Observer
         final JFrame parentFrame = this;
         
         int numItems = 0;
-        Iterator<String> it;
-        for (it = recentFiles.reverseOrderIterator(); it.hasNext();) {
-            final String path = it.next();
+        ListIterator<String> it = recentFiles.listIterator(recentFiles.size());
+        while (it.hasPrevious() && numItems <= Settings.MAX_RECENT_FILES) {
+            final String path = it.previous();
             String menuText = (++numItems) + ": " + path;
             
             JMenuItem menuItem = new JMenuItem(menuText);
@@ -1061,14 +1062,11 @@ public class EditorWindow extends JFrame implements Observer
             return;
         }
         
-        /* Ensure that a QueueException is never thrown for attempting to add to
-           a full queue */
-        if (recentFiles.isFull()) {
-            recentFiles.remove();
-        }
-        
         // Add this file to the list of recent files
-        recentFiles.insert(f.getAbsolutePath());
+        if (recentFiles.contains(f.getAbsolutePath())) {
+            recentFiles.remove(f.getAbsolutePath());
+        }
+        recentFiles.add(f.getAbsolutePath());
         
         String message = "Loaded file: " + f;
         Logger.info(message);
@@ -1210,6 +1208,8 @@ public class EditorWindow extends JFrame implements Observer
                         + "unsaved changes.",
                 350, false, null);
         
+        Logger.info("External changes detected!");
+        Logger.debug("Working CRC: 0x%08x; external CRC: 0x%08x", crc, newCRC);
         Toolkit.getDefaultToolkit().beep();
         int option = JOptionPane.showOptionDialog(this,
                 message,
