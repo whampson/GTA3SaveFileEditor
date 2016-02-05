@@ -1,6 +1,10 @@
 
 package thehambone.gtatools.gta3savefileeditor.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -17,6 +21,14 @@ public final class Logger
     private static final String LINE_SEPARATOR
             = System.getProperty("line.separator");
     private static final int MAX_LEVEL_NAME_LENGTH = 5;
+    
+    // Replace "%s" with timestamp (FILE_NAME_TIMESTAMP_FORMAT)
+    private static final String LOG_FILE_NAME_FORMAT
+            = "gta3-save-editor_%s.log";
+    private static final String CRASH_DUMP_FILE_NAME_FORMAT
+            = "crash-dump_%s.log";
+    
+    private static final String FILE_NAME_TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
     
     // Singleton instance
     private static Logger instance;
@@ -44,6 +56,25 @@ public final class Logger
     }
     
     /**
+     * Writes a crash report to a file. A crash report contains all of the
+     * program's log entries.
+     * 
+     * @return the path to the crash dump file
+     * @throws IOException if an error occurs while writing the file
+     */
+    public static String generateCrashDump() throws IOException
+    {
+        String timestamp = new SimpleDateFormat(FILE_NAME_TIMESTAMP_FORMAT)
+                        .format(new Date());
+        String fileName = String.format(CRASH_DUMP_FILE_NAME_FORMAT, timestamp);
+        
+        File crashdumpFile = new File(fileName);
+        instance.storeLog(crashdumpFile);
+        
+        return crashdumpFile.getAbsolutePath();
+    }
+    
+    /**
      * Writes the stack trace of a {@code Throwable} object to the log using the
      * {@code DEBUG} level.
      * 
@@ -51,11 +82,16 @@ public final class Logger
      */
     public static void stackTrace(Throwable t)
     {
+        stackTrace(Level.DEBUG, t);
+    }
+    
+    public static void stackTrace(Level level, Throwable t)
+    {
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
         t.printStackTrace(pw);
         
-        instance.log(Level.DEBUG, writer.getBuffer().toString());
+        instance.log(level, writer.getBuffer().toString());
     }
     
     /**
@@ -229,8 +265,11 @@ public final class Logger
     private final StringBuilder LOG_BUFFER;
     
     private Level currentLevel;
+    private boolean logToFile;
+    private File logFile;
+    private PrintWriter logFileWriter;
     
-    /*
+    /**
      * Creates a new Logger with the specified logging level.
      */
     // Logger is a singleton class; keep this constructor private
@@ -261,6 +300,37 @@ public final class Logger
     }
     
     /**
+     * Turns logging to a file on or off. If enabled, each log entry will be
+     * written to an auto-generated file.
+     * <p>
+     * The log file will show up in the working directory and will be named in
+     * the following format: {@code gta3-save-editor_yyyymmddHHmmss.log}.
+     * 
+     * @param logToFile a boolean indicating whether file logging should be
+     *        enabled
+     * @throws FileNotFoundException if the log file cannot be created
+     */
+    public void logToFile(boolean logToFile) throws FileNotFoundException
+    {
+        this.logToFile = logToFile;
+        
+        if (!logToFile) {
+            return;
+        }
+        
+        if (logFile == null) {
+            String timestamp = new SimpleDateFormat(FILE_NAME_TIMESTAMP_FORMAT)
+                    .format(new Date());
+            String fileName = String.format(LOG_FILE_NAME_FORMAT, timestamp);
+            logFile = new File(fileName);
+        }
+        
+        logFileWriter = new PrintWriter(new FileOutputStream(logFile, false));
+        logFileWriter.append(LOG_BUFFER);
+        logFileWriter.flush();
+    }
+    
+    /**
      * Adds an entry to the log.
      * 
      * @param level the logging Level
@@ -288,6 +358,10 @@ public final class Logger
         
         // Append entry to log and output to console
         LOG_BUFFER.append(logEntry);
+        if (logToFile) {
+            logFileWriter.print(logEntry);
+            logFileWriter.flush();
+        }
         if (level == Level.ERROR || level == Level.FATAL) {
             System.err.print(logEntry);
         } else {
@@ -295,13 +369,27 @@ public final class Logger
         }
     }
     
-    /*
+    /**
      * Returns a string containing the current date and time as specified by
      * the string constant TIMESTAMP_FORMAT.
      */
     private String timestamp()
     {
         return new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Date());
+    }
+    
+    /**
+     * Writes the log to a file.
+     * 
+     * @param f the file to write
+     * @throws FileNotFoundException if the file cannot be created
+     */
+    private void storeLog(File f) throws FileNotFoundException
+    {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
+            pw.append(LOG_BUFFER);
+            pw.flush();
+        }
     }
     
     @Override
