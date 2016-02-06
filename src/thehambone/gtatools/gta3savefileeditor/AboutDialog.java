@@ -1,6 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Frame;
@@ -39,17 +40,30 @@ import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
  */
 public final class AboutDialog extends JDialog
 {
-    private static final String ICON_PATH        = "META-INF/res/logo1.png";
-    private static final String COPYRIGHT_STRING = "Copyright " + '\u00A9' + " 2015-2016.";
-    private static final String ABOUT_STRING     = "Thanks to OrionSR, Seemann, Silent, and spaceeinstein "
-            + "for helping me research and document GTA III saves. You guys rock!";
+    private static final String ICON_PATH = "META-INF/res/logo1.png";
+    private static final String ABOUT_TEXT = "This tool is a work-in-progress "
+            + "save editor for Grand Theft Auto III save  files. It currently "
+            + "supports Windows, Mac OS X, iOS, and Android saves. "
+            + "Support for Xbox and PS2 saves coming soon, along with many "
+            + "more features!\n\n"
+            + "Thanks to <b>OrionSR</b>, <b>Seemann</b>, <b>Silent</b>, and "
+            + "<b>spaceeinstein</b> for helping with research and "
+            + "documentation.";
     
+    /**
+     * Creates a new {@code AboutDialog} instance.
+     * 
+     * @param parent the dialog parent frame
+     */
     public AboutDialog(Frame parent)
     {
-        super(parent, "About", true);
+        super(parent, "About " + Main.PROGRAM_TITLE, true);
         initComponents();
     }
     
+    /**
+     * Sets up the components on the dialog.
+     */
     private void initComponents()
     {
         GridBagConstraints con = new GridBagConstraints();
@@ -59,7 +73,7 @@ public final class AboutDialog extends JDialog
 
         // Top
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(new EmptyBorder(10, 10, 5, 10));
+        topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         iconLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -73,75 +87,103 @@ public final class AboutDialog extends JDialog
         topPanel.add(iconLabel, BorderLayout.CENTER);
 
         // Center
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel centerPanelTop = new JPanel(new GridBagLayout());
+        JPanel centerPanelMid = new JPanel(new BorderLayout());
+        JPanel centerPanelBottom = new JPanel(new BorderLayout());
+        centerPanelMid.setBorder(new EmptyBorder(15, 10, 5, 10));
+        centerPanelBottom.setBorder(new EmptyBorder(5, 10, 5, 10));
+        
         JLabel authorLabel1 = new JLabel("Author:");
         authorLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
         authorLabel1.setBorder(new EmptyBorder(1, 0, 1, 2));
-        JLabel authorLabel2 = new JLabel(String.format("<html><a href='%s'>%s</a></html>", Main.PROGRAM_AUTHOR_URL, Main.PROGRAM_AUTHOR));
+        
+        JLabel authorLabel2 = new JLabel(String.format(
+                "<html><a href='%s'>%s</a></html>",
+                Main.PROGRAM_AUTHOR_URL, Main.PROGRAM_AUTHOR));
         authorLabel2.setBorder(new EmptyBorder(1, 2, 1, 0));
         authorLabel2.setToolTipText(Main.PROGRAM_AUTHOR_URL);
         authorLabel2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        authorLabel2.addMouseListener(getOpenURLMouseAdapter(Main.PROGRAM_AUTHOR_URL));
+        authorLabel2.addMouseListener(
+                getOpenURLMouseAdapter(Main.PROGRAM_AUTHOR_URL));
+        
         JLabel versionLabel1 = new JLabel("Version:");
         versionLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
         versionLabel1.setBorder(new EmptyBorder(1, 0, 1, 2));
-        JLabel versionLabel2 = new JLabel(Main.PROGRAM_VERSION + " build " + Main.getBuildNumber());
+        
+        JLabel versionLabel2 = new JLabel(
+                Main.PROGRAM_VERSION + " build " + Main.getBuildNumber());
         versionLabel2.setBorder(new EmptyBorder(1, 2, 1, 0));
+        
         JLabel buildDate1 = new JLabel("Build date:");
         buildDate1.setHorizontalAlignment(SwingConstants.RIGHT);
         buildDate1.setBorder(new EmptyBorder(1, 0, 1, 2));
-        JLabel buildDate2 = new JLabel(new SimpleDateFormat("MMMM dd, yyyy").format(Main.getBuildDate()));
+        
+        JLabel buildDate2 = new JLabel(new SimpleDateFormat("MMMM dd, yyyy")
+                .format(Main.getBuildDate()));
         buildDate2.setBorder(new EmptyBorder(1, 2, 1, 1));
-        JLabel aboutTextLabel = new JLabel(GUIUtilities.formatHTMLString(ABOUT_STRING, 170, true, null));
+        
+        JLabel aboutTextLabel = new JLabel(
+                GUIUtilities.formatHTMLString(ABOUT_TEXT, 220, false, null));
         aboutTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
         aboutTextLabel.setBorder(new EmptyBorder(1, 0, 1, 0));
+        
         JLabel bugsLabel1 = new JLabel("Bug reports go to:");
         bugsLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
         bugsLabel1.setBorder(new EmptyBorder(1, 0, 1, 2));
-        JLabel bugsLabel2 = new JLabel(String.format("<html><a href='mailto:%s'>%s</a></html>", Main.PROGRAM_AUTHOR_EMAIL, Main.PROGRAM_AUTHOR_EMAIL));
+        
+        JLabel bugsLabel2 = new JLabel(
+                String.format("<html><a href='mailto:%s'>%s</a></html>",
+                        Main.PROGRAM_AUTHOR_EMAIL, Main.PROGRAM_AUTHOR_EMAIL));
         bugsLabel2.setBorder(new EmptyBorder(1, 2, 1, 0));
-        bugsLabel2.setToolTipText(String.format("mailto:%s", Main.PROGRAM_AUTHOR_EMAIL));
+        bugsLabel2.setToolTipText(
+                String.format("mailto:%s", Main.PROGRAM_AUTHOR_EMAIL));
         bugsLabel2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        bugsLabel2.addMouseListener(getOpenURLMouseAdapter(String.format("mailto:%s", Main.PROGRAM_AUTHOR_EMAIL)));
+        bugsLabel2.addMouseListener(
+                getOpenURLMouseAdapter(String.format(
+                        "mailto:%s", Main.PROGRAM_AUTHOR_EMAIL)));
+        
         con.gridx = 0;
         con.gridy = 0;
-        centerPanel.add(authorLabel1, con);
+        centerPanelTop.add(authorLabel1, con);
+        
         con.gridx = 1;
         con.gridy = 0;
-        centerPanel.add(authorLabel2, con);
+        centerPanelTop.add(authorLabel2, con);
+        
         con.gridx = 0;
         con.gridy = 1;
-        centerPanel.add(versionLabel1, con);
+        centerPanelTop.add(versionLabel1, con);
+        
         con.gridx = 1;
         con.gridy = 1;
-        centerPanel.add(versionLabel2, con);
+        centerPanelTop.add(versionLabel2, con);
+        
         con.gridx = 0;
         con.gridy = 2;
-        centerPanel.add(buildDate1, con);
+        centerPanelTop.add(buildDate1, con);
+        
         con.gridx = 1;
         con.gridy = 2;
-        centerPanel.add(buildDate2, con);
-        con.gridwidth = 2;
-        con.ipady = 15;
-        con.gridx = 0;
-        con.gridy = 3;
-        centerPanel.add(aboutTextLabel, con);
-        con.gridwidth = 1;
-        con.gridx = 0;
-        con.gridy = 4;
-        centerPanel.add(bugsLabel1, con);
-        con.gridx = 1;
-        con.gridy = 4;
-        centerPanel.add(bugsLabel2, con);
+        centerPanelTop.add(buildDate2, con);
+        
+        centerPanelMid.add(aboutTextLabel, BorderLayout.CENTER);
+        centerPanelBottom.add(bugsLabel1, BorderLayout.WEST);
+        centerPanelBottom.add(bugsLabel2, BorderLayout.CENTER);
+        
+        centerPanel.add(centerPanelTop, BorderLayout.NORTH);
+        centerPanel.add(centerPanelMid, BorderLayout.CENTER);
+        centerPanel.add(centerPanelBottom, BorderLayout.SOUTH);
         
         //Bottom
         JPanel bottomLeftPanel = new JPanel(new BorderLayout());
         bottomLeftPanel.setBorder(new EmptyBorder(5, 10, 10, 10));
-        JLabel copyrightLabel = new JLabel(COPYRIGHT_STRING);
+        
+        JLabel copyrightLabel = new JLabel(Main.PROGRAM_COPYRIGHT + '.');
         copyrightLabel.setBorder(new EmptyBorder(0, 0, 0, 20));
-        JButton closeButton = new JButton("Close");
         bottomLeftPanel.add(copyrightLabel, BorderLayout.WEST);
+        
+        JButton closeButton = new JButton("Close");
         bottomLeftPanel.add(closeButton, BorderLayout.EAST);
         
         mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -155,17 +197,21 @@ public final class AboutDialog extends JDialog
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                closeDialog();
+                dispose();
             }
         });
-        getRootPane().registerKeyboardAction(new AbstractAction()
+        
+        AbstractAction closeAction = new AbstractAction()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                closeDialog();
+                dispose();
             }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        };
+        getRootPane().registerKeyboardAction(closeAction,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false); 
@@ -173,6 +219,8 @@ public final class AboutDialog extends JDialog
     
     private MouseAdapter getOpenURLMouseAdapter(final String url)
     {
+        final Component parent = this;
+        
         return new MouseAdapter()
         {
             @Override
@@ -181,15 +229,13 @@ public final class AboutDialog extends JDialog
                 try {
                     Desktop.getDesktop().browse(new URI(url));
                 } catch (IOException | URISyntaxException ex) {
-                    Logger.error("Failed to open URI.");
+                    Logger.warn("Unable to open Internet browser!", ex);
                     Logger.stackTrace(ex);
+                    GUIUtilities.showErrorMessageBox(parent,
+                            "Unable to open Internet browser!",
+                            "Failed to Open Browser");
                 }
             }
         };
-    }
-    
-    private void closeDialog()
-    {
-        dispose();
     }
 }
