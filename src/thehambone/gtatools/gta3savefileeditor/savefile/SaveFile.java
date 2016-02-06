@@ -30,9 +30,6 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * well as maintaining information about which gaming platform the save file
  * originated from.
  * <p>
- * This class follows the singleton pattern, meaning only one instance can exist
- * at a time.
- * <p>
  * Created on Sep 17, 2015.
  * 
  * @author thehambone
@@ -40,9 +37,20 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
 public class SaveFile
 {
     private static final String TIMESTAMP_FORMAT = "dd MMM. yyyy HH:mm:ss";
+    
     // Singleton object instance
     private static SaveFile currentSaveFile;
     
+    /**
+     * Reads a save file and determines its platform origin.
+     * 
+     * @param src the file to read
+     * @return the {@link Platform} constant describing the file's platform
+     *         origin
+     * @throws IOException if the specified file is not a valid GTA III save
+     *         file
+     * @see Platform
+     */
     public static Platform getPlatform(File src) throws IOException
     {
         SaveFile temp = new SaveFile(src);
@@ -56,9 +64,9 @@ public class SaveFile
      * @param srcPath the path of the file to be loaded
      * @return a new {@code SaveFile} object containing the loaded data
      * @throws IOException if the file loaded is not a valid GTA III save file
-     *                     or if an I/O error occurs
+     *         or if an I/O error occurs
      * @throws UnsupportedPlatformException if the file originated from a gaming
-     *                                      platform that is not supported
+     *         platform that is not supported
      */
     public static SaveFile load(String srcPath) throws IOException
     {
@@ -73,9 +81,9 @@ public class SaveFile
      * @param src a {@code File} object representing the file to be loaded
      * @return a new {@code SaveFile} object containing the loaded data
      * @throws IOException if the file loaded is not a valid GTA III save file
-     *                     or if an I/O error occurs
+     *         or if an I/O error occurs
      * @throws UnsupportedPlatformException if the file originated from a gaming
-     *                                      platform that is not supported
+     *         platform that is not supported
      */
     public static SaveFile load(File src) throws IOException
     {
@@ -90,13 +98,12 @@ public class SaveFile
      * according to the specified gaming platform.
      * 
      * @param srcPath the path of the file to be loaded
-     * @param platform the gaming platform that from which this save file was
-     *                 created
+     * @param platform the gaming platform from which this save file was created
      * @return a new {@code SaveFile} object containing the loaded data
      * @throws IOException if the file loaded is not a valid GTA III save file
-     *                     or if an I/O error occurs
+     *         or if an I/O error occurs
      * @throws UnsupportedPlatformException if the file originated from a gaming
-     *                                      platform that is not supported
+     *         platform that is not supported
      */
     public static SaveFile load(String srcPath, Platform platform)
             throws IOException
@@ -110,13 +117,12 @@ public class SaveFile
      * data.
      * 
      * @param src a {@code File} object representing the file to be loaded
-     * @param platform the gaming platform that from which this save file was
-     *                 created
+     * @param platform the gaming platform from which this save file was created
      * @return a new {@code SaveFile} object containing the loaded data
      * @throws IOException if the file loaded is not a valid GTA III save file
-     *                     or if an I/O error occurs
+     *         or if an I/O error occurs
      * @throws UnsupportedPlatformException if the file originated from a gaming
-     *                                      platform that is not supported
+     *         platform that is not supported
      */
     public static SaveFile load(File src, Platform platform)
             throws IOException
@@ -172,6 +178,15 @@ public class SaveFile
     
     private File src;
     
+    /**
+     * Creates a new {@code SaveFile} object from the specified file.
+     * 
+     * @param src the file to be loaded
+     * @throws IOException if the file loaded is not a valid GTA III save file
+     *         or if an I/O error occurs
+     * @throws UnsupportedPlatformException if the file originated from a gaming
+     *         platform that is not supported
+     */
     // Don't allow instantiation outside of this package
     protected SaveFile(File src) throws IOException
     {
@@ -180,6 +195,16 @@ public class SaveFile
         this.platform = detectPlatform();
     }
     
+    /**
+     * Creates a new {@code SaveFile} object from the specified file.
+     * 
+     * @param src the file to be loaded
+     * @param platform the gaming platform from which this save file was created
+     * @throws IOException if the file loaded is not a valid GTA III save file
+     *         as described by the platform or if an I/O error occurs
+     * @throws UnsupportedPlatformException if the file originated from a gaming
+     *         platform that is not supported
+     */
     // Don't allow instantiation outside of this package
     protected SaveFile(File src, Platform platform) throws IOException
     {
@@ -211,11 +236,26 @@ public class SaveFile
         return platform;
     }
     
+    /**
+     * Gets the file from which this save file data was loaded.
+     * 
+     * @return the source file
+     */
     public File getSourceFile()
     {
         return src;
     }
     
+    /**
+     * Gets the save name and timestamp of this save file. The name and
+     * timestamp are stored as the first and second element respectively in an
+     * array of Strings.
+     * <p>
+     * This method is only usable for PC save files.
+     * 
+     * @return an array of strings containing the save name and timestamp, an
+     *         empty array is returned if the file is not a PC save file.
+     */
     public String[] getFileInfo()
     {
         if (platform != Platform.PC) {
@@ -226,10 +266,12 @@ public class SaveFile
         String saveName;
         String[] fileInfo = new String[2];
         
+        // Load save name
         VarString saveNameVar = new VarString16(24);
         saveNameVar.load(buf, 0x04);
         saveName = saveNameVar.getValue();
         
+        // Load timestamp
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, buf.readShort());
         cal.set(Calendar.MONTH, buf.readShort() - 1);
@@ -247,37 +289,73 @@ public class SaveFile
         return fileInfo;
     }
     
+    /**
+     * Calculates a CRC32 checksum on the working data.
+     * 
+     * @return a CRC32 sum of the working data
+     */
     public int getCRC32()
     {
         return Checksum.crc32(buf.toArray());
     }
     
+    /**
+     * Calculates a CRC32 sum of the data found in the source file.
+     * 
+     * @return a CRC32 sum of the source data
+     * @throws IOException if the source file cannot be loaded
+     */
     public int getSourceFileCRC32() throws IOException
     {
         DataBuffer tempBuf = new DataBuffer(src);
         return Checksum.crc32(tempBuf.toArray());
     }
     
+    /**
+     * Saves the file data to the source file. Data in the source file will be
+     * overwritten.
+     * 
+     * @throws IOException if an I/O error occurs while saving the file
+     */
     public void save() throws IOException
     {
         save(src);
     }
     
+    /**
+     * Saves the file data to the specified file. Data in the file will be
+     * overwritten.
+     * 
+     * @param dest the file to write
+     * @throws IOException if an I/O error occurs while saving the file
+     */
     public void save(File dest) throws IOException
     {
         save(dest, false);
     }
     
-    private void save(File dest, boolean makingBackup) throws IOException
+    /**
+     * Saves the file data to the specified file. Data in the file will be
+     * overwritten. If the file is being saved as a backup of the original, the
+     * {@code isMakingBackup} parameter should be set to {@code true} to avoid
+     * updating the file timestamp.
+     * 
+     * @param dest the file to write
+     * @param isMakingBackup a boolean indicating whether the file is being
+     *        saved as a backup of the original
+     * @throws IOException if an I/O error occurs while saving the file
+     */
+    private void save(File dest, boolean isMakingBackup) throws IOException
     {
         /* Change source file so subsequent calls to save() will write to the
            same file */
-        if (dest != src && !makingBackup) {
+        if (dest != src && !isMakingBackup) {
             src = dest;
         }
         
+        // Update timestamp 
         String timestampSetting = Settings.get(Settings.Key.TIMESTAMP_FILES);
-        if (Boolean.parseBoolean(timestampSetting) && !makingBackup
+        if (Boolean.parseBoolean(timestampSetting) && !isMakingBackup
                 && platform == Platform.PC) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
@@ -293,16 +371,18 @@ public class SaveFile
             Logger.info("File timestamp updated: %s\n", cal.getTime());
         }
         
+        // Update file checksum
         int checksum = Checksum.checksum32(buf.toArray(0, buf.getSize() - 4));
         Logger.debug("File checksum: 0x%08x\n", checksum);
         buf.seek(buf.getSize() - 4);
         Logger.debug("Writing checksum to offset 0x%08x...\n", buf.getOffset());
         buf.writeInt(checksum);        
         
+        // Store file
         buf.writeFile(src);
     }
     
-    /*
+    /**
      * Loads block data.
      */
     private void load() throws UnsupportedPlatformException, IOException
@@ -321,6 +401,7 @@ public class SaveFile
         while (buf.available() > 4) {
             blockSize = buf.readInt();
             offset = buf.getOffset();
+            
             switch (blockIndex++) {
                 case 0:
                     Logger.debug("Loading block 0...");
@@ -358,10 +439,12 @@ public class SaveFile
                     pedTypes.load(buf, offset, platform);
                     break;
             }
+            
             buf.seek(offset);
             buf.skip(blockSize);
         }
         
+        // Back up file
         String makeBackupsSetting = Settings.get(Settings.Key.MAKE_BACKUPS);
         if (Boolean.parseBoolean(makeBackupsSetting)) {
             File backupFile = new File(src.getAbsolutePath() + ".bak");
@@ -371,10 +454,12 @@ public class SaveFile
         }
     }
     
-    /*
+    /**
      * Detects the gaming platform from which this file originated using the
      * offset of the "SCR" block signature, the offset of the "201729" constant
      * that appears in every save file, and the size of block 1 (PlayerPeds).
+     * 
+     * @throws IOException if the save file is invalid
      */
     private Platform detectPlatform() throws IOException
     {
@@ -463,6 +548,11 @@ public class SaveFile
             return isSupported;
         }
         
+        /**
+         * Gets the name of the gaming platform.
+         * 
+         * @return the platform name
+         */
         public String getFriendlyName()
         {
             return friendlyName;

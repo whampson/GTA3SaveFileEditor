@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -32,10 +34,12 @@ import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableCom
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * This page contains features for editing the properties of the vehicles stored
+ * in the player's three garages.
+ * <p>
+ * Created on Mar 31, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 31, 2015
  */
 public class GaragesPage extends Page
 {
@@ -47,6 +51,9 @@ public class GaragesPage extends Page
     private VarArray<SaveCarGarageSlot> aSaveGarageSlot;
     private StoredCar selectedStoredCar;
     
+    /**
+     * Creates a new {@code GaragesPage} instance.
+     */
     public GaragesPage()
     {
         super("Garages", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
@@ -64,8 +71,12 @@ public class GaragesPage extends Page
         initBombTypeComboBox();
     }
     
+    /**
+     * Sets parameters for certain VariableComponents.
+     */
     private void initVariableComponentParameters()
     {
+        // Set the bitmasks to apply when the checkboxes are selected
         bulletproofCheckBox.setMask(
                 GameConstants.VehicleImmunity.BULLETPROOF.getMask());
         collisionproofCheckBox.setMask(
@@ -76,6 +87,9 @@ public class GaragesPage extends Page
                 GameConstants.VehicleImmunity.FIREPROOF.getMask());
     }
     
+    /**
+     * Creates an array of all components related to vehicle property editing.
+     */
     private void initVehicleComponents()
     {
         vehicleComponents = new JComponent[] {
@@ -91,6 +105,10 @@ public class GaragesPage extends Page
         }
     }
     
+    /**
+     * Sets up the safehouse selection combo box.
+     */
+    @SuppressWarnings("unchecked")
     private void initSafehouseComboBox()
     {
         DefaultComboBoxModel<String> safehouseComboBoxModel
@@ -99,17 +117,20 @@ public class GaragesPage extends Page
             safehouseComboBoxModel.addElement(i.getFriendlyName());
         }
         
-        safehouseComboBox.addActionListener(new ActionListener()
+        safehouseComboBox.addItemListener(new ItemListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                safehouseComboBoxAction(e);
+                safehouseComboBoxItemStateChanged();
             }
         });
         safehouseComboBox.setModel(safehouseComboBoxModel);
     }
     
+    /**
+     * Sets up the stored car list right-click menu.
+     */
     private void initStoredCarListPopupMenu()
     {
         popupMenu = new JPopupMenu();
@@ -127,6 +148,25 @@ public class GaragesPage extends Page
         popupMenu.add(deleteMenuItem);
     }
     
+    /**
+     * Defines the item selection listener for the stored car list.
+     */
+    private void initStoredCarListSelectionListener()
+    {
+        ListSelectionListener lsl = new ListSelectionListener()
+        {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                storedCarListItemSelectedAction();
+            }
+        };
+        storedCarList.addListSelectionListener(lsl);
+    }
+    
+    /**
+     * Defines the mouse listener for the stored car list.
+     */
     private void initStoredCarMouseListener()
     {
         storedCarList.addMouseListener(new MouseAdapter()
@@ -142,19 +182,9 @@ public class GaragesPage extends Page
         });
     }
     
-    private void initStoredCarListSelectionListener()
-    {
-        ListSelectionListener lsl = new ListSelectionListener()
-        {
-            @Override
-            public void valueChanged(ListSelectionEvent e)
-            {
-                storedCarListItemSelectedAction(e);
-            }
-        };
-        storedCarList.addListSelectionListener(lsl);
-    }
-    
+    /**
+     * Sets up the vehicle color boxes.
+     */
     private void initColorPanels()
     {
         primaryColorPanel.addMouseListener(new MouseAdapter()
@@ -188,6 +218,9 @@ public class GaragesPage extends Page
         });
     }
     
+    /**
+     * Populates the vehicle selection combo box.
+     */
     private void initVehicleComboBox()
     {
         List<VariableComboBoxItem> vehicles = new ArrayList<>();
@@ -203,10 +236,10 @@ public class GaragesPage extends Page
         
         vehicleComboBox.setModel(vehicleComboBoxModel);
         
-        vehicleComboBox.addActionListener(new ActionListener()
+        vehicleComboBox.addItemListener(new ItemListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
                 SwingUtilities.invokeLater(new Runnable()
                 {
@@ -220,6 +253,9 @@ public class GaragesPage extends Page
         });
     }
     
+    /**
+     * Populates the radio station selection combo box.
+     */
     private void initRadioStationComboBox()
     {
         DefaultComboBoxModel<VariableComboBoxItem> radioStationComboBoxModel
@@ -234,6 +270,9 @@ public class GaragesPage extends Page
         radioStationComboBox.setModel(radioStationComboBoxModel);
     }
     
+    /**
+     * Populates the car bomb selection combo box.
+     */
     private void initBombTypeComboBox()
     {
         List<VariableComboBoxItem> bombTypes = new ArrayList<>();
@@ -255,6 +294,12 @@ public class GaragesPage extends Page
         bombTypeComboBox.setModel(bombTypeComboBoxModel);
     }
     
+    /**
+     * Marks a StoredCar disabled in the file, which effectively deletes the
+     * vehicle from the garage.
+     * 
+     * @param sc the StoredCar to delete
+     */
     private void deleteVehicle(StoredCar sc)
     {
         if (sc == null) {
@@ -262,11 +307,18 @@ public class GaragesPage extends Page
         }
 
         sc.nModelID.setValue(0);
-        Logger.debug("Variable updated: " + sc.nModelID);
-        notifyChange(sc.nModelID);
+        notifyVariableChange(sc.nModelID);
+        
         ((DefaultListModel)storedCarList.getModel()).removeElement(sc);
     }
     
+    /**
+     * Opens a CarColorSelectorDialog and updates a car color variable based on
+     * the color chosen.
+     * 
+     * @param colorPanel the panel that was clicked to open the dialog
+     * @param colorVar the variable to write the selected color ID into
+     */
     private void chooseCarColor(JPanel colorPanel, VarByte colorVar)
     {
         Window parent = SwingUtilities.getWindowAncestor(this);
@@ -276,12 +328,16 @@ public class GaragesPage extends Page
         if (cc != null) {
             colorPanel.setBackground(cc.getColor());
             colorVar.setValue((byte)cc.getID());
-            Logger.debug("Variable updated: " + colorVar);
-            notifyChange(colorVar);
+            notifyVariableChange(colorVar);
         }
     }
     
-    private void safehouseComboBoxAction(ActionEvent e)
+    /**
+     * Defines the action to perform when a new item is selected in the
+     * safehouse combo box.
+     */
+    @SuppressWarnings("unchecked")
+    private void safehouseComboBoxItemStateChanged()
     {
         int selectedIndex = safehouseComboBox.getSelectedIndex();
         if (selectedIndex == -1) {
@@ -309,7 +365,11 @@ public class GaragesPage extends Page
         storedCarList.setModel(storedCarListModel);
     }
     
-    private void storedCarListItemSelectedAction(ListSelectionEvent e)
+    /**
+     * Defines the action to perform when an item is selected in the stored car
+     * list.
+     */
+    private void storedCarListItemSelectedAction()
     {
         selectedStoredCar = (StoredCar)storedCarList.getSelectedValue();
         for (JComponent comp : vehicleComponents) {
@@ -320,7 +380,8 @@ public class GaragesPage extends Page
         if (selectedStoredCar == null) {
             return;
         }
-
+        
+        // Reload variables
         vehicleComboBox.setVariable(selectedStoredCar.nModelID);
         bulletproofCheckBox.setVariable(selectedStoredCar.nImmunities);
         collisionproofCheckBox.setVariable(selectedStoredCar.nImmunities);
@@ -347,6 +408,7 @@ public class GaragesPage extends Page
         aSaveGarageSlot
                 = SaveFile.getCurrentSaveFile().garages.aSaveCarGarageSlot;
         
+        // Fire savehouse combo box selection listener
         safehouseComboBox.setSelectedIndex(-1);
         safehouseComboBox.setSelectedIndex(0);
     }

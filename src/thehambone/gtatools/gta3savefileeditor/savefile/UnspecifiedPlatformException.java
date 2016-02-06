@@ -1,6 +1,9 @@
 package thehambone.gtatools.gta3savefileeditor.savefile;
 
 /**
+ * An {@code UnspecifiedPlatformException} indicates that a gaming platform was
+ * not indicated where it needed to be.
+ * <p>
  * Created on Nov 9, 2015.
  * 
  * @author thehambone

@@ -296,6 +296,17 @@ public class DataBuffer
         return buf;
     }
     
+    /**
+     * Returns a chunk of the buffer as an array of bytes.
+     * <p>
+     * <b>Unlike {@link #toArray()}, the array returned is not backed by the
+     * buffer, so changes made to this array will <u>not</u> be reflected in the
+     * buffer.</b>
+     * 
+     * @param off the starting offset of the buffer chunk
+     * @param len the length of the chunk
+     * @return a chunk of the buffer as an array of bytes
+     */
     public byte[] toArray(int off, int len)
     {
         if (off < 0 || len > buf.length) {
@@ -633,19 +644,9 @@ public class DataBuffer
         write((byte) (s >>> 8));
     }
     
-//    @Override
-//    public String toString()
-//    {
-//        return "DataBuffer@" + Integer.toHexString(hashCode()) + ": [ "
-//                + "size = " + buf.length + "; "
-//                + "offset = " + offset + "; "
-//                + "mark = " + mark + "; "
-//                + "];";
-//    }
-    
-    /*
-     * Checks if an index exists within the buffer. Throws an exception if the
-     * index is out of range.
+    /**
+     * Checks if an index exists within the buffer. Throws an
+     * IndexOutOfBoundsException if the index is out of range.
      */
     private void rangeCheck(int index)
     {
@@ -657,6 +658,9 @@ public class DataBuffer
         }
     }
     
+    /**
+     * Creates an "out of bounds" message given the specified index.
+     */
     private String outOfBoundsMessage(int index)
     {
         return "Index: " + index + ", Size: " + buf.length;

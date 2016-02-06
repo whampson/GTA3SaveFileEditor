@@ -1,6 +1,5 @@
 package thehambone.gtatools.gta3savefileeditor;
 
-import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Desktop;
@@ -26,16 +25,17 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import thehambone.gtatools.gta3savefileeditor.Main;
+import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
 
 /**
- * The "About" window.
+ * The {@code AbourDialog} class is an extension of the {@code JDialog} class
+ * that displays information about the program.
+ * <p>
+ * Created on Apr 8, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, April 08, 2015
  */
 public class AboutDialog extends JDialog
 {

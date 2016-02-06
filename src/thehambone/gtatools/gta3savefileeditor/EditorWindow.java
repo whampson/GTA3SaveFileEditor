@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -1206,6 +1205,13 @@ public class EditorWindow extends JFrame implements Observer
         refreshSlotMenus();
     }
     
+    /**
+     * Checks if the current file has been modified by another program. This is
+     * done by comparing the CRC32 checksum of the loaded file data to the CRC32
+     * sum of the stored file data. If the sums do not match, external changes
+     * have been made and the user will be prompted to either reload the file
+     * or ignore the external changes.
+     */
     private void checkForExternalChanges()
     {
         int newCRC;

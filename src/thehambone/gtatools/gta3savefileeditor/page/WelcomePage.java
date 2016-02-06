@@ -20,6 +20,9 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
 import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
 
 /**
+ * This page contains a list of selectable PC saves and options to load, delete,
+ * and browse for a file. It is the first page that the user sees.
+ * <p>
  * Created in Mar 30, 2015.
  * 
  * @author thehambone
@@ -28,6 +31,9 @@ public class WelcomePage extends Page
 {
     private static final String ICON_PATH = "META-INF/res/logo2.png";
     
+    /**
+     * Creates a new {@code WelcomePage} instance.
+     */
     public WelcomePage()
     {
         super("Welcome", Visibility.VISIBLE_WHEN_FILE_NOT_LOADED_ONLY);
@@ -35,10 +41,13 @@ public class WelcomePage extends Page
         initComponents();
         initIcon();
         initButtons();
-        initListSelectionListener();
-        initMouseListener();
+        initSaveSlotListSelectionListener();
+        initSaveSlotListMouseListener();
     }
     
+    /**
+     * Loads the "GTA III Save File Editor" banner.
+     */
     private void initIcon()
     {
         try {
@@ -51,6 +60,10 @@ public class WelcomePage extends Page
         imageLabel.setText("");
     }
     
+    /**
+     * Defines the actions for the "Load", "Delete", "Refresh", and "Browse"
+     * buttons.
+     */
     private void initButtons()
     {
         refreshButton.addActionListener(new ActionListener()
@@ -96,7 +109,10 @@ public class WelcomePage extends Page
         });
     }
     
-    private void initListSelectionListener()
+    /**
+     * Defines the selection listener for the save slot list.
+     */
+    private void initSaveSlotListSelectionListener()
     {
         saveSlotList.addListSelectionListener(new ListSelectionListener()
         {
@@ -114,7 +130,10 @@ public class WelcomePage extends Page
         });
     }
     
-    private void initMouseListener()
+    /**
+     * Defines the mouse-click listener for the save slot list.
+     */
+    private void initSaveSlotListMouseListener()
     {
         // Item double-click listener
         saveSlotList.addMouseListener(new MouseAdapter()
@@ -131,6 +150,9 @@ public class WelcomePage extends Page
         });
     }
     
+    /**
+     * Loads the selected save slot.
+     */
     private void loadSelectedSlot()
     {
         PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
@@ -142,6 +164,9 @@ public class WelcomePage extends Page
         notifyObservers(Event.FILE_LOAD, f);
     }
     
+    /**
+     * Deletes the selected save slot.
+     */
     private void deleteSelectedSlot()
     {
         PCSaveSlot saveSlot = (PCSaveSlot)saveSlotList.getSelectedValue();
@@ -158,12 +183,19 @@ public class WelcomePage extends Page
         }
     }
     
+    /**
+     * Refreshes the save slot list.
+     */
     private void refresh()
     {
         notifyObservers(Event.REFRESH_SLOTS);
         populateSlotList();
     }
     
+    /**
+     * Populates the save slot list with saves found at the path specified by
+     * the {@code GTA3_USER_DIR} setting.
+     */
     @SuppressWarnings("unchecked")
     private void populateSlotList()
     {

@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.gxt;
 
 import java.io.File;
@@ -35,7 +34,7 @@ public final class GXT
      * Loads a GXT table from a file.
      * 
      * @param gxtFile the file to load
-     * @throws IOException if an IO error occurs while reading the file
+     * @throws IOException if an error occurs while reading the file
      */
     public static void loadGXTTable(File gxtFile) throws IOException
     {
@@ -43,6 +42,12 @@ public final class GXT
         gxtTable = r.readFile();
     }
     
+    /**
+     * Loads a GXT table from remaining data in an {@code InputStream}.
+     * 
+     * @param gxtStream the stream containing GXT data
+     * @throws IOException if the stream does not contain GXT data
+     */
     public static void loadGXTTable(InputStream gxtStream) throws IOException
     {
         GXTReader r = new GXTReader(gxtStream);

@@ -6,7 +6,7 @@ import javax.swing.filechooser.FileSystemView;
 import thehambone.gtatools.gta3savefileeditor.Main;
 
 /**
- * This class contains methods relating to the Grand Theft Auto III game itself.
+ * This class contains methods relating to the Grand Theft Auto III game.
  * <p>
  * Created on Mar 5, 2015.
  * 
@@ -15,7 +15,7 @@ import thehambone.gtatools.gta3savefileeditor.Main;
 public class Game
 {
     /**
-     * Returns the path to the "GTA3 User Files" folder.
+     * Gets the path to the "GTA3 User Files" folder.
      * 
      * @return the path to the "GTA3 User Files" folder
      */

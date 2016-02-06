@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.gxt;
 
 import java.io.File;
@@ -100,7 +99,7 @@ public class GXTReader
         return gxt;
     }
     
-    /*
+    /**
      * Dereferences a GXT string from the pointer found in the TKEY section.
      */
     private String readGXTString(int sizeOfTKEYSection, int pString)

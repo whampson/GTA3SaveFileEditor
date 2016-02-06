@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.util;
 
 import java.io.File;
@@ -12,6 +11,9 @@ import java.util.Date;
 import thehambone.gtatools.gta3savefileeditor.Main;
 
 /**
+ * The {@code Logger} class is used to log events and messages about the
+ * program.
+ * <p>
  * Created on Jan 9, 2016.
  *
  * @author thehambone
@@ -86,6 +88,13 @@ public final class Logger
         stackTrace(Level.DEBUG, t);
     }
     
+    /**
+     * Writes the stack trace of a {@code Throwable} object to the log using the
+     * specified logging level.
+     * 
+     * @param level the logging level to use when writing the stack trace
+     * @param t the {@code Throwable} whose stack trace will be written
+     */
     public static void stackTrace(Level level, Throwable t)
     {
         StringWriter writer = new StringWriter();
@@ -337,7 +346,7 @@ public final class Logger
      */
     public void log(Level level, String message)
     {
-        if (level.getMask() < currentLevel.getMask()) {
+        if (level.getPrecedenceIndex() < currentLevel.getPrecedenceIndex()) {
             return;
         }
         
@@ -442,16 +451,16 @@ public final class Logger
          */
         FATAL(5);
         
-        private final int mask;
+        private final int precedenceIndex;
         
-        private Level(int id)
+        private Level(int precedenceIndex)
         {
-            this.mask = id;
+            this.precedenceIndex = precedenceIndex;
         }
         
-        private int getMask()
+        private int getPrecedenceIndex()
         {
-            return mask;
+            return precedenceIndex;
         }
     }
 }

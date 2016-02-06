@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.savefile.var;
 
 import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;

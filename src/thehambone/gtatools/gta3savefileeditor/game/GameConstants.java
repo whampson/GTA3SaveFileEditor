@@ -3,20 +3,13 @@ package thehambone.gtatools.gta3savefileeditor.game;
 import java.awt.Color;
 
 /**
- * Contains a set of enums pertaining to unchangeable aspects of GTA III, such
- * as weapons, vehicles, peds, etc.
- * 
- * At some point in the future, I want to have this program read some of the
- * game files which define these values. That way, if the user has, say, a
- * custom vehicle installed or a custom car color defined, this editor will be
- * able to work with those modifications to the game.
+ * This class contains a set of enums that reflect various constants found in
+ * GTA III, such a weapons, vehicles, pedtypes, etc.
+ * <p>
+ * Created on Mar 16, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 16, 2015
  */
-
-// todo: define these in their own classes (looks much cleaner!)
 public class GameConstants
 {
     public static enum Gang

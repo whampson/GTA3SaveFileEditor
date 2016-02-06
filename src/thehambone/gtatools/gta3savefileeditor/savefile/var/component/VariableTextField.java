@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.savefile.var.component;
 
 import java.awt.event.FocusEvent;
@@ -47,7 +46,6 @@ public abstract class VariableTextField<T extends Variable>
         initDocumentListener();
         initFocusListener();
         refreshComponent();
-        
     }
     
     public String getDisplayFormat()

@@ -5,22 +5,20 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
-import thehambone.gtatools.gta3savefileeditor.util.Logger;
-import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
 
 /**
- * An extension of a {@link javax.swing.text.DocumentFilter} that is designed to
+ * An extension of {@link javax.swing.text.DocumentFilter} that is designed to
  * filter text input by the user such that the text input will remain a valid
- * integer (whole number).
+ * integer.
+ * <p>
+ * Created on Mar 30, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 30, 2015
  */
 public class IntegerDocumentFilter extends DocumentFilter
 {
-    // longs are used to handle unsigned types
+    // Longs are used to handle unsigned input
     private final long min;
     private final long max;
     
@@ -94,6 +92,13 @@ public class IntegerDocumentFilter extends DocumentFilter
         super.remove(fb, offset, length);
     }
     
+    /**
+     * Checks whether the number passed through the document filter is within
+     * bounds.
+     * 
+     * @param s the number as a string
+     * @return true if the number is within range
+     */
     private boolean isInputWithinRange(String s)
     {
         long l = Long.parseLong(s);

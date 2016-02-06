@@ -683,6 +683,9 @@
                   </Properties>
                 </Component>
                 <Component class="thehambone.gtatools.gta3savefileeditor.savefile.var.component.FloatVariableSlider" name="weatherInterpolationSlider">
+                  <Properties>
+                    <Property name="toolTipText" type="java.lang.String" value="Weather cycle progress. Left side is previous weather, right side is next weather."/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

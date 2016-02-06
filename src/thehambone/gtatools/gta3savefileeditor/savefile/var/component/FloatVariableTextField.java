@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.savefile.var.component;
 
 import thehambone.gtatools.gta3savefileeditor.page.Page;

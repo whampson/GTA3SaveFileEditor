@@ -3,7 +3,8 @@ package thehambone.gtatools.gta3savefileeditor.savefile.var;
 /**
  * A {@code VarBoolean} is a data structure whose numerical value represents
  * either the one of the boolean logic values {@code true} and {@code false}.
- * <p>A numerical value of 0 represents {@code false}, while any other numerical
+ * <p>
+ * A numerical value of 0 represents {@code false}, while any other numerical
  * value (typically 1) represents {@code true}.
  * <p>
  * Created on Sep 17, 2015.

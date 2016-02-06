@@ -17,12 +17,17 @@ import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * This pages contains components for modifying the program configuration.
+ * <p>
  * Created on Mar 31, 2015.
  * 
  * @author thehambone
  */
 public class OptionsPage extends Page
 {
+    /**
+     * Creates a new {@code OptionsPage} object.
+     */
     public OptionsPage()
     {
         super("Options", Visibility.ALWAYS_VISIBLE);
@@ -33,6 +38,10 @@ public class OptionsPage extends Page
         initTimestampComponents();
     }
     
+    /**
+     * Sets up the save file folder text field, browse button, and path status
+     * label.
+     */
     private void initSaveDirComponents()
     {
         saveFileDirectoryTextField.addFocusListener(new FocusAdapter()
@@ -111,6 +120,9 @@ public class OptionsPage extends Page
         });
     }
     
+    /**
+     * Sets up the backup file check box.
+     */
     private void initBackupComponents()
     {
         makeFileBackupCheckBox.addActionListener(new ActionListener()
@@ -125,6 +137,9 @@ public class OptionsPage extends Page
         });
     }
     
+    /**
+     * Sets up the timestamp check box.
+     */
     private void initTimestampComponents()
     {
         updateTimestampCheckBox.addActionListener(new ActionListener()
@@ -139,6 +154,11 @@ public class OptionsPage extends Page
         });
     }
     
+    /**
+     * Displays a JFileChooser configured for selecting directories.
+     * 
+     * @return the selected directory, {@code null} if the user cancelled
+     */
     private File selectDirectory()
     {
         return GUIUtilities.showDirectorySelectionDialog(

@@ -2,6 +2,8 @@ package thehambone.gtatools.gta3savefileeditor.page;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
@@ -14,6 +16,8 @@ import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableCom
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * This page contains features for editing data pertaining to the player.
+ * <p>
  * Created on Mar 30, 2015.
  * 
  * @author thehambone
@@ -26,6 +30,9 @@ public class PlayerPage extends Page
     private VarArray<WeaponSlot> aWeaponSlot;
     private boolean updateMaxChaosLevelVar;
     
+    /**
+     * Creates a new {@code PlayerPage} object.
+     */
     public PlayerPage()
     {
         super("Player", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
@@ -37,12 +44,19 @@ public class PlayerPage extends Page
         initWantedLevelComponents();
     }
     
+    /**
+     * Sets parameters for certain VariableComponents.
+     */
     private void initVariableComponentParameters()
     {
         weaponEquippedCheckBox.setDeselectedValue(0);
         weaponAmmoTextField.setUnsigned(true);
     }
     
+    /**
+     * Populates the weapon combo box and defines action listeners for other
+     * weapon-related components.
+     */
     private void initWeaponsComponents()
     {
         DefaultComboBoxModel<String> weaponSlotComboBoxModel
@@ -56,12 +70,12 @@ public class PlayerPage extends Page
         
         weaponSlotComboBox.setModel(weaponSlotComboBoxModel);
         
-        weaponSlotComboBox.addActionListener(new ActionListener()
+        weaponSlotComboBox.addItemListener(new ItemListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                weaponComboBoxAction(e);
+                weaponComboBoxItemStateChanged();
             }
         });
         
@@ -70,11 +84,14 @@ public class PlayerPage extends Page
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                weaponEquippedCheckBoxAction(e);
+                weaponEquippedCheckBoxAction();
             }
         });
     }
     
+    /**
+     * Sets up the components related to player wanted level.
+     */
     private void initWantedLevelComponents()
     {
         DefaultComboBoxModel<VariableComboBoxItem> wLevelComboBoxModel
@@ -92,21 +109,27 @@ public class PlayerPage extends Page
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                enableWantedLevelCheckBoxAction(e);
+                enableWantedLevelCheckBoxAction();
             }
         });
         
-        maxWantedLevelComboBox.addActionListener(new ActionListener()
+        maxWantedLevelComboBox.addItemListener(new ItemListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                maxWantedLevelComboBoxAction(e);
+                maxWantedLevelComboBoxItemStateChanged();
             }
         });
     }
     
-    private void setWantedLevelEnabled(boolean isEnabled)
+    /**
+     * Enables or disabled player wanted level
+     * 
+     * @param isEnabled a boolean indicating whether the wanted level should be
+     *        enabled
+     */
+    private void enableWantedLevel(boolean isEnabled)
     {
         maxWantedLevelLabel.setEnabled(isEnabled);
         maxWantedLevelComboBox.setEnabled(isEnabled);
@@ -115,11 +138,16 @@ public class PlayerPage extends Page
             int maxWantedLevel = playerped.nMaxWantedLevel.getValue();  
             maxWantedLevelComboBox.setSelectedIndex(maxWantedLevel - 1);
         } else {
-            updateMaxChaosLevel(0);
+            setMaxChaosLevel(0);
         }
     }
     
-    private void updateMaxChaosLevel(int maxWantedLevel)
+    /**
+     * Sets the max chaos level for the player based on the max wanted level.
+     * 
+     * @param maxWantedLevel the player's max wanted level (in stars)
+     */
+    private void setMaxChaosLevel(int maxWantedLevel)
     {
         int maxChaosLevel = 0;
         switch (maxWantedLevel) {
@@ -145,12 +173,15 @@ public class PlayerPage extends Page
         
         if (updateMaxChaosLevelVar) {
             playerped.nMaxChaosLevel.setValue(maxChaosLevel);
-            Logger.debug("Variable updated: " + playerped.nMaxChaosLevel);
-            notifyChange(playerped.nMaxChaosLevel);
+            notifyVariableChange(playerped.nMaxChaosLevel);
         }
     }
     
-    private void weaponComboBoxAction(ActionEvent e)
+    /**
+     * Defines the action performed when a new item is selected in the weapon
+     * combo box.
+     */
+    private void weaponComboBoxItemStateChanged()
     {
         int selectedWeaponIndex = weaponSlotComboBox.getSelectedIndex();
         if (selectedWeaponIndex == -1) {
@@ -180,9 +211,15 @@ public class PlayerPage extends Page
         }
     }
     
-    private void weaponEquippedCheckBoxAction(ActionEvent e)
+    /**
+     * Defines the action performed when the "Equipped" check box is clicked.
+     */
+    private void weaponEquippedCheckBoxAction()
     {
         int index = weaponSlotComboBox.getSelectedIndex();
+        if (index == -1) {
+            return;
+        }
         
         // Skip enabling ammo text field if "Bat" or nothing is selected
         if (index > 0) {
@@ -190,14 +227,26 @@ public class PlayerPage extends Page
         }
     }
     
-    private void enableWantedLevelCheckBoxAction(ActionEvent e)
+    /**
+     * Defines the action performed when the "Enable wanted level" check box is
+     * clicked.
+     */
+    private void enableWantedLevelCheckBoxAction()
     {
-        setWantedLevelEnabled(enableWantedLevelCheckBox.isSelected());
+        enableWantedLevel(enableWantedLevelCheckBox.isSelected());
     }
     
-    private void maxWantedLevelComboBoxAction(ActionEvent e)
+    /**
+     * Defines the action performed when a new item is selected in the max
+     * wanted level combo box.
+     */
+    private void maxWantedLevelComboBoxItemStateChanged()
     {
-        updateMaxChaosLevel(maxWantedLevelComboBox.getSelectedIndex() + 1);
+        if (maxWantedLevelComboBox.getSelectedIndex() == -1) {
+            return;
+        }
+        
+        setMaxChaosLevel(maxWantedLevelComboBox.getSelectedIndex() + 1);
     }
     
     @Override
@@ -221,15 +270,18 @@ public class PlayerPage extends Page
         freeBombsCheckBox.setVariable(garages.bFreeBombs);
         freeRespraysCheckBox.setVariable(garages.bFreeResprays);
         
+        weaponSlotComboBox.setSelectedIndex(-1);
         weaponSlotComboBox.setSelectedIndex(0);
         
         updateMaxChaosLevelVar = false;
         maxWantedLevelComboBox.updateVariableOnChange(false);
         boolean wantedLevelEnabled = playerped.nMaxChaosLevel.getValue() >= 40;
-        setWantedLevelEnabled(wantedLevelEnabled);
+        enableWantedLevel(wantedLevelEnabled);
         enableWantedLevelCheckBox.setSelected(wantedLevelEnabled);
+        maxWantedLevelComboBox.setSelectedIndex(-1);
         maxWantedLevelComboBox.setVariable(playerped.nMaxWantedLevel);
         maxWantedLevelComboBox.updateVariableOnChange(true);
+        maxWantedLevelComboBox.refreshComponent();
         updateMaxChaosLevelVar = true;
         
         playerXTextField.setVariable(playerped.cPlayerPed.vPosition.fX);

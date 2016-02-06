@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.savefile.var.component;
 
 import java.awt.event.ItemEvent;

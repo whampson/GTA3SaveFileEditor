@@ -1,7 +1,6 @@
 package thehambone.gtatools.gta3savefileeditor.savefile.struct;
 
 import thehambone.gtatools.gta3savefileeditor.util.DataBuffer;
-import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.UnsupportedPlatformException;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarArray;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.VarBoolean;

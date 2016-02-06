@@ -46,12 +46,11 @@ public interface DataStructure
      * @param buf the {@code DataBuffer} object containing the data to be loaded
      * @param offset the location in the buffer of this data structure
      * @param platform the gaming platform which data should be loaded according
-     *                 to
+     *        to
      * @throws UnspecifiedPlatformException if a platform was not specified when
-     *                                      the data structure being loaded
-     *                                      requires it
+     *         the data structure being loaded requires it
      * @throws UnsupportedPlatformException if the specified platform is not
-     *                                      supported
+     *         supported
      */
     public void load(DataBuffer buf, int offset, SaveFile.Platform platform);
     

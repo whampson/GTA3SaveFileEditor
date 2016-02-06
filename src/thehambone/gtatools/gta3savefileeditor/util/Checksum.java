@@ -1,7 +1,7 @@
 package thehambone.gtatools.gta3savefileeditor.util;
 
 /**
- * This class contains various methods for computing checksums on data.
+ * This class contains methods for computing checksums on data.
  * <p>
  * Created on Sep 16, 2015.
  * 

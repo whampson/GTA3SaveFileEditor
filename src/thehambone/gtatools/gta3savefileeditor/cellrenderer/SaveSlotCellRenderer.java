@@ -11,13 +11,12 @@ import javax.swing.border.EmptyBorder;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
 
 /**
- * Renders a
- * {@link thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlotOLD} as
- * a JLabel, which can be used in lists.
+ * Renders a {@code PCSaveSlot} for use as an item in a graphical list. The list
+ * cell contains the name of the PC save file as well as the file timestamp.
+ * <p>
+ * Created on Apr 6, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, April 06, 2015
  */
 public class SaveSlotCellRenderer implements ListCellRenderer<PCSaveSlot>
 {

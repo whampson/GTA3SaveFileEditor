@@ -6,16 +6,15 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
-import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
 
 /**
- * An extension of a {@link javax.swing.text.DocumentFilter} that is designed to
+ * An extension of {@link javax.swing.text.DocumentFilter} that is designed to
  * filter text input by the user such that the text input will remain a valid
  * floating-point decimal number.
+ * <p>
+ * Created on Mar 30, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 30, 2015
  */
 public class FloatDocumentFilter extends DocumentFilter
 {

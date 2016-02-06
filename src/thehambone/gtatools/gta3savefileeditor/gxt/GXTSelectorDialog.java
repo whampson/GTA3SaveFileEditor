@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.gxt;
 
 import java.awt.BorderLayout;
@@ -92,7 +91,7 @@ public final class GXTSelectorDialog extends JDialog
     }
     
     /**
-     * Shows the selection dialog. The value returned is the GXT key for the\
+     * Shows the selection dialog. The value returned is the GXT key for the
      * selected GXT string. {@code null} is returned if no selection is made.
      * 
      * @return the key for the selected GXT string; {@code null} if no selection
@@ -118,7 +117,7 @@ public final class GXTSelectorDialog extends JDialog
         return gxtTable.get(selectedGXTKey);
     }
     
-    /*
+    /**
      * Sets dialog properties.
      */
     private void initWindow()
@@ -140,7 +139,7 @@ public final class GXTSelectorDialog extends JDialog
         });
     }
     
-    /*
+    /**
      * Defines components, places them on the dialog, and defines their actions.
      */
     private void initComponents()
@@ -193,7 +192,7 @@ public final class GXTSelectorDialog extends JDialog
         getContentPane().add(mainPanel);
     }
     
-    /*
+    /**
      * Sets up the table cell renderer.
      */
     private void initTableCellRenderer()
@@ -220,7 +219,7 @@ public final class GXTSelectorDialog extends JDialog
         table.setDefaultRenderer(Object.class, renderer);
     }
     
-    /*
+    /**
      * Sets up the table selection model. This is used to extract the select GXT
      * entry.
      */
@@ -255,7 +254,7 @@ public final class GXTSelectorDialog extends JDialog
         });
     }
     
-    /*
+    /**
      * Sets up the mouse listener for the table.
      */
     private void initTableMouseListener()
@@ -278,7 +277,7 @@ public final class GXTSelectorDialog extends JDialog
         table.addMouseListener(mouseAdapter);
     }
     
-    /*
+    /**
      * Fills the table with GXT keys and their respective values.
      */
     private void populateTable()
@@ -329,7 +328,7 @@ public final class GXTSelectorDialog extends JDialog
         sorter.sort();
     }
     
-    /*
+    /**
      * Defines the click action for the "Select" button.
      */
     private void selectButtonAction(ActionEvent e)

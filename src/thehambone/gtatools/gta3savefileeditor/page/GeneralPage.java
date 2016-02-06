@@ -3,13 +3,14 @@ package thehambone.gtatools.gta3savefileeditor.page;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Map;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
-import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableComponent;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXT;
 import thehambone.gtatools.gta3savefileeditor.gxt.GXTSelectorDialog;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
@@ -22,13 +23,18 @@ import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableCom
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * This page contains features for editing general file data.
+ * <p>
  * Created on Mar 29, 2015.
  * 
  * @author thehambone
  */
 public class GeneralPage extends Page
 {
+    // GXT indicator character; first char in save name if it is a GXT string
     private static final char GXT_INDICATOR = '\uFFFF';
+    
+    // Main.scm mission complete status variable offsets
     private static final int FLAG_TONI_MISSION2_PASSED_MOBILE_OFFSET   = 266;
     private static final int FLAG_TONI_MISSION2_PASSED_PC_OFFSET       = 262;
     private static final int FLAG_DIABLO_MISSION3_PASSED_MOBILE_OFFSET = 284;
@@ -69,7 +75,7 @@ public class GeneralPage extends Page
         initWeatherComponents();
     }
     
-    /*
+    /**
      * Sets parameters for the various VariableComponents found on the page.
      */
     private void initVariableComponentParameters()
@@ -96,7 +102,7 @@ public class GeneralPage extends Page
         weatherNeverChangesCheckBox.setDeselectedValue(-1);
     }
     
-    /*
+    /**
      * Sets up the components in the "Save Name" pane.
      */
     private void initSaveNameComponents()
@@ -113,7 +119,7 @@ public class GeneralPage extends Page
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                gxtKeyRadioButtonAction(e);
+                gxtKeyRadioButtonAction();
             }
         });
         
@@ -123,7 +129,7 @@ public class GeneralPage extends Page
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                textRadioButtonAction(e);
+                textRadioButtonAction();
             }
         });
         
@@ -133,12 +139,12 @@ public class GeneralPage extends Page
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                selectGXTStringButtonAction(e);
+                selectGXTStringButtonAction();
             }
         });
     }
     
-    /*
+    /**
      * Sets up the components in the "Timestamp" pane.
      */
     private void initTimestampComponents()
@@ -179,6 +185,9 @@ public class GeneralPage extends Page
         dayOfWeekComboBox.setModel(dayOfWeekComboBoxModel);
     }
     
+    /**
+     * Defines the action listeners for the bug/glitch fix buttons.
+     */
     private void initGlitchFixButtons()
     {
         purpleNinesGlitchFixButton.addActionListener(new ActionListener()
@@ -200,7 +209,7 @@ public class GeneralPage extends Page
         });
     }
     
-    /*
+    /**
      * Sets up the components in the "Weather" pane.
      */
     @SuppressWarnings("unchecked")
@@ -222,33 +231,46 @@ public class GeneralPage extends Page
         previousWeatherComboBox.setModel(previousWeatherModel);
         
         // Set up current weather combo box action listener
-        currentWeatherComboBox.addActionListener(new ActionListener()
+        currentWeatherComboBox.addItemListener(new ItemListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                currentWeatherComboBoxAction(e);
+                currentWeatherComboBoxItemStateChanged();
             }
         });
         
         // Set up previous weather combo box action listener
-        previousWeatherComboBox.addActionListener(new ActionListener()
+        previousWeatherComboBox.addItemListener(new ItemListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                previousWeatherComboBoxAction(e);
+                previousWeatherComboBoxItemStateChanged();
             }
         });
     }
     
+    /**
+     * Updates the save title text field and sets the save title variable.
+     * 
+     * @param str the new save title string
+     * @param isGXTKey a boolean indicating whether the save title string is a
+     *        GXT key
+     */
     private void updateSaveTitle(String str, boolean isGXTKey)
     {
         updateSaveTitle(str, isGXTKey, true);
     }
     
-    /*
-     * Updates the save title text field and variable
+    /**
+     * Updates the save title text field.
+     * 
+     * @param str the new save title string
+     * @param isGXTKey a boolean indicating whether the save title string is a
+     *        GXT key
+     * @param updateVariable a boolean indicating whether the save title
+     *        variable should be updated
      */
     private void updateSaveTitle(String str, boolean isGXTKey,
             boolean updateVariable)
@@ -273,8 +295,7 @@ public class GeneralPage extends Page
                 // Update variable with GXT key
                 if (updateVariable) {
                     simp.szSaveName.setValue(GXT_INDICATOR + str);
-                    Logger.debug("Variable updated: " + simp.szSaveName);
-                    notifyChange(simp.szSaveName);
+                    notifyVariableChange(simp.szSaveName);
                 }
             } else {
                 saveTitleTextField.setText("<invalid GXT key>");
@@ -292,8 +313,7 @@ public class GeneralPage extends Page
             // Update variable with string
             if (updateVariable) {
                 simp.szSaveName.setValue(str);
-                Logger.debug("Variable updated: " + simp.szSaveName);
-                notifyChange(simp.szSaveName);
+                notifyVariableChange(simp.szSaveName);
             }
             
             // Refresh text field
@@ -302,6 +322,12 @@ public class GeneralPage extends Page
         }
     }
     
+    /**
+     * Checks for the presence of the "Purple Nines Glitch". This glitch is
+     * detected by checking whether the ped model override index for the Hoods
+     * gang is set to anything other than "-1" before the mission "Rumble" has
+     * been completed.
+     */
     private void detectPurpleNinesGlitch()
     {
         SaveFile saveFile = SaveFile.getCurrentSaveFile();
@@ -309,6 +335,8 @@ public class GeneralPage extends Page
         // Get Hoods gang data
         Gang hoods = saveFile.gangs.aGang.getElementAt(6);
         
+        /* Check if ped model override is not -1 and Rumble has not been 
+           finished */
         if (hoods.nPedModelOverrideIndex.getValue() != -1
                 && !flagHoodMission5Passed) {
             purpleNinesGlitchFixButton.setEnabled(true);
@@ -319,6 +347,11 @@ public class GeneralPage extends Page
         }
     }
     
+    /**
+     * Fixes the "Purple Nines Glitch". This glitch is fixed by setting the
+     * ped model override index for the Hoods gang to -1, which causes both
+     * Hoods ped types to spawn.
+     */
     private void fixPurpleNinesGlitch()
     {
         SaveFile saveFile = SaveFile.getCurrentSaveFile();
@@ -329,10 +362,19 @@ public class GeneralPage extends Page
         purpleNinesGlitchFixButton.setEnabled(false);
         purpleNinesGlitchFixButton.setText("Fixed");
         
-        Logger.debug("Variable updated: " + hoods.nPedModelOverrideIndex);
-        notifyChange(hoods.nPedModelOverrideIndex);
+        notifyVariableChange(hoods.nPedModelOverrideIndex);
     }
     
+    /**
+     * Detects whether the ill-effects of the pedestrian cheats are present.
+     * Once enabled, the cheats "peds riot" and "peds attack player" cheats are
+     * irreversible from within the game if the game is saved. Whether one or
+     * both of these cheats are enabled can be determined by checking the
+     * hostility flags on some ped types. By default, the CIVMALE and CIVFEMALE
+     * ped types should be neutral towards each other and the player. If either
+     * CIVMALE or CIVFEMALE is hostile towards either themselves, each other, or
+     * the player, then the one or both of the cheats were most likely enabled.
+     */
     private void detectHostilePeds()
     {
         SaveFile saveFile = SaveFile.getCurrentSaveFile();
@@ -360,6 +402,15 @@ public class GeneralPage extends Page
         }
     }
     
+    /**
+     * Reverses the ill-effects of the pedestrian cheats. Once enabled, the
+     * cheats "peds riot" and "peds attack player" cheats are irreversible from
+     * within the game if the game is saved. The cheats permanently modify the
+     * hostility flags of many ped types. If these flags are restored back to
+     * their default state, then the cheats' effects are reversed. This method
+     * does just that. It also correctly restores gang hostility towards
+     * depending on how much progress has been made in the game.
+     */
     private void fixHostilePeds()
     {
         SaveFile saveFile = SaveFile.getCurrentSaveFile();
@@ -384,8 +435,7 @@ public class GeneralPage extends Page
             
             // Update threat flags
             storedPT.nThreatFlags.setValue(threat);
-            Logger.debug("Variable updated: " + storedPT.nThreatFlags);
-            notifyChange(storedPT.nThreatFlags);
+            notifyVariableChange(storedPT.nThreatFlags);
         }
         
         // Set gang hostility towards player based on mission completion status
@@ -426,10 +476,10 @@ public class GeneralPage extends Page
         disableHostilePedsButton.setText("Fixed");
     }
     
-    /*
+    /**
      * Defines the action for the "Text" radio button.
      */
-    private void textRadioButtonAction(ActionEvent e)
+    private void textRadioButtonAction()
     {
         selectGXTStringButton.setEnabled(false);
         if (prevTitleText != null) {
@@ -439,10 +489,10 @@ public class GeneralPage extends Page
         }
     }
     
-    /*
+    /**
      * Defines the action for the "GXT Key" radio button.
      */
-    private void gxtKeyRadioButtonAction(ActionEvent e)
+    private void gxtKeyRadioButtonAction()
     {
         selectGXTStringButton.setEnabled(true);
         if (prevTitleGXTKey != null) {
@@ -452,10 +502,10 @@ public class GeneralPage extends Page
         }
     }
     
-    /*
+    /**
      * Defines the action for the "Select GXT String" button.
      */
-    private void selectGXTStringButtonAction(ActionEvent e)
+    private void selectGXTStringButtonAction()
     {
         // Show GXT Selector dialog
         Window parent = SwingUtilities.getWindowAncestor(this);
@@ -468,11 +518,15 @@ public class GeneralPage extends Page
         }
     }
     
-    /*
+    /**
      * Defines the action for the "Current weather" combo box.
      */
-    private void currentWeatherComboBoxAction(ActionEvent e)
+    private void currentWeatherComboBoxItemStateChanged()
     {
+        if (currentWeatherComboBox.getSelectedIndex() == -1) {
+            return;
+        }
+        
         // Update rightmost label above weather interpolation slider
         currentWeatherSliderLabel.setText(
                 currentWeatherComboBox.getSelectedItem().toString());
@@ -489,11 +543,15 @@ public class GeneralPage extends Page
         }
     }
     
-    /*
+    /**
      * Defines the action for the "Previous weather" combo box.
      */
-    private void previousWeatherComboBoxAction(ActionEvent e)
+    private void previousWeatherComboBoxItemStateChanged()
     {
+        if (previousWeatherComboBox.getSelectedIndex() == -1) {
+            return;
+        }
+        
         // Update leftmost label above weather interpolation slider
         previousWeatherSliderLabel.setText(
                 previousWeatherComboBox.getSelectedItem().toString());
@@ -538,29 +596,28 @@ public class GeneralPage extends Page
                 if (simp.szSaveName.getValue().charAt(0) == GXT_INDICATOR) {
                     // Select "GXT Key" button and get GXT string
                     prevTitleGXTKey = simp.szSaveName.getValue().substring(1);
-//                    gxtKeyRadioButton.doClick();
                     gxtKeyRadioButton.setSelected(true);
                     selectGXTStringButton.setEnabled(true);
                     if (prevTitleGXTKey != null) {
                         updateSaveTitle(prevTitleGXTKey, true, false);
                     } else {
-                        updateSaveTitle(saveTitleTextField.getText(), true, false);
+                        updateSaveTitle(saveTitleTextField.getText(),
+                                true, false);
                     }
                 } else {
                     // Select "Text" button
-//                    textRadioButton.doClick();
                     textRadioButton.setSelected(true);
                     selectGXTStringButton.setEnabled(false);
                     if (prevTitleText != null) {
                         updateSaveTitle(prevTitleText, false, false);
                     } else {
-                        updateSaveTitle(saveTitleTextField.getText(), false, false);
+                        updateSaveTitle(saveTitleTextField.getText(),
+                                false, false);
                     }
                 }
             } else {
                 // GXT failed to load; disable GXT features
                 gxtKeyRadioButton.setEnabled(false);
-//                textRadioButton.doClick();
                 textRadioButton.setSelected(true);
                 selectGXTStringButton.setEnabled(false);
                 if (prevTitleText != null) {
@@ -598,8 +655,10 @@ public class GeneralPage extends Page
         // Update weather combo boxes to fire action events
         currentWeatherComboBox.updateVariableOnChange(false);
         previousWeatherComboBox.updateVariableOnChange(false);
+        currentWeatherComboBox.setSelectedIndex(-1);
         currentWeatherComboBox
                 .setSelectedIndex(simp.nCurrentWeatherType.getValue());
+        previousWeatherComboBox.setSelectedIndex(-1);
         previousWeatherComboBox
                 .setSelectedIndex(simp.nPreviousWeatherType.getValue());
         currentWeatherComboBox.updateVariableOnChange(true);
@@ -989,6 +1048,8 @@ public class GeneralPage extends Page
         previousWeatherSliderLabel.setText("WeatherA");
 
         currentWeatherSliderLabel.setText("WeatherB");
+
+        weatherInterpolationSlider.setToolTipText("Weather cycle progress. Left side is previous weather, right side is next weather.");
 
         javax.swing.GroupLayout weatherPanelLayout = new javax.swing.GroupLayout(weatherPanel);
         weatherPanel.setLayout(weatherPanelLayout);

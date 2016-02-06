@@ -4,7 +4,6 @@ import java.util.Iterator;
 import thehambone.gtatools.gta3savefileeditor.util.DataBuffer;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.DataStructure;
-import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 
 /**

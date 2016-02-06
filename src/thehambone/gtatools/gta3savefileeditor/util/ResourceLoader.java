@@ -1,4 +1,3 @@
-
 package thehambone.gtatools.gta3savefileeditor.util;
 
 import java.awt.Image;
@@ -7,7 +6,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 /**
- * This class handles the loading of embedded files.
+ * The {@code ResourceLoader} class handles the loading of embedded files.
  * <p>
  * Created on Feb 1, 2016.
  *

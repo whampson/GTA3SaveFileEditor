@@ -15,16 +15,20 @@ import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableCom
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
+ * This page contains features for editing gang-related data.
+ * <p>
+ * Created on Mar 16, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, March 16, 2015
  */
 public class GangsPage extends Page
 {
     private VarArray<Gang> aGang;
     private VarArray<PedType> aPedType;
     
+    /**
+     * Creates a new {@code GangsPage} object.
+     */
     public GangsPage()
     {
         super("Gangs", Visibility.VISIBLE_WHEN_FILE_LOADED_ONLY);
@@ -36,6 +40,10 @@ public class GangsPage extends Page
         initWeaponComboBoxes();
     }
     
+    /**
+     * Sets up the gang selection combo box.
+     */
+    @SuppressWarnings("unchecked")
     private void initGangComboBox()
     {
         DefaultComboBoxModel<String> gangComboBoxModel
@@ -55,11 +63,14 @@ public class GangsPage extends Page
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                gangComboBoxItemStateChanged(e);
+                gangComboBoxItemStateChanged();
             }
         });
     }
     
+    /**
+     * Sets up the vehicle selection combo box.
+     */
     private void initVehicleComboBox()
     {
         List<VariableComboBoxItem> vehicles = new ArrayList<>();
@@ -76,6 +87,9 @@ public class GangsPage extends Page
         vehicleComboBox.setModel(vehicleComboBoxModel);
     }
     
+    /**
+     * Sets up the two weapon selection combo boxes.
+     */
     private void initWeaponComboBoxes()
     {
         DefaultComboBoxModel<VariableComboBoxItem> weapon1ComboBoxModel
@@ -97,7 +111,11 @@ public class GangsPage extends Page
         weapon2ComboBox.setModel(weapon2ComboBoxModel);
     }
     
-    private void gangComboBoxItemStateChanged(ItemEvent e)
+    /**
+     * Defines the action to perform when a new item is selected in the gang
+     * selection combo box.
+     */
+    private void gangComboBoxItemStateChanged()
     {
         int selectedGangIndex = gangComboBox.getSelectedIndex();
         if (selectedGangIndex == -1) {
@@ -107,6 +125,7 @@ public class GangsPage extends Page
         Gang g = aGang.getElementAt(selectedGangIndex);
         PedType pt = aPedType.getElementAt(selectedGangIndex + 7);
         
+        // Reload gang-dependent compoents
         vehicleComboBox.setVariable(g.nVehicleModelID);
         weapon1ComboBox.setVariable(g.nWeaponID1);
         weapon2ComboBox.setVariable(g.nWeaponID2);
@@ -123,6 +142,7 @@ public class GangsPage extends Page
         aGang = SaveFile.getCurrentSaveFile().gangs.aGang;
         aPedType = SaveFile.getCurrentSaveFile().pedTypes.aPedType;
         
+        // Fire gang combo box selection listener
         gangComboBox.setSelectedIndex(-1);
         gangComboBox.setSelectedIndex(0);
     }
@@ -283,7 +303,6 @@ public class GangsPage extends Page
             .addComponent(scrollPane)
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox gangComboBox;

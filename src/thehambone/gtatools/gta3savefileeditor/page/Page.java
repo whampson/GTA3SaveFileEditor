@@ -9,6 +9,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.var.component.VariableCom
 import thehambone.gtatools.gta3savefileeditor.Observable;
 import thehambone.gtatools.gta3savefileeditor.Observer;
 import thehambone.gtatools.gta3savefileeditor.savefile.var.Variable;
+import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
 /**
  * Created on Mar 7, 2015.
@@ -56,23 +57,22 @@ public abstract class Page extends JPanel implements Observable
         return visibility;
     }
     
-    protected void notifyChange(Variable var)
+    /**
+     * Notifies all observers that a variable has been updated.
+     * 
+     * @param var the updated variable
+     */
+    protected void notifyVariableChange(Variable var)
     {
+        Logger.debug("Variable updated: " + var);
         notifyObservers(Event.VARIABLE_CHANGED);
     }
     
     /**
-     * Adds variable change event notifiers to all {@code VariableComponent}
-     * objects found within the specified {@code Container}. These event
-     * notifiers consist of additional {@code ActionListeners},
-     * {@code DocumentListeners}, and {@code ChangeListeners} (depending on the
-     * component type) which send a notification whenever a variable value is
-     * changed. This is used for detecting whether unsaved changes have been
-     * made to the file.
+     * Adds an observer to all {@code VariableComponents} in a given
+     * {@code Container}.
      * 
      * @param root a {@code Container} containing {@code VariableComponents}
-     * @param exclusions components to exclude from the process
-     * @see Event
      */
     private void addObserverToVariableComponents(Container root, Observer o)
     {

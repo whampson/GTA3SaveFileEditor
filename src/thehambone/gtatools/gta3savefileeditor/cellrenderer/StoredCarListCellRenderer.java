@@ -9,13 +9,12 @@ import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
 import thehambone.gtatools.gta3savefileeditor.savefile.struct.StoredCar;
 
 /**
- * Renders a
- * {@link thehambone.gtatools.gta3savefileeditor.savefile.struct.typedefs.gtaobjdefs.StoredCar}
- * as a JLabel, which can be used in lists.
+ * Renders a {@code StoredCar} for use as an item in a graphical list. The list
+ * cell contains the name of the {@code StoredCar}.
+ * <p>
+ * Created on Apr 4, 2015.
  * 
  * @author thehambone
- * @version 0.1
- * @since 0.1, April 04, 2015
  */
 public class StoredCarListCellRenderer implements ListCellRenderer<StoredCar>
 {
