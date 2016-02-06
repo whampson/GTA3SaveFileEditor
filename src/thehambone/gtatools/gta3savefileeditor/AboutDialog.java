@@ -37,7 +37,7 @@ import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
  * 
  * @author thehambone
  */
-public class AboutDialog extends JDialog
+public final class AboutDialog extends JDialog
 {
     private static final String ICON_PATH        = "META-INF/res/logo1.png";
     private static final String COPYRIGHT_STRING = "Copyright " + '\u00A9' + " 2015-2016.";

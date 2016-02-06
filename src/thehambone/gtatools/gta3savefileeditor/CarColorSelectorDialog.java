@@ -19,7 +19,7 @@ import thehambone.gtatools.gta3savefileeditor.game.GameConstants;
  *
  * @author thehambone
  */
-public class CarColorSelectorDialog extends JDialog
+public final class CarColorSelectorDialog extends JDialog
 {
     private GameConstants.CarColor selectedCarColor;
     

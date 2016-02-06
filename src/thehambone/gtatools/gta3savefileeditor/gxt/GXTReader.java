@@ -20,7 +20,7 @@ import thehambone.gtatools.gta3savefileeditor.util.DataBuffer;
  *
  * @author thehambone
  */
-public class GXTReader
+public final class GXTReader
 {
     private static final byte[] TKEY_SIG = new byte[] { 'T', 'K', 'E', 'Y' };
     private static final byte[] TDAT_SIG = new byte[] { 'T', 'D', 'A', 'T' };

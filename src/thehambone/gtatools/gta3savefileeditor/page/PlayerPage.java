@@ -22,7 +22,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class PlayerPage extends Page
+public final class PlayerPage extends Page
 {
     private BlockPlayerInfo player;
     private PlayerPed playerped;

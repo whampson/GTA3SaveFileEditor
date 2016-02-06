@@ -23,7 +23,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class OptionsPage extends Page
+public final class OptionsPage extends Page
 {
     /**
      * Creates a new {@code OptionsPage} object.

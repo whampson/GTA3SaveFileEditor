@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
  *
  * @author thehambone
  */
-public class ResourceLoader
+public final class ResourceLoader
 {
     /**
      * Gets an {@code InputStream} for the embedded resource. The InputStream

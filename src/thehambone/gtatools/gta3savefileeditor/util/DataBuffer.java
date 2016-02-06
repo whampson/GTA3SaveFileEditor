@@ -20,7 +20,7 @@ import java.io.InputStream;
  * 
  * @author thehambone
  */
-public class DataBuffer
+public final class DataBuffer
 {
     private final byte[] buf;
     

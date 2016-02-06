@@ -7,7 +7,7 @@ package thehambone.gtatools.gta3savefileeditor.util;
  * 
  * @author thehambone
  */
-public class Checksum
+public final class Checksum
 {
     /**
      * Computes a 32-bit checksum of a byte buffer using a cyclic redundancy

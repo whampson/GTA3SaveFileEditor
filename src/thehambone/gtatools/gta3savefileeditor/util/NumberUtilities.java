@@ -7,7 +7,7 @@ package thehambone.gtatools.gta3savefileeditor.util;
  * 
  * @author thehambone
  */
-public class NumberUtilities
+public final class NumberUtilities
 {
     /**
      * The maximum value of an unsigned byte. Equal to {@code 2^8}.

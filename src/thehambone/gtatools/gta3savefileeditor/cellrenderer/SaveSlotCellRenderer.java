@@ -18,7 +18,7 @@ import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
  * 
  * @author thehambone
  */
-public class SaveSlotCellRenderer implements ListCellRenderer<PCSaveSlot>
+public final class SaveSlotCellRenderer implements ListCellRenderer<PCSaveSlot>
 {
     @Override
     public Component getListCellRendererComponent(

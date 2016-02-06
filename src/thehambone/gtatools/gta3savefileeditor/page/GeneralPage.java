@@ -29,7 +29,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class GeneralPage extends Page
+public final class GeneralPage extends Page
 {
     // GXT indicator character; first char in save name if it is a GXT string
     private static final char GXT_INDICATOR = '\uFFFF';

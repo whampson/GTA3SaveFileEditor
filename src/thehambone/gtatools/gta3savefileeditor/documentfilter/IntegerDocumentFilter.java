@@ -16,7 +16,7 @@ import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
  * 
  * @author thehambone
  */
-public class IntegerDocumentFilter extends DocumentFilter
+public final class IntegerDocumentFilter extends DocumentFilter
 {
     // Longs are used to handle unsigned input
     private final long min;

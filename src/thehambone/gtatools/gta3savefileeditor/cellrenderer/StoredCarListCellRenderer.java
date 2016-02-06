@@ -16,7 +16,8 @@ import thehambone.gtatools.gta3savefileeditor.savefile.struct.StoredCar;
  * 
  * @author thehambone
  */
-public class StoredCarListCellRenderer implements ListCellRenderer<StoredCar>
+public final class StoredCarListCellRenderer
+        implements ListCellRenderer<StoredCar>
 {
     private final DefaultListCellRenderer dlcr = new DefaultListCellRenderer();
     

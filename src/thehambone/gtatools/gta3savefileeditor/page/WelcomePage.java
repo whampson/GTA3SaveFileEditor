@@ -27,7 +27,7 @@ import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
  * 
  * @author thehambone
  */
-public class WelcomePage extends Page
+public final class WelcomePage extends Page
 {
     private static final String ICON_PATH = "META-INF/res/logo2.png";
     

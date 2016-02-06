@@ -20,7 +20,7 @@ import thehambone.gtatools.gta3savefileeditor.Settings;
  * 
  * @author thehambone
  */
-public class GUIUtilities
+public final class GUIUtilities
 {
     /**
      * The default width in pixels for text.

@@ -21,7 +21,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class GangsPage extends Page
+public final class GangsPage extends Page
 {
     private VarArray<Gang> aGang;
     private VarArray<PedType> aPedType;

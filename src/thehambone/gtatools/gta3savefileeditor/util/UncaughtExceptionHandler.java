@@ -13,7 +13,8 @@ import thehambone.gtatools.gta3savefileeditor.Main;
  * 
  * @author thehambone
  */
-public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
+public final class UncaughtExceptionHandler
+        implements Thread.UncaughtExceptionHandler
 {
     @Override
     public void uncaughtException(Thread t, Throwable e)

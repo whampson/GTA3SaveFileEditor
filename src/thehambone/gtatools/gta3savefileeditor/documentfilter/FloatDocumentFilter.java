@@ -16,7 +16,7 @@ import thehambone.gtatools.gta3savefileeditor.util.NumberUtilities;
  * 
  * @author thehambone
  */
-public class FloatDocumentFilter extends DocumentFilter
+public final class FloatDocumentFilter extends DocumentFilter
 {
     @Override
     public void insertString(FilterBypass fb, int offset, String string,

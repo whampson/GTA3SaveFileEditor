@@ -15,7 +15,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  *
  * @author thehambone
  */
-public class PCSaveSlot
+public final class PCSaveSlot
 {
     private static final Pattern PC_FILE_NAME_PATTERN
             = Pattern.compile("^GTA3sf([0-9]).b$", Pattern.CASE_INSENSITIVE);

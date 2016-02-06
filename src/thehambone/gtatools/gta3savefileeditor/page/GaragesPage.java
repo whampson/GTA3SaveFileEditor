@@ -41,7 +41,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class GaragesPage extends Page
+public final class GaragesPage extends Page
 {
     private static final Color DEFAULT_BACKGROUND
             = UIManager.getColor("Panel.background");

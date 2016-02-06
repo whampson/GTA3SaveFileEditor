@@ -10,7 +10,7 @@ import java.awt.Color;
  * 
  * @author thehambone
  */
-public class GameConstants
+public final class GameConstants
 {
     public static enum Gang
     {

@@ -55,7 +55,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class EditorWindow extends JFrame implements Observer
+public final class EditorWindow extends JFrame implements Observer
 {
     private final Page[] pages = new Page[] {
         new WelcomePage(),

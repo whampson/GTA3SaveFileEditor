@@ -24,7 +24,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  * 
  * @author thehambone
  */
-public class Settings
+public final class Settings
 {
     /**
      * The path to the program configuration file.

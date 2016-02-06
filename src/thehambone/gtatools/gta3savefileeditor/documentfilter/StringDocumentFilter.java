@@ -11,7 +11,7 @@ import javax.swing.text.DocumentFilter;
  *
  * @author thehambone
  */
-public class StringDocumentFilter extends DocumentFilter
+public final class StringDocumentFilter extends DocumentFilter
 {
     private final int maxChars;
     

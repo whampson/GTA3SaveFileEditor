@@ -12,7 +12,7 @@ import thehambone.gtatools.gta3savefileeditor.Main;
  * 
  * @author thehambone
  */
-public class Game
+public final class Game
 {
     /**
      * Gets the path to the "GTA3 User Files" folder.
