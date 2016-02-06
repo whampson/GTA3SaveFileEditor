@@ -25,6 +25,7 @@ import thehambone.gtatools.gta3savefileeditor.util.Logger;
  */
 public final class OptionsPage extends Page
 {
+    private boolean dontShowRestartMessage;
     /**
      * Creates a new {@code OptionsPage} object.
      */
@@ -36,6 +37,7 @@ public final class OptionsPage extends Page
         initSaveDirComponents();
         initBackupComponents();
         initTimestampComponents();
+        initLoggingComponents();
     }
     
     /**
@@ -155,6 +157,30 @@ public final class OptionsPage extends Page
     }
     
     /**
+     * Sets up the "Enable debug logging" checkbox.
+     */
+    private void initLoggingComponents()
+    {
+        debugLoggingCheckBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                boolean selected = debugLoggingCheckBox.isSelected();
+                String value = Boolean.toString(selected);
+                Settings.set(Settings.Key.DEBUG_LOGGING, value);
+                
+                if (!dontShowRestartMessage) {
+                    GUIUtilities.showInformationMessageBox(mainPanel,
+                            "This setting will take effect the next time the "
+                                    + "program is started.",
+                            "Effective After Relaunch");
+                }
+            }
+        });
+    }
+    
+    /**
      * Displays a JFileChooser configured for selecting directories.
      * 
      * @return the selected directory, {@code null} if the user cancelled
@@ -174,10 +200,14 @@ public final class OptionsPage extends Page
         String gta3UserDir = Settings.get(Settings.Key.GTA3_USER_DIR);
         String makeBackups = Settings.get(Settings.Key.MAKE_BACKUPS);
         String tstampFiles = Settings.get(Settings.Key.TIMESTAMP_FILES);
+        String debugLogging = Settings.get(Settings.Key.DEBUG_LOGGING);
         
+        dontShowRestartMessage = true;
         saveFileDirectoryTextField.setText(gta3UserDir);
         makeFileBackupCheckBox.setSelected(Boolean.parseBoolean(makeBackups));
         updateTimestampCheckBox.setSelected(Boolean.parseBoolean(tstampFiles));
+        debugLoggingCheckBox.setSelected(Boolean.parseBoolean(debugLogging));
+        dontShowRestartMessage = false;
     }
 
     /**
@@ -200,6 +230,8 @@ public final class OptionsPage extends Page
         makeFileBackupCheckBox = new javax.swing.JCheckBox();
         timestampPanel = new javax.swing.JPanel();
         updateTimestampCheckBox = new javax.swing.JCheckBox();
+        loggingPanel = new javax.swing.JPanel();
+        debugLoggingCheckBox = new javax.swing.JCheckBox();
 
         saveFileDirectoryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save File Directory"));
 
@@ -281,6 +313,28 @@ public final class OptionsPage extends Page
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        loggingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Logging"));
+        loggingPanel.setToolTipText("A log file will be created each time the program is run.");
+
+        debugLoggingCheckBox.setText("Enable debug logging");
+
+        javax.swing.GroupLayout loggingPanelLayout = new javax.swing.GroupLayout(loggingPanel);
+        loggingPanel.setLayout(loggingPanelLayout);
+        loggingPanelLayout.setHorizontalGroup(
+            loggingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(loggingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(debugLoggingCheckBox)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        loggingPanelLayout.setVerticalGroup(
+            loggingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(loggingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(debugLoggingCheckBox)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -290,7 +344,8 @@ public final class OptionsPage extends Page
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(saveFileDirectoryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fileBackupsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(timestampPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(timestampPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loggingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
@@ -302,6 +357,8 @@ public final class OptionsPage extends Page
                 .addComponent(fileBackupsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(timestampPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(loggingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -321,7 +378,9 @@ public final class OptionsPage extends Page
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseButton;
+    private javax.swing.JCheckBox debugLoggingCheckBox;
     private javax.swing.JPanel fileBackupsPanel;
+    private javax.swing.JPanel loggingPanel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JCheckBox makeFileBackupCheckBox;
     private javax.swing.JLabel pathStatusLabel;

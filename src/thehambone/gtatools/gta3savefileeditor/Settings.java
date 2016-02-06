@@ -42,6 +42,7 @@ public final class Settings
     private static final TreeMap<String, String> DEFAULTS = new TreeMap<>();
     static {
         // Populate defaults list
+        DEFAULTS.put(Key.DEBUG_LOGGING.propertyName, "false");
         DEFAULTS.put(Key.GTA3_USER_DIR.propertyName,
                 Game.getUserDirectoryPath());
         DEFAULTS.put(Key.LAST_LOCATION.propertyName, "");
@@ -232,11 +233,10 @@ public final class Settings
     public static enum Key
     {
         /**
-         * Dictates whether a backup should be made before loading a save file.
-         * <p>
-         * Acceptable values: {@code "true"}, {@code "false"}
+         * Indicates whether the logger should use the {@code DEBUG} level and
+         * log files be created each time the program is run.
          */
-        MAKE_BACKUPS("make.backups"),
+        DEBUG_LOGGING("debug.logging"),
         
         /**
          * Contains the location of the "GTA3 User Files" directory, which holds
@@ -252,6 +252,13 @@ public final class Settings
          * Acceptable values: any valid directory path
          */
         LAST_LOCATION("last.location"),
+        
+        /**
+         * Dictates whether a backup should be made before loading a save file.
+         * <p>
+         * Acceptable values: {@code "true"}, {@code "false"}
+         */
+        MAKE_BACKUPS("make.backups"),
         
         /**
          * Dictates whether the timestamp of the working file should be
