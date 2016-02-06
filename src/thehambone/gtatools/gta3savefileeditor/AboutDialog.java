@@ -26,7 +26,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import thehambone.gtatools.gta3savefileeditor.io.IO;
 import thehambone.gtatools.gta3savefileeditor.Main;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 import thehambone.gtatools.gta3savefileeditor.util.ResourceLoader;
