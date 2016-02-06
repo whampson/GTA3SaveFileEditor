@@ -32,6 +32,7 @@ public abstract class VariableTextField<T extends Variable>
     private T var;
     private String displayFormat;
     
+    @SafeVarargs
     protected VariableTextField(T var, T... supplementaryVars)
     {
         this.var = var;
@@ -152,6 +153,7 @@ public abstract class VariableTextField<T extends Variable>
     }
     
     @Override
+    @SafeVarargs
     public final void setVariable(T var, T... supplementaryVars)
     {
         this.var = var;

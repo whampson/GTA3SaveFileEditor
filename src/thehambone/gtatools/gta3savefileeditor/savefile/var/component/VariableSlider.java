@@ -26,6 +26,7 @@ public abstract class VariableSlider<T extends Variable>
     
     private T var;
     
+    @SafeVarargs
     public VariableSlider(T var, int min, int max, int value,
             T... supplementaryVars)
     {
@@ -67,7 +68,8 @@ public abstract class VariableSlider<T extends Variable>
     }
     
     @Override
-    public void setVariable(T var, T... supplementaryVars)
+    @SafeVarargs
+    public final void setVariable(T var, T... supplementaryVars)
     {
         this.var = var;
         

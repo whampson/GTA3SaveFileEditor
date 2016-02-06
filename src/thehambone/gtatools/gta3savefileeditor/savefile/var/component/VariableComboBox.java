@@ -26,6 +26,7 @@ public abstract class VariableComboBox<T extends Variable>
     
     private T var;
     
+    @SafeVarargs
     public VariableComboBox(T var, T... supplementaryVars)
     {
         super();
@@ -66,7 +67,8 @@ public abstract class VariableComboBox<T extends Variable>
     }
     
     @Override
-    public void setVariable(T var, T... supplementaryVars)
+    @SafeVarargs
+    public final void setVariable(T var, T... supplementaryVars)
     {
         this.var = var;
         

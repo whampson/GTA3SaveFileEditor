@@ -26,6 +26,7 @@ public abstract class VariableCheckBox<T extends Variable>
     
     private T var;
     
+    @SafeVarargs
     protected VariableCheckBox(T var, T... supplementaryVars)
     {
         super();
@@ -65,7 +66,8 @@ public abstract class VariableCheckBox<T extends Variable>
     }
     
     @Override
-    public void setVariable(T var, T... supplementaryVars)
+    @SafeVarargs
+    public final void setVariable(T var, T... supplementaryVars)
     {
         this.var = var;
         

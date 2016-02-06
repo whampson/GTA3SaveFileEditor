@@ -17,6 +17,7 @@ public interface VariableComponent<T extends Variable> extends Observable
     
     public T getVariable();
     
+    @SuppressWarnings({"unchecked", "varargs"})
     public void setVariable(T var, T... supplementaryVars);
     
     public List<T> getSupplementaryVariables();

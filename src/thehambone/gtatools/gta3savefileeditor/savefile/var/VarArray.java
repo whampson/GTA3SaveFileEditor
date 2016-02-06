@@ -139,6 +139,7 @@ public class VarArray<T extends DataStructure>
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public void setValue(T value)
     {
         if (elementTypeClass.isAssignableFrom(Variable.class)) {
