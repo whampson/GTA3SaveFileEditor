@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import thehambone.gtatools.gta3savefileeditor.Main;
 
 /**
  * Created on Jan 9, 2016.
@@ -325,9 +326,7 @@ public final class Logger
             logFile = new File(fileName);
         }
         
-        logFileWriter = new PrintWriter(new FileOutputStream(logFile, false));
-        logFileWriter.append(LOG_BUFFER);
-        logFileWriter.flush();
+        logFileWriter = storeLog(logFile);
     }
     
     /**
@@ -382,14 +381,22 @@ public final class Logger
      * Writes the log to a file.
      * 
      * @param f the file to write
+     * @return the PrintWriter used to write the file
      * @throws FileNotFoundException if the file cannot be created
      */
-    private void storeLog(File f) throws FileNotFoundException
+    private PrintWriter storeLog(File f) throws FileNotFoundException
     {
-        try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, false))) {
-            pw.append(LOG_BUFFER);
-            pw.flush();
-        }
+        PrintWriter pw = new PrintWriter(new FileOutputStream(f, false));
+        
+        String title = Main.PROGRAM_TITLE + " Log";
+        pw.println(title);
+        pw.println(StringUtilities.repeatChar('=', title.length()));
+        pw.println("Log created on " + new Date());
+        pw.println();
+        pw.append(LOG_BUFFER);
+        pw.flush();
+        
+        return pw;
     }
     
     @Override
