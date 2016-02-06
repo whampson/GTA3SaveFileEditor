@@ -209,7 +209,6 @@
                     <TitledBorder title="Logging"/>
                   </Border>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="A log file will be created each time the program is run."/>
               </Properties>
 
               <Layout>
@@ -236,6 +235,7 @@
                 <Component class="javax.swing.JCheckBox" name="debugLoggingCheckBox">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Enable debug logging"/>
+                    <Property name="toolTipText" type="java.lang.String" value="A log file will be created each time the program is run."/>
                   </Properties>
                 </Component>
               </SubComponents>

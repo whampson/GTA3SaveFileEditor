@@ -314,9 +314,9 @@ public final class OptionsPage extends Page
         );
 
         loggingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Logging"));
-        loggingPanel.setToolTipText("A log file will be created each time the program is run.");
 
         debugLoggingCheckBox.setText("Enable debug logging");
+        debugLoggingCheckBox.setToolTipText("A log file will be created each time the program is run.");
 
         javax.swing.GroupLayout loggingPanelLayout = new javax.swing.GroupLayout(loggingPanel);
         loggingPanel.setLayout(loggingPanelLayout);
