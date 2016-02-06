@@ -76,7 +76,7 @@ public class PCSaveSlot
     /**
      * Checks whether the file backed by this save slot exists and is usable.
      * 
-     * @return {@code true if the file exists and is usable, {@code false}
+     * @return {@code true} if the file exists and is usable, {@code false}
      *         otherwise
      */
     public boolean isEmpty()

@@ -227,7 +227,7 @@ public class DataBuffer
     
     /**
      * Moves to a specific position in the buffer. Data will be read from this
-     * offset the next time {@link read()} (or any of its derivatives) is
+     * offset the next time {@link #read()} (or any of its derivatives) is
      * called, or written to this offset the next time {@link #write(byte)} (or
      * any of its derivatives) is called.
      * 
