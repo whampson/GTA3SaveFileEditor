@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -46,7 +46,6 @@ import thehambone.gtatools.gta3savefileeditor.page.PlayerPage;
 import thehambone.gtatools.gta3savefileeditor.page.WelcomePage;
 import thehambone.gtatools.gta3savefileeditor.savefile.SaveFile;
 import thehambone.gtatools.gta3savefileeditor.savefile.PCSaveSlot;
-import thehambone.gtatools.gta3savefileeditor.util.FixedLengthQueue;
 import thehambone.gtatools.gta3savefileeditor.util.GUIUtilities;
 import thehambone.gtatools.gta3savefileeditor.util.Logger;
 
@@ -342,11 +341,15 @@ public class EditorWindow extends JFrame implements Observer
         JMenu debugMenu = new JMenu("Debug");
         JMenuItem clearChangesMadeFlagMenuItem
                 = new JMenuItem("Clear \"Changes Made\" Flag");
+        JMenuItem generateCrashDumpMenuItem
+                = new JMenuItem("Generate Crash Dump");
         JMenuItem runtimeExceptionMenuItem
                 = new JMenuItem("Cause RuntimeException");
         
         // Add menu items to Debug menu
         debugMenu.add(clearChangesMadeFlagMenuItem);
+        debugMenu.add(new JPopupMenu.Separator());
+        debugMenu.add(generateCrashDumpMenuItem);
         debugMenu.add(runtimeExceptionMenuItem);
         
         // Add menu to menu bar
@@ -355,6 +358,7 @@ public class EditorWindow extends JFrame implements Observer
         // Set keyboard mnemonics
         debugMenu.setMnemonic(KeyEvent.VK_D);
         clearChangesMadeFlagMenuItem.setMnemonic(KeyEvent.VK_C);
+        clearChangesMadeFlagMenuItem.setMnemonic(KeyEvent.VK_G);
         runtimeExceptionMenuItem.setMnemonic(KeyEvent.VK_R);
         
         // Set keyboard shotcuts
@@ -362,7 +366,10 @@ public class EditorWindow extends JFrame implements Observer
                         KeyEvent.VK_C,
                         Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
                                 | KeyEvent.ALT_DOWN_MASK));
-        
+        generateCrashDumpMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                        KeyEvent.VK_D,
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
+                                | KeyEvent.ALT_DOWN_MASK));
         runtimeExceptionMenuItem.setAccelerator(KeyStroke.getKeyStroke(
                         KeyEvent.VK_R,
                         Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
@@ -376,6 +383,25 @@ public class EditorWindow extends JFrame implements Observer
             {
                 setChangesMade(false);
                 Logger.debug("\"Changes Made\" flag reset");
+            }
+        });
+        
+        final JFrame parent = (JFrame)SwingUtilities.getWindowAncestor(this);
+        generateCrashDumpMenuItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    String fileName = Logger.generateCrashDump();
+                    Logger.info("Crash dump created at " + fileName);
+                    GUIUtilities.showInformationMessageBox(parent,
+                            "Crash dump created at " + fileName,
+                            "Crash Dump Created", 300);
+                } catch (IOException ex) {
+                    Logger.error("Failed to generate crash dump.", ex);
+                    Logger.stackTrace(ex);
+                }
             }
         });
         
