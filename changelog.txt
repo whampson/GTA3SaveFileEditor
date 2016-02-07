@@ -1,0 +1,51 @@
+GTA III Save File Editor Changelog
+==================================
+All changes written by thehambone.
+
+=-=-=-=-=-=-=-=-=-=-=
+Version 0.2 build 476
+=-=-=-=-=-=-=-=-=-=-=
+Begin: January 9, 2016
+  End: February 7, 2016
+
+Editor Improvements
+-------------------
+* Added support for iOS and Android saves
+* Data handling algorithms rewritten; editor handes data much more
+  conservatively, more efficiently, and safer
+* Added support for unsigned input
+* Better input validation
+* Added Mac OS X support; it's not perfect but it runs well
+* File can now be re-loaded by pressing F5
+* Added a "Recent Files" list
+* Added option: "Enable debug logging"
+* Added command-line option: --log-to-file
+* Added command-line option: --log-level=<FATAL|ERROR|WARN|INFO|DEBUG>
+* Added command-line option: --help
+* Better logging and crashdump output
+* Icon changed
+* Other minor visual changes and improvements
+* Overall stability improved
+
+General
+-------
+* Weather interpolation is now adjusted via a slider
+* GXT strings can be used for the save name (mobile only)
+
+Player
+------
+* Fixed a bug where raising the maximum wanted level would have no effect
+  in-game
+* Wanted level can now be disabled entirely
+
+Garages
+-------
+* Car colors are easier to see and select
+
+=-=-=-=-=-=-=-=-=-=-=
+Version 0.1 build 388
+=-=-=-=-=-=-=-=-=-=-=
+Begin: February 6, 2015
+  End: April 13, 2015
+
+* Initial release
